@@ -98,10 +98,10 @@ export function HelpAndSupport({ collapsed = false, mode }: HelpAndSupportProps)
               href={option.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="group block rounded-lg border bg-surface p-4 transition-all duration-200 hover:bg-surface-hover hover:shadow-md hover:border-primary/30"
+              className="group block rounded-lg border bg-surface p-4 transition-all duration-200 hover:bg-surface-hover hover:shadow-md hover:border-primary/30 text-center"
               onClick={() => setOpen(false)}
             >
-              <div className="flex items-start gap-4">
+              <div className="flex flex-col items-center gap-2">
                 <option.icon className="h-6 w-6 flex-shrink-0 text-primary transition-transform group-hover:scale-110" />
                 <div>
                   <h3 className="font-semibold text-base text-text">{option.label}</h3>
