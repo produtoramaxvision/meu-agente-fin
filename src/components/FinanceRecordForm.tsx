@@ -72,8 +72,9 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
-  const setOpen = onOpenChange || setInternalOpen;
+  const isControlled = controlledOpen !== undefined && onOpenChange !== undefined;
+  const open = isControlled ? controlledOpen! : internalOpen;
+  const setOpen = isControlled ? onOpenChange! : setInternalOpen;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -183,7 +184,7 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      {!recordToEdit && (
+      {!recordToEdit && !isControlled && (
         <DialogTrigger asChild>
           <Button className="w-full group relative overflow-hidden">
             <span className="relative z-10">Adicionar Registro</span>
