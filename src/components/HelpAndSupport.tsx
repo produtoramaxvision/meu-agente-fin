@@ -29,19 +29,19 @@ const supportOptions = [
     label: 'Enviar mensagem para o Suporte',
     description: 'Obtenha ajuda com dúvidas e problemas comuns.',
     icon: MessageSquare,
-    href: `mailto:suporte@meuagente.com?subject=${encodeURIComponent('Suporte Meu Agente')}`,
+    href: `mailto:suporte@meuagente.api.br?subject=${encodeURIComponent('Suporte Meu Agente')}`,
   },
   {
     label: 'Reportar Bug/Erro',
     description: 'Encontrou um problema? Nos avise para que possamos corrigi-lo.',
     icon: Bug,
-    href: `mailto:suporte@meuagente.com?subject=${encodeURIComponent('Report de Bug - Meu Agente')}`,
+    href: `mailto:suporte@meuagente.api.br?subject=${encodeURIComponent('Report de Bug - Meu Agente')}`,
   },
   {
     label: 'Sugestões',
     description: 'Tem ideias para melhorar o Meu Agente? Adoraríamos ouvir!',
     icon: Lightbulb,
-    href: `mailto:suporte@meuagente.com?subject=${encodeURIComponent('Sugestão - Meu Agente')}`,
+    href: `mailto:suporte@meuagente.api.br?subject=${encodeURIComponent('Sugestão - Meu Agente')}`,
   },
 ];
 
@@ -98,14 +98,14 @@ export function HelpAndSupport({ collapsed = false, mode }: HelpAndSupportProps)
               href={option.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="group block rounded-lg border bg-surface p-4 transition-all duration-200 hover:bg-surface-hover hover:shadow-md hover:border-primary/30 text-center"
+              className="group block rounded-lg border bg-surface p-4 transition-all duration-200 hover:bg-surface-hover hover:shadow-md hover:border-primary/30"
               onClick={() => setOpen(false)}
             >
-              <div className="flex flex-col items-center gap-2">
-                <option.icon className="h-6 w-6 flex-shrink-0 text-primary transition-transform group-hover:scale-110" />
+              <div className="flex flex-col items-center text-center gap-3">
+                <option.icon className="h-7 w-7 flex-shrink-0 text-primary transition-transform group-hover:scale-110" />
                 <div>
                   <h3 className="font-semibold text-base text-text">{option.label}</h3>
-                  <p className="text-sm text-text-muted mt-1">{option.description}</p>
+                  <p className="text-sm text-text-muted mt-1 px-2">{option.description}</p>
                 </div>
               </div>
             </a>
