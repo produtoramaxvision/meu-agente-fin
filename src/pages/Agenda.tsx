@@ -27,7 +27,7 @@ export default function Agenda() {
   const { cliente } = useAuth();
   const { searchQuery, setSearchQuery } = useSearch();
 
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [view, setView] = useState<View>('week');
   const [eventFormOpen, setEventFormOpen] = useState(false);
   const [eventToEdit, setEventToEdit] = useState<Event | null>(null);
@@ -40,17 +40,18 @@ export default function Agenda() {
   const [localSearch, setLocalSearch] = useState('');
 
   const { startDate, endDate } = useMemo(() => {
+    const date = selectedDate || new Date();
     switch (view) {
       case 'day':
-        return { startDate: startOfDay(selectedDate), endDate: endOfDay(selectedDate) };
+        return { startDate: startOfDay(date), endDate: endOfDay(date) };
       case 'week':
-        return { startDate: startOfWeek(selectedDate, { locale: ptBR }), endDate: endOfWeek(selectedDate, { locale: ptBR }) };
+        return { startDate: startOfWeek(date, { locale: ptBR }), endDate: endOfWeek(date, { locale: ptBR }) };
       case 'month':
       case 'year':
       case 'timeline':
       case 'agenda':
       default:
-        return { startDate: startOfMonth(selectedDate), endDate: endOfMonth(selectedDate) };
+        return { startDate: startOfMonth(date), endDate: endOfMonth(date) };
     }
   }, [view, selectedDate]);
 
@@ -85,19 +86,21 @@ export default function Agenda() {
       }
       if (e.key === 'ArrowLeft') {
         setSelectedDate(prev => {
+          const date = prev || new Date();
           switch (view) {
-            case 'day': return addDays(prev, -1);
-            case 'week': return addWeeks(prev, -1);
-            default: return addMonths(prev, -1);
+            case 'day': return addDays(date, -1);
+            case 'week': return addWeeks(date, -1);
+            default: return addMonths(date, -1);
           }
         });
       }
       if (e.key === 'ArrowRight') {
         setSelectedDate(prev => {
+          const date = prev || new Date();
           switch (view) {
-            case 'day': return addDays(prev, 1);
-            case 'week': return addWeeks(prev, 1);
-            default: return addMonths(prev, 1);
+            case 'day': return addDays(date, 1);
+            case 'week': return addWeeks(date, 1);
+            default: return addMonths(date, 1);
           }
         });
       }
@@ -188,16 +191,16 @@ export default function Agenda() {
       <div className="grid gap-8 grid-cols-1 lg:grid-cols-[1fr_380px]">
         {/* Card Calendário */}
         <Card className="group relative overflow-hidden rounded-xl border-border/40 bg-card/50 shadow-sm hover:scale-[1.01] transition-all duration-200 animate-fade-in hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100" style={{ animationDelay: '0ms' }}>
-          <CardContent className="p-4 sm:p-6 relative z-10">
+          <CardContent className="p-4 sm:p-6 relative z-10 flex flex-col items-center">
             <Calendar
               mode="single"
               selected={selectedDate}
-              onSelect={(d) => d && setSelectedDate(d)}
+              onSelect={setSelectedDate}
               initialFocus
               locale={ptBR}
               className="p-0"
             />
-            <div className="flex items-center justify-between gap-2 pt-4">
+            <div className="flex items-center justify-between gap-2 pt-4 w-full max-w-sm">
               <Button
                 variant="ghost"
                 size="sm"
@@ -277,7 +280,7 @@ export default function Agenda() {
       <div className="animate-fade-in" style={{ animationDelay: '300ms' }}>
         {view === 'day' && (
           <AgendaGridDay
-            date={selectedDate}
+            date={selectedDate || new Date()}
             events={events}
             calendars={calendars}
             isLoading={isLoading}
@@ -288,7 +291,7 @@ export default function Agenda() {
         )}
         {view === 'week' && (
           <AgendaGridWeek
-            weekDate={selectedDate}
+            weekDate={selectedDate || new Date()}
             events={events}
             isLoading={isLoading}
             onEventClick={onEventClick}
@@ -296,7 +299,7 @@ export default function Agenda() {
         )}
         {view === 'month' && (
           <AgendaGridMonth
-            monthDate={selectedDate}
+            monthDate={selectedDate || new Date()}
             events={events}
             isLoading={isLoading}
             onEventClick={onEventClick}
@@ -323,7 +326,7 @@ export default function Agenda() {
         )}
         {view === 'year' && (
           <AgendaYearHeatmap
-            yearDate={selectedDate}
+            yearDate={selectedDate || new Date()}
             events={events}
             isLoading={isLoading}
           />
