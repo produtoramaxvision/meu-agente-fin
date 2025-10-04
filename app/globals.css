@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+  /* 1. Prevenção de overflow lateral acidental */
+  html, body {
+    overflow-x: clip;
+  }
+}
+
+/* 2. Estilos específicos para mobile */
+@media (max-width: 480px) and (hover: none) and (pointer: coarse) {
+  /* 2.1. Safe Area e altura dinâmica da viewport */
+  body {
+    padding-inline: max(16px, env(safe-area-inset-left), env(safe-area-inset-right));
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  [data-full-height-mobile] {
+    height: 100dvh;
+  }
+
+  /* 2.2. Sidebar: Toggle fixo e hotspot na borda */
+  .sidebar-edge-hotspot {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: 14px;
+    z-index: 1000;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sidebar-toggle {
+    position: fixed !important;
+    inset-inline-start: 8px;
+    top: 50dvh;
+    transform: translateY(-50%);
+    z-index: 1001;
+    display: grid;
+    place-items: center;
+  }
+
+  /* 2.3. Grid de cards e gráficos */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(12px, 3vw, 20px);
+  }
+
+  .card, .chart-card {
+    padding: clamp(12px, 3.2vw, 18px);
+  }
+
+  .chart-container {
+    inline-size: 100%;
+    block-size: clamp(220px, 40dvh, 360px);
+    overflow: hidden;
+  }
+
+  canvas, svg, .recharts-wrapper {
+    max-inline-size: 100%;
+    block-size: 100% !important; /* Forçar altura para bibliotecas como Recharts */
+  }
+
+  /* 2.4. Tipografia e alvos de toque */
+  .tap-target,
+  .btn,
+  .icon-button,
+  .sidebar-toggle {
+    min-inline-size: 48px;
+    min-block-size: 48px;
+  }
+
+  h1, .h1 { font-size: clamp(1.4rem, 4.5vw, 2rem); }
+  h2, .h2 { font-size: clamp(1.2rem, 4vw, 1.6rem); }
+
+  /* 2.5. Toasts e barras de navegação */
+  .toast--bottom {
+    margin-block-end: max(12px, env(safe-area-inset-bottom));
+  }
+}
