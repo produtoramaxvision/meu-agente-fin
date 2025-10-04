@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    allowedHosts: ['dashboard.meuagente.api.br'],
+    allowedHosts: ['app.meuagente.api.br'],
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
