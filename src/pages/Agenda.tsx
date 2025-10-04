@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, addDays, addWeeks, addMonths, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Calendar as MiniCalendar } from '@/components/ui/calendar';
+import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -185,19 +185,17 @@ export default function Agenda() {
       </div>
 
       {/* Calendar & Actions Section */}
-      <div className="grid gap-8 grid-cols-1 lg:grid-cols-2">
+      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[1fr_380px]">
         {/* Card Calendário */}
-        <Card className="group relative overflow-hidden hover:scale-[1.01] transition-all duration-200 animate-fade-in hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100 lg:row-span-2" style={{ animationDelay: '0ms' }}>
-          <CardHeader className="pb-3 relative z-10">
-            <CardTitle className="text-sm font-medium text-text-muted text-center">Selecionar data</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0 relative z-10 px-3 sm:px-6">
-            <MiniCalendar
+        <Card className="group relative overflow-hidden rounded-xl border-border/40 bg-card/50 shadow-sm hover:scale-[1.01] transition-all duration-200 animate-fade-in hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100" style={{ animationDelay: '0ms' }}>
+          <CardContent className="p-4 sm:p-6 relative z-10">
+            <Calendar
               mode="single"
               selected={selectedDate}
               onSelect={(d) => d && setSelectedDate(d)}
               initialFocus
               locale={ptBR}
+              className="p-0"
             />
             <div className="flex items-center justify-between gap-2 pt-4">
               <Button
@@ -228,14 +226,12 @@ export default function Agenda() {
 
         {/* Desktop: Coluna direita com WorldClock e Botão */}
         <div className="hidden lg:flex lg:flex-col gap-6">
-          {/* WorldClock */}
           <Card className="group relative overflow-hidden hover:scale-[1.01] transition-all duration-200 animate-fade-in hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100" style={{ animationDelay: '100ms' }}>
             <div className="relative z-10">
               <WorldClock />
             </div>
           </Card>
           
-          {/* Botão Novo Evento - Desktop */}
           <div className="animate-fade-in" style={{ animationDelay: '200ms' }}>
             <button
               onClick={() => setEventFormOpen(true)}
