@@ -185,43 +185,41 @@ export default function Agenda() {
       </div>
 
       {/* Calendar & Actions Section */}
-      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[1fr_380px]">
+      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[auto_380px]">
         {/* Card Calendário */}
-        <Card className="group relative overflow-hidden rounded-xl border-border/40 bg-card/50 shadow-sm hover:scale-[1.01] transition-all duration-200 animate-fade-in hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100" style={{ animationDelay: '0ms' }}>
+        <Card className="group relative overflow-hidden rounded-xl border-border/40 bg-card/50 shadow-sm hover:scale-[1.01] transition-all duration-200 animate-fade-in hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100 w-full md:max-w-[620px] lg:max-w-[720px] xl:max-w-[820px] justify-self-center md:mx-auto" style={{ animationDelay: '0ms' }}>
           <CardContent className="p-4 sm:p-6 relative z-10">
-            <div className="md:max-w-sm mx-auto">
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={(d) => d && setSelectedDate(d)}
-                initialFocus
-                locale={ptBR}
-                className="p-0"
-              />
-              <div className="flex items-center justify-between gap-2 pt-4">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedDate(new Date())}
-                  className="flex-1 group/hoje relative overflow-hidden rounded-lg p-2 transition-all duration-200 hover:scale-105 hover:bg-[hsl(var(--sidebar-hover))] hover:text-[hsl(var(--sidebar-text))] hover:shadow-md"
-                >
-                  <span className="relative z-10 flex items-center">
-                    <CalendarDays className="h-4 w-4 mr-2 transition-transform duration-300 group-hover/hoje:scale-110" /> Hoje
-                  </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/hoje:translate-x-full transition-transform duration-700" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => refetch()}
-                  className="flex-1 group/atualizar relative overflow-hidden rounded-lg p-2 transition-all duration-200 hover:scale-105 hover:bg-[hsl(var(--sidebar-hover))] hover:text-[hsl(var(--sidebar-text))] hover:shadow-md"
-                >
-                  <span className="relative z-10 flex items-center">
-                    <RefreshCw className="h-4 w-4 mr-2 transition-transform duration-300 group-hover/atualizar:rotate-180" /> Atualizar
-                  </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/atualizar:translate-x-full transition-transform duration-700" />
-                </Button>
-              </div>
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={(d) => d && setSelectedDate(d)}
+              initialFocus
+              locale={ptBR}
+              className="p-0"
+            />
+            <div className="flex items-center justify-between gap-2 pt-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedDate(new Date())}
+                className="flex-1 group/hoje relative overflow-hidden rounded-lg p-2 transition-all duration-200 hover:scale-105 hover:bg-[hsl(var(--sidebar-hover))] hover:text-[hsl(var(--sidebar-text))] hover:shadow-md"
+              >
+                <span className="relative z-10 flex items-center">
+                  <CalendarDays className="h-4 w-4 mr-2 transition-transform duration-300 group-hover/hoje:scale-110" /> Hoje
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/hoje:translate-x-full transition-transform duration-700" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => refetch()}
+                className="flex-1 group/atualizar relative overflow-hidden rounded-lg p-2 transition-all duration-200 hover:scale-105 hover:bg-[hsl(var(--sidebar-hover))] hover:text-[hsl(var(--sidebar-text))] hover:shadow-md"
+              >
+                <span className="relative z-10 flex items-center">
+                  <RefreshCw className="h-4 w-4 mr-2 transition-transform duration-300 group-hover/atualizar:rotate-180" /> Atualizar
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+              </Button>
             </div>
           </CardContent>
         </Card>
