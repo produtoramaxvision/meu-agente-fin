@@ -5,7 +5,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Plus, CalendarDays, RefreshCw } from 'lucide-react';
+import { Plus, CalendarDays, RefreshCw, X } from 'lucide-react';
 import { useAgendaData, Event, EventFormData } from '@/hooks/useAgendaData';
 import { AgendaFilters } from '@/components/AgendaFilters';
 import { WorldClock } from '@/components/WorldClock';
@@ -13,6 +13,7 @@ import { EventForm } from '@/components/EventForm';
 import { useSearch } from '@/contexts/SearchContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import type { DateRange } from 'react-day-picker';
 
 import AgendaGridDay from '@/components/AgendaGridDay';
 import AgendaGridWeek from '@/components/AgendaGridWeek';
@@ -28,6 +29,7 @@ export default function Agenda() {
   const { searchQuery, setSearchQuery } = useSearch();
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [view, setView] = useState<View>('week');
   const [eventFormOpen, setEventFormOpen] = useState(false);
   const [eventToEdit, setEventToEdit] = useState<Event | null>(null);
@@ -40,6 +42,11 @@ export default function Agenda() {
   const [localSearch, setLocalSearch] = useState('');
 
   const { startDate, endDate } = useMemo(() => {
+    // If range is selected, use it for filtering
+    if (dateRange?.from && dateRange?.to) {
+      return { startDate: startOfDay(dateRange.from), endDate: endOfDay(dateRange.to) };
+    }
+    
     switch (view) {
       case 'day':
         return { startDate: startOfDay(selectedDate), endDate: endOfDay(selectedDate) };
@@ -52,7 +59,7 @@ export default function Agenda() {
       default:
         return { startDate: startOfMonth(selectedDate), endDate: endOfMonth(selectedDate) };
     }
-  }, [view, selectedDate]);
+  }, [view, selectedDate, dateRange]);
 
   const { calendars, events, resources, isLoading, refetch, createEvent, updateEvent, createCalendar } = useAgendaData({
     view,
@@ -114,6 +121,7 @@ export default function Agenda() {
     setSelectedStatuses([]);
     setLocalSearch('');
     setSearchQuery('');
+    setDateRange(undefined);
   };
 
   const handleCreateEvent = useCallback((data: any) => {
@@ -185,24 +193,48 @@ export default function Agenda() {
       </div>
 
       {/* Calendar & Actions Section */}
-      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[1fr_380px]">
+      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,420px)_1fr]">
         {/* Card Calendário */}
         <Card className="group relative overflow-hidden rounded-xl border-border/40 bg-card/50 shadow-sm hover:scale-[1.01] transition-all duration-200 animate-fade-in hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100" style={{ animationDelay: '0ms' }}>
           <CardContent className="p-4 sm:p-6 relative z-10">
-            <div className="md:max-w-sm mx-auto">
+            <div className="max-w-md mx-auto">
               <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={(d) => d && setSelectedDate(d)}
+                mode="range"
+                selected={dateRange}
+                onSelect={setDateRange}
                 initialFocus
                 locale={ptBR}
                 className="p-0"
+                numberOfMonths={1}
               />
+              {dateRange?.from && dateRange?.to && (
+                <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm">
+                      <span className="font-medium text-primary">Período selecionado:</span>
+                      <div className="mt-1 text-text-muted">
+                        {format(dateRange.from, "dd/MM/yyyy", { locale: ptBR })} - {format(dateRange.to, "dd/MM/yyyy", { locale: ptBR })}
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setDateRange(undefined)}
+                      className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
               <div className="flex items-center justify-between gap-2 pt-4">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setSelectedDate(new Date())}
+                  onClick={() => {
+                    setSelectedDate(new Date());
+                    setDateRange(undefined);
+                  }}
                   className="flex-1 group/hoje relative overflow-hidden rounded-lg p-2 transition-all duration-200 hover:scale-105 hover:bg-[hsl(var(--sidebar-hover))] hover:text-[hsl(var(--sidebar-text))] hover:shadow-md"
                 >
                   <span className="relative z-10 flex items-center">
@@ -226,15 +258,9 @@ export default function Agenda() {
           </CardContent>
         </Card>
 
-        {/* Desktop: Coluna direita com WorldClock e Botão */}
+        {/* Desktop: Coluna direita com Botão e WorldClock */}
         <div className="hidden lg:flex lg:flex-col gap-6">
-          <Card className="group relative overflow-hidden hover:scale-[1.01] transition-all duration-200 animate-fade-in hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100" style={{ animationDelay: '100ms' }}>
-            <div className="relative z-10">
-              <WorldClock />
-            </div>
-          </Card>
-          
-          <div className="animate-fade-in" style={{ animationDelay: '200ms' }}>
+          <div className="animate-fade-in" style={{ animationDelay: '100ms' }}>
             <button
               onClick={() => setEventFormOpen(true)}
               className="group relative overflow-hidden rounded-lg px-4 py-2.5 transition-all duration-200 bg-gradient-to-br from-[hsl(var(--brand-900))] to-[hsl(var(--brand-700))] hover:shadow-lg hover:scale-105 flex items-center justify-center gap-2 w-full"
@@ -244,6 +270,12 @@ export default function Agenda() {
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
             </button>
           </div>
+          
+          <Card className="group relative overflow-hidden hover:scale-[1.01] transition-all duration-200 animate-fade-in hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100" style={{ animationDelay: '200ms' }}>
+            <div className="relative z-10">
+              <WorldClock />
+            </div>
+          </Card>
         </div>
 
         {/* Mobile/Tablet: WorldClock em card separado */}
