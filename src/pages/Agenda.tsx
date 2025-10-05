@@ -10,6 +10,7 @@ import { useAgendaData, Event, EventFormData } from '@/hooks/useAgendaData';
 import { AgendaFilters } from '@/components/AgendaFilters';
 import { WorldClock } from '@/components/WorldClock';
 import { EventForm } from '@/components/EventForm';
+import { UpcomingTasksCard } from '@/components/UpcomingTasksCard';
 import { useSearch } from '@/contexts/SearchContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -193,7 +194,7 @@ export default function Agenda() {
       </div>
 
       {/* Calendar & Actions Section */}
-      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,420px)_1fr]">
+      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,420px)_1fr_minmax(320px,420px)]">
         {/* Card Calendário */}
         <Card className="group relative overflow-hidden rounded-xl border-border/40 bg-card/50 shadow-sm hover:scale-[1.01] transition-all duration-200 animate-fade-in hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100" style={{ animationDelay: '0ms' }}>
           <CardContent className="p-4 sm:p-6 relative z-10">
@@ -258,7 +259,7 @@ export default function Agenda() {
           </CardContent>
         </Card>
 
-        {/* Desktop: Coluna direita com Botão e WorldClock */}
+        {/* Desktop: Coluna do meio com Botão e WorldClock */}
         <div className="hidden lg:flex lg:flex-col gap-6">
           <div className="animate-fade-in" style={{ animationDelay: '100ms' }}>
             <button
@@ -276,6 +277,11 @@ export default function Agenda() {
               <WorldClock />
             </div>
           </Card>
+        </div>
+
+        {/* Desktop: Coluna direita com Tarefas Urgentes */}
+        <div className="hidden lg:block animate-fade-in" style={{ animationDelay: '300ms' }}>
+          <UpcomingTasksCard />
         </div>
 
         {/* Mobile/Tablet: WorldClock em card separado */}
