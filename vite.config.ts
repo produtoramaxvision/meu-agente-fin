@@ -10,6 +10,11 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     strictPort: true,
     cors: true,
+    allowedHosts: ["app.meuagente.api.br"],
+    hmr: {
+      host: "app.meuagente.api.br",
+      port: 8080
+    },
     headers: {
       'Cross-Origin-Embedder-Policy': 'unsafe-none',
       'Cross-Origin-Opener-Policy': 'unsafe-none',
