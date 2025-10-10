@@ -16,8 +16,10 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
-import { HelpCircle, MessageSquare, Bug, Lightbulb } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { HelpCircle, MessageSquare, Bug, Lightbulb, FileText, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SupportDialog } from './SupportDialog';
 
 type HelpAndSupportProps = {
   collapsed?: boolean;
@@ -26,27 +28,36 @@ type HelpAndSupportProps = {
 
 const supportOptions = [
   {
-    label: 'Enviar mensagem para o Suporte',
-    description: 'Obtenha ajuda com dúvidas e problemas comuns.',
-    icon: MessageSquare,
-    href: `mailto:suporte@meuagente.api.br?subject=${encodeURIComponent('Suporte Meu Agente')}`,
+    label: 'Suporte',
+    description: 'Crie um ticket de suporte ou acompanhe seus tickets existentes.',
+    icon: FileText,
+    href: null, // Será tratado como suporte
+    type: 'support' as const,
   },
   {
     label: 'Reportar Bug/Erro',
     description: 'Encontrou um problema? Nos avise para que possamos corrigi-lo.',
     icon: Bug,
     href: `mailto:suporte@meuagente.api.br?subject=${encodeURIComponent('Report de Bug - Meu Agente')}`,
+    type: 'bug' as const,
   },
   {
     label: 'Sugestões',
     description: 'Tem ideias para melhorar o Meu Agente? Adoraríamos ouvir!',
     icon: Lightbulb,
     href: `mailto:suporte@meuagente.api.br?subject=${encodeURIComponent('Sugestão - Meu Agente')}`,
+    type: 'suggestion' as const,
   },
 ];
 
 export function HelpAndSupport({ collapsed = false, mode }: HelpAndSupportProps) {
   const [open, setOpen] = useState(false);
+  const [showSupport, setShowSupport] = useState(false);
+
+  const handleFormSuccess = (ticketNumber: string) => {
+    console.log('Ticket criado:', ticketNumber);
+    // Aqui podemos adicionar notificação ou outras ações
+  };
 
   const triggerButton = (
     <Button
@@ -82,36 +93,67 @@ export function HelpAndSupport({ collapsed = false, mode }: HelpAndSupportProps)
     );
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      {trigger}
-      <DialogContent className="sm:max-w-lg">
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        {trigger}
+        <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-2xl">Precisa de ajuda?</DialogTitle>
           <DialogDescription className="pt-2">
             Se precisar de ajuda ou quiser relatar um problema, aqui estão algumas opções:
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          {supportOptions.map((option) => (
-            <a
-              key={option.label}
-              href={option.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group block rounded-lg border bg-surface p-4 transition-all duration-200 hover:bg-surface-hover hover:shadow-md hover:border-primary/30"
-              onClick={() => setOpen(false)}
-            >
-              <div className="flex flex-col items-center text-center gap-3">
-                <option.icon className="h-7 w-7 flex-shrink-0 text-primary transition-transform group-hover:scale-110" />
-                <div>
-                  <h3 className="font-semibold text-base text-text">{option.label}</h3>
-                  <p className="text-sm text-text-muted mt-1 px-2">{option.description}</p>
-                </div>
-              </div>
-            </a>
-          ))}
-        </div>
-      </DialogContent>
-    </Dialog>
+          <div className="grid gap-4 py-4">
+            {supportOptions.map((option) => {
+              if (option.type === 'support') {
+                return (
+                  <button
+                    key={option.label}
+                    onClick={() => {
+                      setShowSupport(true);
+                      setOpen(false); // Fechar o modal principal
+                    }}
+                    className="group block rounded-lg border bg-surface p-4 transition-all duration-200 hover:bg-surface-hover hover:shadow-md hover:border-primary/30 w-full"
+                  >
+                    <div className="flex flex-col items-center text-center gap-3">
+                      <option.icon className="h-7 w-7 flex-shrink-0 text-primary transition-transform group-hover:scale-110" />
+                      <div>
+                        <h3 className="font-semibold text-base text-text">{option.label}</h3>
+                        <p className="text-sm text-text-muted mt-1 px-2">{option.description}</p>
+                      </div>
+                    </div>
+                  </button>
+                );
+              }
+
+              return (
+                <a
+                  key={option.label}
+                  href={option.href!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block rounded-lg border bg-surface p-4 transition-all duration-200 hover:bg-surface-hover hover:shadow-md hover:border-primary/30"
+                  onClick={() => setOpen(false)}
+                >
+                  <div className="flex flex-col items-center text-center gap-3">
+                    <option.icon className="h-7 w-7 flex-shrink-0 text-primary transition-transform group-hover:scale-110" />
+                    <div>
+                      <h3 className="font-semibold text-base text-text">{option.label}</h3>
+                      <p className="text-sm text-text-muted mt-1 px-2">{option.description}</p>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog de Suporte com Abas */}
+      <SupportDialog
+        open={showSupport}
+        onOpenChange={setShowSupport}
+      />
+    </>
   );
 }
