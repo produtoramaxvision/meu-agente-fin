@@ -49,6 +49,14 @@ const SNAP_MINUTES = 15;
 const HOUR_HEIGHT_PX = 64; // h-16 in tailwind
 const PX_PER_MINUTE = HOUR_HEIGHT_PX / 60;
 
+// Função para detectar prefers-reduced-motion
+const prefersReducedMotion = () => {
+  if (typeof window !== 'undefined') {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+  return false;
+};
+
 // Função de debounce para otimizar performance
 function debounce<T extends (...args: any[]) => any>(func: T, wait: number): T {
   let timeout: NodeJS.Timeout;
@@ -62,6 +70,7 @@ function debounce<T extends (...args: any[]) => any>(func: T, wait: number): T {
 interface DraggableEventProps {
   event: Event;
   calendarColor: string;
+  allEvents: Event[];
   onEventClick?: (evt: Event) => void;
   onEventDoubleClick?: (data: any) => void;
   openEventPopover: string | null;
@@ -74,6 +83,7 @@ interface DraggableEventProps {
 function DraggableEvent({
   event,
   calendarColor,
+  allEvents,
   onEventClick,
   onEventDoubleClick,
   openEventPopover,
@@ -102,8 +112,27 @@ function DraggableEvent({
     const dayStart = startOfDay(new Date());
     const top = Math.max(0, differenceInMinutes(start, dayStart) * PX_PER_MINUTE);
     const height = Math.max(60, differenceInMinutes(end, start) * PX_PER_MINUTE);
-    return { top: `${top}px`, height: `${height}px` };
-  }, [event.start_ts, event.end_ts]);
+    
+    // Calcular empilhamento para eventos sobrepostos
+    const overlappingEvents = allEvents.filter(e => {
+      if (e.id === event.id) return false;
+      const eStart = new Date(e.start_ts);
+      const eEnd = new Date(e.end_ts);
+      return (start < eEnd && end > eStart);
+    });
+    
+    // Calcular posição lateral baseada no índice de sobreposição
+    const overlapIndex = overlappingEvents.length;
+    const leftOffset = overlapIndex * 20; // 20px por evento sobreposto
+    const width = `calc(100% - ${leftOffset}px)`;
+    
+    return { 
+      top: `${top}px`, 
+      height: `${height}px`,
+      left: `${leftOffset}px`,
+      width: width
+    };
+  }, [event.start_ts, event.end_ts, event.id, allEvents]);
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -145,8 +174,8 @@ function DraggableEvent({
         {...listeners}
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
-        initial={{ opacity: 0, scale: 0.8, y: -20 }}
-        animate={{ 
+        initial={prefersReducedMotion() ? {} : { opacity: 0, scale: 0.8, y: -20 }}
+        animate={prefersReducedMotion() ? {} : { 
           opacity: isDragging ? 0.3 : 1, 
           scale: isDragging ? 1.05 : 1,
           y: 0,
@@ -155,17 +184,17 @@ function DraggableEvent({
             ? '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' 
             : '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
         }}
-        whileHover={{ 
+        whileHover={prefersReducedMotion() ? {} : { 
           scale: 1.02,
           y: -2,
           boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
           transition: { duration: 0.2 }
         }}
-        whileTap={{ 
+        whileTap={prefersReducedMotion() ? {} : { 
           scale: 0.98,
           transition: { duration: 0.1 }
         }}
-        transition={{
+        transition={prefersReducedMotion() ? { duration: 0 } : {
           type: "spring",
           stiffness: 300,
           damping: 30,
@@ -175,13 +204,13 @@ function DraggableEvent({
       >
         <motion.div
           className="h-full w-full"
-          animate={{
-            backgroundColor: isDragging ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-            borderColor: isDragging ? calendarColor : 'transparent',
+          animate={prefersReducedMotion() ? {} : {
+            backgroundColor: isDragging ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0)',
+            borderColor: isDragging ? calendarColor : 'rgba(0, 0, 0, 0)',
             borderWidth: isDragging ? '2px' : '0px',
             borderRadius: isDragging ? '8px' : '0px',
           }}
-          transition={{ duration: 0.2 }}
+          transition={prefersReducedMotion() ? { duration: 0 } : { duration: 0.2 }}
         >
           <EventCard
             event={event}
@@ -445,7 +474,7 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
           modifiers={[restrictToVerticalAxis]}
         >
         <div
-          role="grid"
+          role="application"
           aria-label="Grade de horários do dia"
           className="relative grid grid-cols-[60px_1fr] gap-2 min-h-[700px]"
         >
@@ -569,6 +598,7 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
                         <MemoizedDraggableEvent
                           event={evt}
                           calendarColor={calendarColor}
+                          allEvents={dayEvents}
                           onEventClick={onEventClick}
                           onEventDoubleClick={onEventDoubleClick}
                           openEventPopover={openEventPopover}

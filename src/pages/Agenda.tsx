@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
-import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, addDays, addWeeks, addMonths, format } from 'date-fns';
+import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, addDays, addWeeks, addMonths, format, isSameDay, isEqual } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -148,6 +148,7 @@ export default function Agenda() {
       
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
+        e.stopPropagation();
         setSelectedDate(prev => {
           switch (view) {
             case 'day': return addDays(prev, -1);
@@ -160,6 +161,7 @@ export default function Agenda() {
       
       if (e.key === 'ArrowRight') {
         e.preventDefault();
+        e.stopPropagation();
         setSelectedDate(prev => {
           switch (view) {
             case 'day': return addDays(prev, 1);
@@ -170,6 +172,20 @@ export default function Agenda() {
         return;
       }
       
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        e.stopPropagation();
+        setSelectedDate(prev => addMonths(prev, 1));
+        return;
+      }
+      
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        e.stopPropagation();
+        setSelectedDate(prev => addMonths(prev, -1));
+        return;
+      }
+      
       if (e.key === 'Escape') {
         e.preventDefault();
         setEventFormOpen(false);
@@ -177,8 +193,9 @@ export default function Agenda() {
       }
     };
     
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
+    // Usar capture: true para interceptar antes do Calendar
+    window.addEventListener('keydown', handler, { capture: true });
+    return () => window.removeEventListener('keydown', handler, { capture: true });
   }, [view, handleViewChange]);
 
   const onClearFilters = useCallback(() => {
@@ -491,6 +508,10 @@ export default function Agenda() {
                     calendars={calendars}
                     isLoading={isLoading}
                     onEventClick={onEventClick}
+                    onCreateEvent={(date) => {
+                      setDefaultEventData({ start_ts: date, end_ts: date });
+                      setEventFormOpen(true);
+                    }}
                   />
                 )}
                 {view === 'timeline' && (
@@ -549,21 +570,32 @@ export default function Agenda() {
           <Card className="group relative overflow-hidden rounded-xl border-border/40 bg-card/50 shadow-sm hover:scale-105 transition-all duration-200 animate-fade-in hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100" style={{ animationDelay: '300ms' }}>
             <CardContent className="p-2 xs:p-4 relative z-10 w-full">
               <Calendar
-                mode="range"
-                selected={dateRange}
-                onSelect={setDateRange}
+                mode="single"
+                selected={selectedDate}
+                month={selectedDate}
+                onSelect={(selection) => {
+                  if (selection) {
+                    setSelectedDate(selection);
+                    setDateRange(undefined);
+                  }
+                }}
+                onMonthChange={(month) => {
+                  // Sincronizar o selectedDate quando o mês muda no calendário
+                  setSelectedDate(month);
+                }}
+                disableNavigation={false}
                 initialFocus
                 locale={ptBR}
                 className="w-full calendar-responsive"
                 numberOfMonths={1}
-                aria-label="Seletor de período para filtrar eventos"
+                aria-label="Seletor de data para navegar pela agenda"
                 aria-describedby="calendar-description"
               />
               
               {/* Descrição oculta para leitores de tela */}
               <div id="calendar-description" className="sr-only">
-                Use este calendário para selecionar um período específico e filtrar os eventos da agenda. 
-                Clique em uma data para iniciar a seleção e clique em outra data para completar o período.
+                Use este calendário para navegar pela agenda. Clique em uma data para visualizar eventos de um dia específico.
+                Use as setas do teclado para navegar: ← → para dias/semanas/meses, ↑ ↓ para navegar entre meses.
               </div>
               {dateRange?.from && dateRange?.to && (
                 <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">

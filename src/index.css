@@ -540,3 +540,44 @@
     }
   }
 }
+
+/* Accessibility: Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Disable Framer Motion animations for users who prefer reduced motion */
+  [data-framer-motion] {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  /* Keep essential animations but make them instant */
+  .animate-spin {
+    animation: none !important;
+  }
+  
+  .animate-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+  
+  /* Disable hover animations */
+  .hover\:scale-105:hover {
+    transform: none !important;
+  }
+  
+  .hover\:scale-\[1\.02\]:hover {
+    transform: none !important;
+  }
+  
+  .hover\:-translate-y-1:hover {
+    transform: none !important;
+  }
+}
