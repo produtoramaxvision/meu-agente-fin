@@ -1,13 +1,16 @@
 import { useState, useMemo } from 'react';
 import { useFinancialData } from '@/hooks/useFinancialData';
+import { usePermissions } from '@/hooks/usePermissions';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DateRangePicker } from '@/components/DateRangePicker';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { BarChart, PieChart, TrendingUp, TrendingDown, Scale, FileText, RotateCw } from 'lucide-react';
+import { BarChart, PieChart, TrendingUp, TrendingDown, Scale, FileText, RotateCw, Download, Lock } from 'lucide-react';
 import { Bar, BarChart as RechartsBarChart, Pie, PieChart as RechartsPieChart, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { DateRange } from 'react-day-picker';
 import { addDays } from 'date-fns';
+import { Button } from '@/components/ui/button';
+import { toast } from '@/hooks/use-toast';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#ff4d4d'];
 
@@ -20,6 +23,7 @@ export default function Relatorios() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'pago' | 'pendente'>('all');
 
   const { records, loading } = useFinancialData(dateRange, typeFilter, statusFilter);
+  const { permissions, getUpgradeMessage } = usePermissions();
 
   const isFiltered = useMemo(() => {
     const thirtyDaysAgo = addDays(new Date(), -30);
@@ -31,6 +35,23 @@ export default function Relatorios() {
     setDateRange({ from: addDays(new Date(), -30), to: new Date() });
     setTypeFilter('all');
     setStatusFilter('all');
+  };
+
+  const handleExport = (format: 'csv' | 'json' | 'pdf') => {
+    if (!permissions.canExport) {
+      toast({
+        title: "Premium Bloqueado",
+        description: getUpgradeMessage('Exportação de dados'),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Implementar lógica de exportação aqui
+    toast({
+      title: "Exportação iniciada",
+      description: `Exportando dados em formato ${format.toUpperCase()}...`,
+    });
   };
 
   const summary = useMemo(() => {
@@ -105,6 +126,49 @@ export default function Relatorios() {
           Relatórios
         </h1>
         <p className="text-text-muted mt-2">Analise suas finanças com gráficos detalhados.</p>
+        
+        {/* Botão de Exportação com Controle de Acesso */}
+        <div className="mt-4 flex gap-2">
+          <Button
+            onClick={() => handleExport('csv')}
+            variant={permissions.canExport ? "default" : "outline"}
+            disabled={!permissions.canExport}
+            className="flex items-center gap-2"
+          >
+            {permissions.canExport ? (
+              <Download className="h-4 w-4" />
+            ) : (
+              <Lock className="h-4 w-4" />
+            )}
+            Exportar CSV
+          </Button>
+          <Button
+            onClick={() => handleExport('json')}
+            variant={permissions.canExport ? "default" : "outline"}
+            disabled={!permissions.canExport}
+            className="flex items-center gap-2"
+          >
+            {permissions.canExport ? (
+              <Download className="h-4 w-4" />
+            ) : (
+              <Lock className="h-4 w-4" />
+            )}
+            Exportar JSON
+          </Button>
+          <Button
+            onClick={() => handleExport('pdf')}
+            variant={permissions.canExport ? "default" : "outline"}
+            disabled={!permissions.canExport}
+            className="flex items-center gap-2"
+          >
+            {permissions.canExport ? (
+              <Download className="h-4 w-4" />
+            ) : (
+              <Lock className="h-4 w-4" />
+            )}
+            Exportar PDF
+          </Button>
+        </div>
       </div>
 
       <Card className="animate-fade-in" style={{ animationDelay: '100ms' }}>

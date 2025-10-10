@@ -42,6 +42,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useSupportTickets, getSupportSLA, SupportTicket } from '@/hooks/useSupportTickets';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePermissions } from '@/hooks/usePermissions';
 
 const supportTicketSchema = z.object({
   type: z.enum(['support', 'bug', 'suggestion'], {
@@ -240,6 +241,7 @@ export function SupportFormTab({ onSuccess }: { onSuccess: (ticketNumber: string
   const [ticketNumber, setTicketNumber] = useState<string>('');
   
   const { cliente } = useAuth();
+  const { permissions, getUpgradeMessage } = usePermissions();
   const { 
     createTicket, 
     isCreatingTicket, 
@@ -250,6 +252,33 @@ export function SupportFormTab({ onSuccess }: { onSuccess: (ticketNumber: string
 
   // Obter SLA do plano atual
   const currentSLA = cliente?.plan_id ? getSupportSLA(cliente.plan_id) : getSupportSLA('free');
+
+  // Verificar se o usuário tem acesso ao suporte
+  if (!permissions.canAccessSupport) {
+    return (
+      <Card className="p-8 text-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-16 w-16 rounded-full bg-amber-100 flex items-center justify-center">
+            <FileText className="h-8 w-8 text-amber-600" />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-xl font-semibold text-amber-800">
+              Suporte Indisponível
+            </h3>
+            <p className="text-amber-700 max-w-md">
+              {getUpgradeMessage('Sistema de Suporte')}
+            </p>
+          </div>
+          <Button 
+            onClick={() => window.location.href = '/perfil?tab=plans'}
+            className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+          >
+            Ver Planos Disponíveis
+          </Button>
+        </div>
+      </Card>
+    );
+  }
 
   const form = useForm<SupportTicketData>({
     resolver: zodResolver(supportTicketSchema),
@@ -493,12 +522,40 @@ export function SupportFormTab({ onSuccess }: { onSuccess: (ticketNumber: string
 }
 
 export function SupportTicketsTab() {
+  const { permissions, getUpgradeMessage } = usePermissions();
   const { 
     tickets, 
     isLoadingTickets, 
     ticketsError,
     ticketLimit 
   } = useSupportTickets();
+
+  // Verificar se o usuário tem acesso ao suporte
+  if (!permissions.canAccessSupport) {
+    return (
+      <Card className="p-8 text-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-16 w-16 rounded-full bg-amber-100 flex items-center justify-center">
+            <List className="h-8 w-8 text-amber-600" />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-xl font-semibold text-amber-800">
+              Tickets Indisponíveis
+            </h3>
+            <p className="text-amber-700 max-w-md">
+              {getUpgradeMessage('Visualização de Tickets')}
+            </p>
+          </div>
+          <Button 
+            onClick={() => window.location.href = '/perfil?tab=plans'}
+            className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
+          >
+            Ver Planos Disponíveis
+          </Button>
+        </div>
+      </Card>
+    );
+  }
 
   if (isLoadingTickets) {
     return (

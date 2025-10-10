@@ -13,8 +13,8 @@ export function usePermissions() {
   // Verificar se o usuário tem assinatura ativa
   const hasActiveSubscription = cliente?.subscription_active === true;
   
-  // CORREÇÃO CRÍTICA: Verificar se é um plano pago (não free)
-  const isPaidPlan = hasActiveSubscription && cliente?.plan_id && cliente.plan_id !== 'free';
+  // CORREÇÃO CRÍTICA: Verificar se é um plano pago (basic, business, premium)
+  const isPaidPlan = hasActiveSubscription && cliente?.plan_id && ['basic', 'business', 'premium'].includes(cliente.plan_id);
 
   const permissions: Permission = {
     // CORREÇÃO: Exportação apenas para usuários com planos PAGOS (basic, business, premium)
@@ -43,7 +43,7 @@ export function usePermissions() {
   };
 
   const getUpgradeMessage = (feature: string): string => {
-    return `Esta funcionalidade (${feature}) está disponível apenas para usuários com assinatura ativa. Faça upgrade para acessar este recurso.`;
+    return `Esta funcionalidade (${feature}) está disponível apenas para usuários com planos pagos (Basic, Business ou Premium). Faça upgrade para acessar este recurso.`;
   };
 
   return {
