@@ -557,8 +557,16 @@ export function useAgendaData(options: UseAgendaDataOptions) {
       const { error } = await supabase.from('events').delete().eq('id', id);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_, deletedId) => {
       toast.success('Evento excluído com sucesso!');
+      
+      // Remover o evento diretamente do cache para atualização imediata
+      queryClient.setQueryData(queryKey, (oldData: Event[] | undefined) => {
+        if (!oldData) return oldData;
+        return oldData.filter(event => event.id !== deletedId);
+      });
+      
+      // Também invalidar para sincronizar com o servidor
       queryClient.invalidateQueries({ queryKey: ['events', cliente?.phone] });
     },
     onError: (error) => {

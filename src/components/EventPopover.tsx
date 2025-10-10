@@ -102,11 +102,27 @@ export default function EventPopover({ event, children, open: controlledOpen, on
   };
 
   const onDuplicate = () => {
-    duplicateEvent.mutate(event, { onSuccess: () => setOpen(false) });
+    duplicateEvent.mutate(event, { 
+      onSuccess: () => {
+        setOpen(false);
+        // Forçar fechamento do popover
+        if (onOpenChange) {
+          onOpenChange(false);
+        }
+      }
+    });
   };
 
   const onDelete = () => {
-    deleteEvent.mutate(event.id, { onSuccess: () => setOpen(false) });
+    deleteEvent.mutate(event.id, { 
+      onSuccess: () => {
+        setOpen(false);
+        // Forçar fechamento do popover
+        if (onOpenChange) {
+          onOpenChange(false);
+        }
+      }
+    });
   };
 
   return (
