@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { ButtonGroup, ButtonGroupSeparator } from '@/components/ui/button-group';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -278,55 +279,77 @@ export function BackupSection() {
           ) : backups.length > 0 ? (
             <div className="space-y-4">
               {backups.map((backup, index) => (
-                <div 
+                <Card 
                   key={backup.id} 
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+                  className="overflow-hidden transition-all duration-200 hover:shadow-md"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div className="flex items-center gap-4">
-                    {getStatusIcon(backup.status)}
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="font-medium">{backup.description}</p>
-                        {getStatusBadge(backup.status)}
+                  <CardContent className="p-4">
+                    {/* Layout Principal */}
+                    <div className="flex flex-col space-y-4">
+                      {/* Informações Principais */}
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 mt-0.5">
+                          {getStatusIcon(backup.status)}
+                        </div>
+                        <div className="flex-1 min-w-0 space-y-2">
+                          {/* Título e Status */}
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-medium text-sm truncate">{backup.description}</h3>
+                              {getStatusBadge(backup.status)}
+                            </div>
+                            <Badge variant="outline" className="text-xs w-fit">
+                              {backup.type === 'automatic' ? 'Automático' : 'Manual'}
+                            </Badge>
+                          </div>
+                          
+                          {/* Metadados */}
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs text-muted-foreground">
+                            <div className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3 flex-shrink-0" />
+                              <span>{format(new Date(backup.created_at), 'dd/MM/yyyy HH:mm', { locale: ptBR })}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <HardDrive className="h-3 w-3 flex-shrink-0" />
+                              <span>{formatFileSize(backup.size)}</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          {format(new Date(backup.created_at), 'dd/MM/yyyy HH:mm', { locale: ptBR })}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <HardDrive className="h-3 w-3" />
-                          {formatFileSize(backup.size)}
-                        </span>
-                        <Badge variant="outline" className="text-xs">
-                          {backup.type === 'automatic' ? 'Automático' : 'Manual'}
-                        </Badge>
+                      
+                      {/* Ações - Layout Responsivo */}
+                      <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
+                        <ButtonGroup 
+                          className="w-full sm:w-auto" 
+                          aria-label={`Ações para backup ${backup.description}`}
+                        >
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDownloadBackup(backup.id)}
+                            disabled={backup.status !== 'completed'}
+                            className="flex-1 sm:flex-none"
+                          >
+                            <Download className="h-4 w-4 mr-2" />
+                            Baixar
+                          </Button>
+                          <ButtonGroupSeparator />
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleRestoreBackup(backup.id)}
+                            disabled={backup.status !== 'completed' || restoring}
+                            className="flex-1 sm:flex-none"
+                          >
+                            <Upload className="h-4 w-4 mr-2" />
+                            Restaurar
+                          </Button>
+                        </ButtonGroup>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleDownloadBackup(backup.id)}
-                      disabled={backup.status !== 'completed'}
-                    >
-                      <Download className="h-4 w-4 mr-1" />
-                      Baixar
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleRestoreBackup(backup.id)}
-                      disabled={backup.status !== 'completed' || restoring}
-                    >
-                      <Upload className="h-4 w-4 mr-1" />
-                      Restaurar
-                    </Button>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           ) : (
