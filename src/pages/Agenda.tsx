@@ -48,7 +48,17 @@ export default function Agenda() {
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [localSearch, setLocalSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Implementar debounce para o campo de busca
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(localSearch);
+    }, 300); // Debounce de 300ms
+
+    return () => clearTimeout(timer);
+  }, [localSearch]);
   
   // Estados de loading para feedback visual
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
@@ -85,24 +95,47 @@ export default function Agenda() {
       default:
         return { startDate: startOfMonth(selectedDate), endDate: endOfMonth(selectedDate) };
     }
-  }, [view, selectedDate, dateRange]);
+  }, [view, selectedDate.getTime(), dateRange?.from?.getTime(), dateRange?.to?.getTime()]);
 
-  // Forçar invalidação do cache de calendários quando a página carrega
-  useEffect(() => {
-    if (cliente?.phone) {
-      queryClient.invalidateQueries({ queryKey: ['calendars', cliente.phone] });
-    }
-  }, [cliente?.phone, queryClient]);
+  // Removido: useEffect problemático que causava invalidação desnecessária
+  // A invalidação de queries deve ser feita apenas quando necessário
+  // e não a cada renderização do componente
+
+  // Estabilizar arrays de opções para evitar re-renderizações desnecessárias
+  const stableCalendarIds = useMemo(() => 
+    selectedCalendars.length ? selectedCalendars : undefined,
+    [selectedCalendars]
+  );
+
+  const stableCategories = useMemo(() => 
+    selectedCategories.length ? selectedCategories : undefined,
+    [selectedCategories]
+  );
+
+  const stablePriorities = useMemo(() => 
+    selectedPriorities.length ? selectedPriorities : undefined,
+    [selectedPriorities]
+  );
+
+  const stableStatuses = useMemo(() => 
+    selectedStatuses.length ? selectedStatuses : undefined,
+    [selectedStatuses]
+  );
+
+  const stableSearchQuery = useMemo(() => 
+    debouncedSearch || searchQuery,
+    [debouncedSearch, searchQuery]
+  );
 
   const { calendars, events, resources, isLoading, refetch, createEvent, updateEvent, createCalendar } = useAgendaData({
     view,
     startDate,
     endDate,
-    calendarIds: selectedCalendars.length ? selectedCalendars : undefined,
-    categories: selectedCategories.length ? selectedCategories : undefined,
-    priorities: selectedPriorities.length ? selectedPriorities : undefined,
-    statuses: selectedStatuses.length ? selectedStatuses : undefined,
-    searchQuery: localSearch || searchQuery,
+    calendarIds: stableCalendarIds,
+    categories: stableCategories,
+    priorities: stablePriorities,
+    statuses: stableStatuses,
+    searchQuery: stableSearchQuery,
   });
 
   useEffect(() => {

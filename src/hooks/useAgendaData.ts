@@ -141,9 +141,23 @@ export function useAgendaData(options: UseAgendaDataOptions) {
     refetchInterval: 1000 * 60 * 10, // Refetch a cada 10 minutos
   });
 
+  // Estabilizar query key usando useMemo para evitar loop infinito
+  const queryKey = useMemo(() => [
+    'events', 
+    cliente?.phone, 
+    options.view, 
+    options.startDate.toISOString(), 
+    options.endDate.toISOString(), 
+    options.calendarIds?.join(','), 
+    options.categories?.join(','), 
+    options.priorities?.join(','), 
+    options.statuses?.join(','), 
+    options.searchQuery
+  ], [cliente?.phone, options.view, options.startDate, options.endDate, options.calendarIds, options.categories, options.priorities, options.statuses, options.searchQuery]);
+
   // Fetch events with expansion of recurring events e cache otimizado
   const { data: events = [], isLoading: eventsLoading, refetch } = useQuery({
-    queryKey: ['events', cliente?.phone, options.view, options.startDate.toISOString(), options.endDate.toISOString(), options.calendarIds, options.categories, options.priorities, options.statuses, options.searchQuery],
+    queryKey,
     queryFn: async () => {
       if (!cliente?.phone) return [];
 
@@ -239,10 +253,10 @@ export function useAgendaData(options: UseAgendaDataOptions) {
       return expandedEvents;
     },
     enabled: !!cliente?.phone,
-    staleTime: 1000 * 60 * 2, // 2 minutos de cache para eventos
+    staleTime: 1000 * 60 * 5, // 5 minutos de cache para eventos
     refetchOnWindowFocus: false, // Reduzir refetch desnecessário
     refetchOnMount: false, // Usar cache quando possível
-    refetchInterval: 1000 * 60 * 5, // Refetch a cada 5 minutos
+    refetchInterval: false, // ❌ REMOVIDO - causava loop infinito
     // Usar placeholderData para melhor UX
     placeholderData: (previousData) => previousData,
   });
@@ -271,7 +285,7 @@ export function useAgendaData(options: UseAgendaDataOptions) {
     placeholderData: (previousData) => previousData,
   });
 
-  // Setup Realtime subscription
+  // Setup Realtime subscription otimizada
   useEffect(() => {
     if (!cliente?.phone) return;
 
@@ -285,8 +299,27 @@ export function useAgendaData(options: UseAgendaDataOptions) {
           table: 'events',
           filter: `phone=eq.${cliente.phone}`,
         },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ['events', cliente.phone] });
+        (payload) => {
+          console.log('Event change received:', payload);
+          // Invalidação mais específica baseada no tipo de operação
+          if (payload.eventType === 'INSERT') {
+            queryClient.invalidateQueries({ 
+              queryKey: ['events', cliente.phone],
+              exact: true // Mais específico para evitar invalidações desnecessárias
+            });
+          } else if (payload.eventType === 'UPDATE') {
+            // Para updates, invalidar apenas queries relacionadas ao evento específico
+            queryClient.invalidateQueries({ 
+              queryKey: ['events', cliente.phone],
+              exact: true // Mais específico para evitar invalidações desnecessárias
+            });
+          } else if (payload.eventType === 'DELETE') {
+            // Para deletes, remover do cache diretamente
+            queryClient.invalidateQueries({ 
+              queryKey: ['events', cliente.phone],
+              exact: true // Mais específico para evitar invalidações desnecessárias
+            });
+          }
         }
       )
       .on(
@@ -297,20 +330,13 @@ export function useAgendaData(options: UseAgendaDataOptions) {
           table: 'calendars',
           filter: `phone=eq.${cliente.phone}`,
         },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ['calendars', cliente.phone] });
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'resources',
-          filter: `phone=eq.${cliente.phone}`,
-        },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ['resources', cliente.phone] });
+        (payload) => {
+          console.log('Calendar change received:', payload);
+          // Invalidação mais específica para calendários
+          queryClient.invalidateQueries({ 
+            queryKey: ['calendars', cliente.phone],
+            exact: true // Mais específico para evitar invalidações desnecessárias
+          });
         }
       )
       .subscribe();
@@ -419,14 +445,44 @@ export function useAgendaData(options: UseAgendaDataOptions) {
 
       return event as Event;
     },
-    onSuccess: () => {
+    // Optimistic Update - UI responde instantaneamente
+    onMutate: async (newEvent) => {
+      // Cancelar qualquer refetch pendente para evitar conflitos
+      await queryClient.cancelQueries({ queryKey: ['events', cliente?.phone] });
+
+      // Snapshot dos dados atuais para rollback
+      const previousEvents = queryClient.getQueryData(['events', cliente?.phone]);
+
+      // Criar evento otimista com ID temporário
+      const optimisticEvent = {
+        ...newEvent,
+        id: `temp-${Date.now()}`, // ID temporário
+        phone: cliente?.phone,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      // Atualizar cache otimisticamente
+      queryClient.setQueryData(['events', cliente?.phone], (old: any) => {
+        return old ? [...old, optimisticEvent] : [optimisticEvent];
+      });
+
+      // Retornar contexto para rollback
+      return { previousEvents, optimisticEvent };
+    },
+    // Em caso de erro, fazer rollback
+    onError: (err, newEvent, context) => {
+      if (context?.previousEvents) {
+        queryClient.setQueryData(['events', cliente?.phone], context.previousEvents);
+      }
+      console.error('Error creating event:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao criar evento';
+      toast.error(errorMessage);
+    },
+    // Sempre invalidar após sucesso ou erro para sincronizar com servidor
+    onSettled: () => {
       toast.success('Evento criado com sucesso!');
       queryClient.invalidateQueries({ queryKey: ['events', cliente?.phone] });
-    },
-    onError: (error) => {
-      console.error('Error creating event:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Erro ao criar evento';
-      toast.error(errorMessage);
     },
   });
 
