@@ -1,0 +1,180 @@
+{
+  "tech_stack": [
+    "TypeScript",
+    "React",
+    "Vite",
+    "Tailwind CSS",
+    "ShadcnUI",
+    "Supabase",
+    "React Router",
+    "Recharts",
+    "Lucide React",
+    "Zod",
+    "React Hook Form"
+  ],
+  "features": [
+    {
+      "name": "Authentication System",
+      "description": "Complete authentication system with login, signup, and user management using Supabase Auth",
+      "files": [
+        "src/contexts/AuthContext.tsx",
+        "src/pages/auth/Login.tsx",
+        "src/pages/auth/Signup.tsx",
+        "src/components/ProtectedRoute.tsx",
+        "src/components/layout/AuthLayout.tsx"
+      ]
+    },
+    {
+      "name": "Financial Management",
+      "description": "Complete financial management system with transactions, categories, and financial records",
+      "files": [
+        "src/hooks/useFinancialData.ts",
+        "src/components/FinanceRecordForm.tsx",
+        "src/components/EditRecordDialog.tsx",
+        "src/components/DeleteRecordDialog.tsx",
+        "src/pages/Contas.tsx",
+        "src/pages/Dashboard.tsx"
+      ]
+    },
+    {
+      "name": "Goals Management",
+      "description": "Goal setting and tracking system with progress calculation and visualization",
+      "files": [
+        "src/hooks/useGoalsData.ts",
+        "src/components/GoalForm.tsx",
+        "src/components/GoalListItem.tsx",
+        "src/components/DashboardGoalCard.tsx",
+        "src/pages/Goals.tsx"
+      ]
+    },
+    {
+      "name": "Task Management",
+      "description": "Task creation, editing, filtering, and management system",
+      "files": [
+        "src/hooks/useTasksData.ts",
+        "src/components/TaskForm.tsx",
+        "src/components/TaskItem.tsx",
+        "src/components/TaskFilters.tsx",
+        "src/components/TaskStats.tsx",
+        "src/pages/Tasks.tsx"
+      ]
+    },
+    {
+      "name": "Notification System",
+      "description": "Real-time notification system with Supabase Realtime integration",
+      "files": [
+        "src/contexts/NotificationContext.tsx",
+        "src/hooks/useNotificationsData.ts",
+        "src/components/NotificationBell.tsx",
+        "src/components/NotificationItem.tsx",
+        "src/components/NotificationsDropdown.tsx",
+        "src/pages/Notifications.tsx"
+      ]
+    },
+    {
+      "name": "Calendar and Agenda",
+      "description": "Calendar system with multiple views (day, week, month, year) and event management",
+      "files": [
+        "src/hooks/useAgendaData.ts",
+        "src/components/AgendaGridDay.tsx",
+        "src/components/AgendaGridWeek.tsx",
+        "src/components/AgendaGridMonth.tsx",
+        "src/components/AgendaYearHeatmap.tsx",
+        "src/components/AgendaTimeline.tsx",
+        "src/components/AgendaList.tsx",
+        "src/components/EventCard.tsx",
+        "src/components/EventForm.tsx",
+        "src/components/EventPopover.tsx",
+        "src/components/EventQuickCreatePopover.tsx",
+        "src/pages/Agenda.tsx"
+      ]
+    },
+    {
+      "name": "Reports and Analytics",
+      "description": "Financial reports with charts, data visualization, and export functionality",
+      "files": [
+        "src/pages/Reports.tsx",
+        "src/pages/Relatorios.tsx",
+        "src/components/DespesasPorCategoriaChart.tsx",
+        "src/components/StatusTimelineChart.tsx",
+        "src/components/InsightsCard.tsx"
+      ]
+    },
+    {
+      "name": "User Profile Management",
+      "description": "User profile management with avatar upload and personal information",
+      "files": [
+        "src/components/AvatarUpload.tsx",
+        "src/pages/Profile.tsx"
+      ]
+    },
+    {
+      "name": "Search and Filtering",
+      "description": "Global search functionality and filtering systems",
+      "files": [
+        "src/contexts/SearchContext.tsx",
+        "src/components/AgendaFilters.tsx",
+        "src/components/PeriodFilter.tsx"
+      ]
+    },
+    {
+      "name": "Theme and UI System",
+      "description": "Dark/light theme system and comprehensive UI component library",
+      "files": [
+        "src/contexts/ThemeContext.tsx",
+        "src/components/ds/ThemeSwitch.tsx",
+        "src/components/ui/",
+        "src/components/Logo.tsx"
+      ]
+    },
+    {
+      "name": "Layout and Navigation",
+      "description": "Responsive layout system with sidebar navigation and mobile support",
+      "files": [
+        "src/components/layout/AppLayout.tsx",
+        "src/components/layout/AppSidebar.tsx",
+        "src/components/layout/AppHeader.tsx",
+        "src/components/layout/AppFooter.tsx",
+        "src/components/layout/PageHeader.tsx"
+      ]
+    },
+    {
+      "name": "Quick Actions and Utilities",
+      "description": "Quick action components and utility functions",
+      "files": [
+        "src/components/QuickActions.tsx",
+        "src/components/HelpAndSupport.tsx",
+        "src/components/WorldClock.tsx",
+        "src/lib/utils.ts"
+      ]
+    },
+    {
+      "name": "Alerts and Notifications",
+      "description": "Alert system for upcoming bills and important notifications",
+      "files": [
+        "src/hooks/useAlertsData.ts",
+        "src/components/AlertsSection.tsx",
+        "src/components/DashboardUpcomingBills.tsx",
+        "src/components/UpcomingBillCard.tsx",
+        "src/components/UpcomingTasksCard.tsx"
+      ]
+    },
+    {
+      "name": "Plan Management",
+      "description": "Subscription plan management and information display",
+      "files": [
+        "src/hooks/usePlanInfo.ts",
+        "src/components/PlanInfoCard.tsx",
+        "src/components/PlansSection.tsx"
+      ]
+    },
+    {
+      "name": "Backup and Privacy",
+      "description": "Data backup and privacy management features",
+      "files": [
+        "src/components/BackupSection.tsx",
+        "src/components/PrivacySection.tsx"
+      ]
+    }
+  ]
+}

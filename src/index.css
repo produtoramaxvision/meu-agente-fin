@@ -1,0 +1,542 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Meu Agente - Design System */
+
+/* All colors MUST be HSL */
+
+@layer base {
+  :root[data-theme="light"] {
+    /* Brand Colors - Black & Gray Minimalist Palette */
+    --color-brand-50: 0 0% 98%;
+    --color-brand-100: 0 0% 95%;
+    --color-brand-200: 0 0% 85%;
+    --color-brand-300: 0 0% 70%;
+    --color-brand-400: 0 0% 50%;
+    --color-brand-500: 0 0% 20%;
+    --color-brand-600: 0 0% 15%;
+    --color-brand-700: 0 0% 10%;
+    --color-brand-800: 0 0% 5%;
+    --color-brand-900: 0 0% 0%;
+
+    /* Surface & Background */
+    --color-bg: 0 0% 98%;
+    --color-surface: 0 0% 100%;
+    --color-surface-2: 0 0% 97%;
+    --color-surface-hover: 0 0% 94%;
+
+    /* Text */
+    --color-text: 0 0% 0%;
+    --color-text-muted: 0 0% 40%;
+    --color-text-inverted: 0 0% 100%;
+
+    /* Borders */
+    --color-border: 0 0% 88%;
+    --color-border-strong: 0 0% 70%;
+    
+    /* Focus */
+    --color-focus: 210 80% 50%;
+
+    /* Semantic Colors */
+    --color-success: 142 76% 36%;
+    --color-success-bg: 142 76% 95%;
+    --color-warning: 38 92% 50%;
+    --color-warning-bg: 38 92% 95%;
+    --color-danger: 0 84% 60%;
+    --color-danger-bg: 0 84% 97%;
+    --color-info: 199 89% 48%;
+    --color-info-bg: 199 89% 96%;
+
+    /* Shadows */
+    --shadow-1: 0 1px 2px 0 hsl(0deg 0% 0% / 3%);
+    --shadow-2: 0 4px 6px -1px hsl(0deg 0% 0% / 8%), 0 2px 4px -2px hsl(0deg 0% 0% / 5%);
+    --shadow-3: 0 10px 15px -3px hsl(0deg 0% 0% / 10%), 0 4px 6px -4px hsl(0deg 0% 0% / 8%);
+    --shadow-glow: 0 0 30px hsl(0deg 0% 0% / 15%);
+
+    /* Sidebar */
+    --sidebar-bg: 0 0% 100%;
+    --sidebar-text: 0 0% 0%;
+    --sidebar-text-muted: 0 0% 40%;
+    --sidebar-border: 0 0% 88%;
+    --sidebar-hover: 0 0% 95%;
+    --sidebar-active: 0 0% 10%;
+
+    /* Legacy mappings for shadcn */
+    --background: 0 0% 100%;
+    --foreground: 220 15% 20%;
+    --card: 0 0% 98%;
+    --card-foreground: 220 15% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 20%;
+    --primary: 0 0% 10%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 220 15% 20%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 210 20% 94%;
+    --accent-foreground: 220 15% 20%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 0 0% 20%;
+    --radius: 0.5rem;
+
+    /* Chart colors */
+    --chart-1: 142 76% 36%;
+    --chart-2: 0 84% 60%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 199 89% 48%;
+    --chart-5: 269 91% 65%;
+  }
+
+  :root[data-theme="dark"] {
+    /* Brand Colors - Black & Gray Minimalist Palette */
+    --color-brand-50: 0 0% 0%;
+    --color-brand-100: 0 0% 5%;
+    --color-brand-200: 0 0% 10%;
+    --color-brand-300: 0 0% 15%;
+    --color-brand-400: 0 0% 20%;
+    --color-brand-500: 0 0% 50%;
+    --color-brand-600: 0 0% 70%;
+    --color-brand-700: 0 0% 85%;
+    --color-brand-800: 0 0% 95%;
+    --color-brand-900: 0 0% 98%;
+
+    /* Surface & Background */
+    --color-bg: 0 0% 5%;
+    --color-surface: 0 0% 8%;
+    --color-surface-2: 0 0% 11%;
+    --color-surface-hover: 0 0% 14%;
+
+    /* Text */
+    --color-text: 0 0% 98%;
+    --color-text-muted: 0 0% 60%;
+    --color-text-inverted: 0 0% 5%;
+
+    /* Borders */
+    --color-border: 0 0% 18%;
+    --color-border-strong: 0 0% 28%;
+    
+    /* Focus */
+    --color-focus: 269 91% 65%;
+
+    /* Semantic Colors - Vibrant */
+    --color-success: 142 76% 55%;
+    --color-success-bg: 142 60% 18%;
+    --color-warning: 38 92% 60%;
+    --color-warning-bg: 38 80% 20%;
+    --color-danger: 0 84% 65%;
+    --color-danger-bg: 0 70% 22%;
+    --color-info: 199 89% 60%;
+    --color-info-bg: 199 75% 20%;
+
+    /* Shadows */
+    --shadow-1: 0 1px 2px 0 hsl(0deg 0% 0% / 50%);
+    --shadow-2: 0 4px 6px -1px hsl(0deg 0% 0% / 60%), 0 2px 4px -2px hsl(0deg 0% 0% / 50%);
+    --shadow-3: 0 10px 15px -3px hsl(0deg 0% 0% / 70%), 0 4px 6px -4px hsl(0deg 0% 0% / 60%);
+    --shadow-glow: 0 0 40px hsl(0deg 0% 100% / 10%);
+
+    /* Sidebar */
+    --sidebar-bg: 0 0% 6%;
+    --sidebar-text: 0 0% 98%;
+    --sidebar-text-muted: 0 0% 60%;
+    --sidebar-border: 0 0% 16%;
+    --sidebar-hover: 0 0% 12%;
+    --sidebar-active: 0 0% 85%;
+
+    /* Legacy mappings for shadcn */
+    --background: 240 15% 6%;
+    --foreground: 0 0% 98%;
+    --card: 240 12% 10%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 12% 10%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 85%;
+    --primary-foreground: 0 0% 5%;
+    --secondary: 240 10% 14%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 10% 14%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 240 10% 18%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84% 65%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 10% 20%;
+    --input: 240 10% 20%;
+    --ring: 0 0% 70%;
+    --radius: 0.75rem;
+
+    /* Chart colors */
+    --chart-1: 142 76% 55%;
+    --chart-2: 0 84% 65%;
+    --chart-3: 38 92% 60%;
+    --chart-4: 199 89% 60%;
+    --chart-5: 269 91% 65%;
+  }
+
+  /* Typography */
+  :root {
+    --font-sans: 'Inter', -apple-system, blinkmacsystemfont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', menlo, monaco, 'Courier New', monospace;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+
+    /* Spacing */
+    --space-2: 0.5rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-24: 6rem;
+    --space-32: 8rem;
+
+    /* Radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-full: 9999px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased;
+
+    background-color: hsl(var(--color-bg));
+    color: hsl(var(--color-text));
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+  }
+
+  button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    @apply outline-none ring-2 ring-offset-2;
+
+    ring-color: hsl(var(--color-focus));
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+
+    25% {
+      transform: translateX(-4px);
+    }
+
+    75% {
+      transform: translateX(4px);
+    }
+  }
+
+  .animate-shake {
+    animation: shake 0.3s ease-in-out;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out forwards;
+  }
+
+  /* Custom Scrollbar Styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--color-surface-2));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--color-brand-400));
+    border-radius: 4px;
+    border: 1px solid hsl(var(--color-surface-2));
+    transition: all 0.2s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--color-brand-500));
+    border-color: hsl(var(--color-brand-300));
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: hsl(var(--color-brand-600));
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: hsl(var(--color-surface-2));
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--color-brand-400)) hsl(var(--color-surface-2));
+  }
+
+  /* Custom scrollbar for specific containers */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--color-brand-400)) hsl(var(--color-surface-2));
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--color-surface-2));
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--color-brand-400));
+    border-radius: 3px;
+    border: 1px solid hsl(var(--color-surface-2));
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--color-brand-500));
+  }
+
+  /* Thin scrollbar for compact areas */
+  .thin-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--color-brand-300)) transparent;
+  }
+
+  .thin-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--color-brand-300));
+    border-radius: 2px;
+    border: none;
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--color-brand-400));
+  }
+
+  /* Smooth scrollbar animations */
+  .smooth-scrollbar {
+    scroll-behavior: smooth;
+  }
+
+  .smooth-scrollbar::-webkit-scrollbar-thumb {
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Calendar Responsive Fixes */
+  .calendar-responsive {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .calendar-responsive .rdp {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .calendar-responsive .rdp-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+
+  .calendar-responsive .rdp-head_row {
+    width: 100% !important;
+    display: flex !important;
+  }
+
+  .calendar-responsive .rdp-head_cell {
+    flex: 1 !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+
+  .calendar-responsive .rdp-row {
+    width: 100% !important;
+    display: flex !important;
+  }
+
+  .calendar-responsive .rdp-cell {
+    flex: 1 !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+
+  .calendar-responsive .rdp-day {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Popover Calendar Specific Fixes */
+  [data-radix-popper-content-wrapper] .calendar-responsive {
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 320px !important;
+  }
+
+  [data-radix-popper-content-wrapper] .calendar-responsive .rdp {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0.5rem !important;
+  }
+
+  [data-radix-popper-content-wrapper] .calendar-responsive .rdp-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+  }
+
+  [data-radix-popper-content-wrapper] .calendar-responsive .rdp-head_row {
+    width: 100% !important;
+    display: flex !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  [data-radix-popper-content-wrapper] .calendar-responsive .rdp-head_cell {
+    flex: 1 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    text-align: center !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    color: hsl(var(--muted-foreground)) !important;
+    padding: 0.25rem !important;
+  }
+
+  [data-radix-popper-content-wrapper] .calendar-responsive .rdp-row {
+    width: 100% !important;
+    display: flex !important;
+    margin-bottom: 0.125rem !important;
+  }
+
+  [data-radix-popper-content-wrapper] .calendar-responsive .rdp-cell {
+    flex: 1 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    position: relative !important;
+  }
+
+  [data-radix-popper-content-wrapper] .calendar-responsive .rdp-day {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: 2rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.875rem !important;
+    border-radius: 0.375rem !important;
+    transition: all 0.2s ease !important;
+  }
+
+  [data-radix-popper-content-wrapper] .calendar-responsive .rdp-day:hover {
+    background-color: hsl(var(--accent)) !important;
+    color: hsl(var(--accent-foreground)) !important;
+  }
+
+  [data-radix-popper-content-wrapper] .calendar-responsive .rdp-day_selected {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  [data-radix-popper-content-wrapper] .calendar-responsive .rdp-day_today {
+    border: 1px solid hsl(var(--primary)) !important;
+    background-color: transparent !important;
+  }
+
+  [data-radix-popper-content-wrapper] .calendar-responsive .rdp-day_outside {
+    color: hsl(var(--muted-foreground)) !important;
+    opacity: 0.5 !important;
+  }
+
+  /* Mobile-specific calendar adjustments */
+  @media (max-width: 640px) {
+    .calendar-responsive .rdp-head_cell {
+      font-size: 0.7rem !important;
+      padding: 0.25rem !important;
+    }
+    
+    .calendar-responsive .rdp-day {
+      height: 2rem !important;
+      font-size: 0.8rem !important;
+    }
+    
+    .calendar-responsive .rdp-caption_label {
+      font-size: 0.9rem !important;
+    }
+    
+    .calendar-responsive .rdp-nav_button {
+      height: 1.75rem !important;
+      width: 1.75rem !important;
+    }
+  }
+
+  /* Tablet adjustments */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .calendar-responsive .rdp-day {
+      height: 2.5rem !important;
+    }
+  }
+}

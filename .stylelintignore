@@ -1,0 +1,11 @@
+node_modules
+build
+coverage
+dist
+.next
+.out
+.storybook
+**/*.min.css
+**/vendor/**
+**/generated/**
+

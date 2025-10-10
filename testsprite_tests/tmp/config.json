@@ -1,0 +1,18 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:8080",
+  "loginUser": "5511949746110",
+  "loginPassword": "12345678",
+  "executionArgs": {
+    "projectName": "meu-agente-fin",
+    "projectPath": "C:\\Users\\MaxVision\\Desktop\\meu-agente-app\\meu-agente-fin",
+    "testIds": [],
+    "additionalInstruction": "Execute todos os testes para validar se as correções implementadas nas etapas 1-7 foram efetivas. Foque especialmente em: 1) Edição de transações (menu de contexto), 2) Exclusão de transações, 3) Progresso dinâmico de metas, 4) Sistema de notificações, 5) Upload de avatar, 6) Exportação CSV/PDF, 7) Edição de tarefas. Use as credenciais: usuário 5511949746110, senha 12345678.",
+    "envs": {
+      "API_KEY": "sk-user-OFKwxSOjPIvUa2JgSnwZgoO1CjNtUjk5v4q97WwX3UR1ssJIYftlyeTnm6UBAeoV803Wh-7lC8y1u1sZiL5gvsJVI-_gESMRS2aWOX7q2P-fn-T4-v3zLnSE_QOhuPDdZ0M"
+    }
+  },
+  "proxy": "http://8f389a66-310e-4e30-b638-6b9b7b0016d3:BpoS7edo2zdZGpFS5jfAFNRsQNUNmllU@tun.testsprite.com:8080"
+}

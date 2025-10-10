@@ -1,0 +1,230 @@
+{
+  "meta": {
+    "project": "Meu Agente Micro SaaS",
+    "date": "2025-10-04",
+    "prepared_by": "Product Development Manager"
+  },
+  "product_overview": "Meu Agente is a micro SaaS platform delivering AI-driven agents operating directly on WhatsApp to automate tasks related to customer service, operations, and business automation, focusing on reducing operational time, increasing conversion rates, and standardizing processes while ensuring data privacy and security.",
+  "core_goals": [
+    "Provide seamless AI agent integration within WhatsApp for 24/7 support and task automation.",
+    "Enable multi-level subscription plans (Basic, Business, Premium) with scalable features catering to professionals, small teams, and enterprises.",
+    "Offer specialized sub-agents including financial management, marketing analytics, scheduling, lead qualification, development support, video generation, and more.",
+    "Ensure compliance with privacy regulations like LGPD and WhatsApp policies on message templates and opt-in/out procedures.",
+    "Provide robust data backup and audit capabilities, especially for premium customers.",
+    "Enable integration with Google Workspace services for enhanced productivity (Calendar, Drive, Tasks, Gmail)."
+  ],
+  "key_features": [
+    "Complete authentication and user management system with Supabase Auth integration.",
+    "Comprehensive financial agent managing transaction entries, categories, CSV/planilha export gated to paid plans.",
+    "Web Search agent for advanced research with summarized citations and links.",
+    "Scrape agent accessing permitted sources via official APIs only, generating detailed reports in CSV/JSON formats.",
+    "Sub-agents for SDR (lead qualification and scheduling), Marketing (Google Ads insights and optimization), Calendar and Agenda management with Google Workspace integration.",
+    "Video generation agent supporting branded short clips creation via Google Veo 3 with quota limitations by plan.",
+    "Support for proactive messaging respecting WhatsApp 24h window and template approval requirements.",
+    "Real-time notifications and alerts for upcoming bills, tasks, and other key events.",
+    "User profile management including avatar uploads.",
+    "Dark/light theme toggles and responsive UI layout with mobile support.",
+    "Support prioritization and setup included for Business and Premium plans, with Basic plan offering limited manual interactions without automation."
+  ],
+  "user_flow_summary": [
+    "User signs up or logs in via secure authentication.",
+    "User selects a subscription plan and accesses features accordingly.",
+    "For financial management, user logs transactions via natural WhatsApp messages, which get categorized and optionally exported in paid plans.",
+    "User interacts with various specialized agents over WhatsApp to perform searches, lead qualification, marketing analysis, scheduling, and video creation.",
+    "Tasks, events, and reminders are managed and notified through integrated calendar and agenda interfaces with Google Workspace syncing.",
+    "Users receive real-time notifications and alerts within the app and on WhatsApp.",
+    "Administrative users configure backups, data governance, and user profile settings.",
+    "Users request support based on plan entitlement; Basic users have no support while Business and Premium have 24/7 priority support."
+  ],
+  "validation_criteria": [
+    "Authentication system securely manages login/signup and respects session management protocols.",
+    "Financial agent correctly records transactions, applies categories, and enables data export for paid plans.",
+    "Web Search and Scrape agents respect data source permissions and legal limits, returning accurate data formats.",
+    "Sub-agent workflows (SDR, Marketing, Scheduling, Dev, Video) operate reliably with consent and opt-in compliance.",
+    "WhatsApp message templates and proactivity strictly follow the 24-hour window rules.",
+    "Real-time notifications and alerts trigger correctly based on user data and schedules.",
+    "Data backup policies adhere to 3-2-1 backup rule with periodic restoration tests especially for Premium plan.",
+    "Support service availability matches subscription plan level and response SLAs.",
+    "Privacy and data governance features comply with LGPD and GDPR guidelines including user opt-in/out, consent registration, and data retention controls."
+  ],
+  "code_summary": {
+    "tech_stack": [
+      "TypeScript",
+      "React",
+      "Vite",
+      "Tailwind CSS",
+      "ShadcnUI",
+      "Supabase",
+      "React Router",
+      "Recharts",
+      "Lucide React",
+      "Zod",
+      "React Hook Form"
+    ],
+    "features": [
+      {
+        "name": "Authentication System",
+        "description": "Complete authentication system with login, signup, and user management using Supabase Auth",
+        "files": [
+          "src/contexts/AuthContext.tsx",
+          "src/pages/auth/Login.tsx",
+          "src/pages/auth/Signup.tsx",
+          "src/components/ProtectedRoute.tsx",
+          "src/components/layout/AuthLayout.tsx"
+        ]
+      },
+      {
+        "name": "Financial Management",
+        "description": "Complete financial management system with transactions, categories, and financial records",
+        "files": [
+          "src/hooks/useFinancialData.ts",
+          "src/components/FinanceRecordForm.tsx",
+          "src/components/EditRecordDialog.tsx",
+          "src/components/DeleteRecordDialog.tsx",
+          "src/pages/Contas.tsx",
+          "src/pages/Dashboard.tsx"
+        ]
+      },
+      {
+        "name": "Goals Management",
+        "description": "Goal setting and tracking system with progress calculation and visualization",
+        "files": [
+          "src/hooks/useGoalsData.ts",
+          "src/components/GoalForm.tsx",
+          "src/components/GoalListItem.tsx",
+          "src/components/DashboardGoalCard.tsx",
+          "src/pages/Goals.tsx"
+        ]
+      },
+      {
+        "name": "Task Management",
+        "description": "Task creation, editing, filtering, and management system",
+        "files": [
+          "src/hooks/useTasksData.ts",
+          "src/components/TaskForm.tsx",
+          "src/components/TaskItem.tsx",
+          "src/components/TaskFilters.tsx",
+          "src/components/TaskStats.tsx",
+          "src/pages/Tasks.tsx"
+        ]
+      },
+      {
+        "name": "Notification System",
+        "description": "Real-time notification system with Supabase Realtime integration",
+        "files": [
+          "src/contexts/NotificationContext.tsx",
+          "src/hooks/useNotificationsData.ts",
+          "src/components/NotificationBell.tsx",
+          "src/components/NotificationItem.tsx",
+          "src/components/NotificationsDropdown.tsx",
+          "src/pages/Notifications.tsx"
+        ]
+      },
+      {
+        "name": "Calendar and Agenda",
+        "description": "Calendar system with multiple views (day, week, month, year) and event management",
+        "files": [
+          "src/hooks/useAgendaData.ts",
+          "src/components/AgendaGridDay.tsx",
+          "src/components/AgendaGridWeek.tsx",
+          "src/components/AgendaGridMonth.tsx",
+          "src/components/AgendaYearHeatmap.tsx",
+          "src/components/AgendaTimeline.tsx",
+          "src/components/AgendaList.tsx",
+          "src/components/EventCard.tsx",
+          "src/components/EventForm.tsx",
+          "src/components/EventPopover.tsx",
+          "src/components/EventQuickCreatePopover.tsx",
+          "src/pages/Agenda.tsx"
+        ]
+      },
+      {
+        "name": "Reports and Analytics",
+        "description": "Financial reports with charts, data visualization, and export functionality",
+        "files": [
+          "src/pages/Reports.tsx",
+          "src/pages/Relatorios.tsx",
+          "src/components/DespesasPorCategoriaChart.tsx",
+          "src/components/StatusTimelineChart.tsx",
+          "src/components/InsightsCard.tsx"
+        ]
+      },
+      {
+        "name": "User Profile Management",
+        "description": "User profile management with avatar upload and personal information",
+        "files": [
+          "src/components/AvatarUpload.tsx",
+          "src/pages/Profile.tsx"
+        ]
+      },
+      {
+        "name": "Search and Filtering",
+        "description": "Global search functionality and filtering systems",
+        "files": [
+          "src/contexts/SearchContext.tsx",
+          "src/components/AgendaFilters.tsx",
+          "src/components/PeriodFilter.tsx"
+        ]
+      },
+      {
+        "name": "Theme and UI System",
+        "description": "Dark/light theme system and comprehensive UI component library",
+        "files": [
+          "src/contexts/ThemeContext.tsx",
+          "src/components/ds/ThemeSwitch.tsx",
+          "src/components/ui/",
+          "src/components/Logo.tsx"
+        ]
+      },
+      {
+        "name": "Layout and Navigation",
+        "description": "Responsive layout system with sidebar navigation and mobile support",
+        "files": [
+          "src/components/layout/AppLayout.tsx",
+          "src/components/layout/AppSidebar.tsx",
+          "src/components/layout/AppHeader.tsx",
+          "src/components/layout/AppFooter.tsx",
+          "src/components/layout/PageHeader.tsx"
+        ]
+      },
+      {
+        "name": "Quick Actions and Utilities",
+        "description": "Quick action components and utility functions",
+        "files": [
+          "src/components/QuickActions.tsx",
+          "src/components/HelpAndSupport.tsx",
+          "src/components/WorldClock.tsx",
+          "src/lib/utils.ts"
+        ]
+      },
+      {
+        "name": "Alerts and Notifications",
+        "description": "Alert system for upcoming bills and important notifications",
+        "files": [
+          "src/hooks/useAlertsData.ts",
+          "src/components/AlertsSection.tsx",
+          "src/components/DashboardUpcomingBills.tsx",
+          "src/components/UpcomingBillCard.tsx",
+          "src/components/UpcomingTasksCard.tsx"
+        ]
+      },
+      {
+        "name": "Plan Management",
+        "description": "Subscription plan management and information display",
+        "files": [
+          "src/hooks/usePlanInfo.ts",
+          "src/components/PlanInfoCard.tsx",
+          "src/components/PlansSection.tsx"
+        ]
+      },
+      {
+        "name": "Backup and Privacy",
+        "description": "Data backup and privacy management features",
+        "files": [
+          "src/components/BackupSection.tsx",
+          "src/components/PrivacySection.tsx"
+        ]
+      }
+    ]
+  }
+}
