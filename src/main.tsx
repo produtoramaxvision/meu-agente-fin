@@ -1,5 +1,36 @@
 import { createRoot } from "react-dom/client";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import App from "./App.tsx";
 import "./index.css";
 
-createRoot(document.getElementById("root")!).render(<App />);
+// Configuração global do React Query para otimização
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutos - dados considerados "frescos"
+      cacheTime: 10 * 60 * 1000, // 10 minutos - tempo de manter no cache
+      refetchOnWindowFocus: false, // ❌ CRÍTICO: Evita refetch desnecessário
+      refetchOnMount: false, // ❌ CRÍTICO: Usa cache quando possível
+      refetchOnReconnect: true, // ✅ Refetch quando reconectar
+      retry: (failureCount, error: any) => {
+        // Não tentar novamente para erros 404 ou 403
+        if (error?.status === 404 || error?.status === 403) return false;
+        // Máximo 2 tentativas para outros erros
+        return failureCount < 2;
+      },
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Backoff exponencial
+    },
+    mutations: {
+      retry: 1, // Apenas 1 tentativa para mutations
+    },
+  },
+});
+
+createRoot(document.getElementById("root")!).render(
+  <QueryClientProvider client={queryClient}>
+    <App />
+    {/* DevTools apenas em desenvolvimento */}
+    {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
+  </QueryClientProvider>
+);

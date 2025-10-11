@@ -33,7 +33,7 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
   const queryClient = useQueryClient();
   const [channel, setChannel] = useState<RealtimeChannel | null>(null);
 
-  // Fetch tasks
+  // Fetch tasks - usando configurações globais
   const { data: tasks = [], isLoading, error, refetch } = useQuery({
     queryKey: ['tasks', cliente?.phone, statusFilter, searchQuery],
     queryFn: async () => {
@@ -60,7 +60,10 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
       return (data as Task[]) || [];
     },
     enabled: !!cliente?.phone,
-    staleTime: 1000 * 60, // 1 minute
+    // ✅ Usando configurações globais - não sobrescrever aqui
+    // staleTime, refetchOnWindowFocus, refetchOnMount já configurados globalmente
+    refetchInterval: false, // ❌ CRÍTICO: Removido refetch automático que causava loop
+    placeholderData: (previousData) => previousData,
   });
 
   // Setup Realtime subscription

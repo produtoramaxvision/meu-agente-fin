@@ -1,0 +1,18 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:8080",
+  "loginUser": "5511949746110",
+  "loginPassword": "12345678",
+  "executionArgs": {
+    "projectName": "meu-agente-fin",
+    "projectPath": "C:\\Users\\MaxVision\\Desktop\\meu-agente-app\\meu-agente-fin",
+    "testIds": [],
+    "additionalInstruction": "Execute todos os testes críticos identificados no plano de correção, focando especialmente nos problemas de políticas RLS, controle de planos e conformidade LGPD. Use as credenciais: usuário 5511949746110 e senha 12345678",
+    "envs": {
+      "API_KEY": "sk-user-eGSLuqZfv6vFPnN79aVHkETaOTl154tCHC0opjgxfjJItNmfru3Yv4277bvozn3ZK_60hpBiG9yQlFocc6QwVfruu_ZTRk1oAaG8vxtbKIhf5Wm3LB5XWQj_VajxbOAGPBI"
+    }
+  },
+  "proxy": "http://8d8b1bd5-1823-4982-ba57-eeb01d563e16:ixvNXxL5LFrgGLumyBWKNsm29lWdQE0j@tun.testsprite.com:8080"
+}

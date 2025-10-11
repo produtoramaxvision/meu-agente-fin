@@ -1,0 +1,283 @@
+{
+  "meta": {
+    "project": "Meu Agente SaaS Platform",
+    "date": "2025-10-04",
+    "prepared_by": "Software Development Manager"
+  },
+  "product_overview": "Meu Agente is a micro SaaS platform providing AI-powered agents operating through WhatsApp to perform customer service, operations, and automation tasks. It aims to reduce operational time, increase conversion rates, and standardize processes, while ensuring security and data privacy.",
+  "core_goals": [
+    "Enable 24/7 AI-powered customer service via WhatsApp within WhatsApp Business rules.",
+    "Provide multiple specialized AI sub-agents for financial operations, marketing, scheduling, development, video creation, and more.",
+    "Offer tiered subscription plans with varied capabilities, including Free, Basic, Business, and Premium options.",
+    "Ensure seamless integration with Google Workspace services (Calendar, Drive, Tasks, Gmail) for enhanced automation.",
+    "Maintain strong compliance with LGPD and WhatsApp policies, including opt-in/out mechanisms.",
+    "Facilitate data export, backup, and reporting features to aid business insights and governance.",
+    "Deliver priority support for higher plans and maintain robust multi-channel communication flows.",
+    "Allow customization and scaling via modular sub-agent functionalities and add-ons."
+  ],
+  "key_features": [
+    "AI-driven WhatsApp agents for customer interaction and operational automation.",
+    "Financial agent supporting entries, exits, categorizations, and data export (CSV/PDF) in paid plans.",
+    "Web Search and Scrape agents utilizing permitted APIs and open data sources for data extraction and report generation.",
+    "Sub-agents specialized in SDR (lead qualification), Marketing (Google Ads analysis), Scheduling (Google Workspace integration), Development (debugging & support), and Video creation.",
+    "Tiered subscription model detailing features by plan: Free, Basic, Business, Premium with increasing benefits.",
+    "Support system with ticketing, FAQ, and chat, available 24/7 for Business and Premium plans.",
+    "Automated backups off-site with 3-2-1 policy and restoration testing (Premium plan).",
+    "Governance and audit capabilities with data retention policies.",
+    "Rich user interface built with React, TypeScript, and Tailwind CSS, integrating robust libraries for state management, form validation, and UI components."
+  ],
+  "user_flow_summary": [
+    "User signs up or logs in via Supabase authentication system.",
+    "User selects subscription plan and accesses permitted agent features accordingly.",
+    "For financial operations, user can manually or automatically record transactions and export reports.",
+    "User communicates with AI agents through WhatsApp natural language messages for lead qualification, scheduling, marketing insights, and other tasks.",
+    "Administer backup and data export features via the web application dashboard.",
+    "Support requests are managed through integrated ticketing and live chat functionalities.",
+    "User may configure notification preferences, themes, and access sub-agent functionalities depending on their plan.",
+    "Governance and privacy controls are available for compliance with legislation and data policies."
+  ],
+  "validation_criteria": [
+    "Authentication flow and user profile management function securely and reliably.",
+    "AI agents correctly interpret and respond to user commands via WhatsApp channels.",
+    "Subscription plan restrictions enforce access control on features and integrations.",
+    "Financial records processing supports category filtering, date ranges, and export formats.",
+    "Web scraping and search respect allowed sources and do not break terms of use.",
+    "Support tickets and chat provide timely responses especially under priority support plans.",
+    "Backup routines follow 3-2-1 strategy and data restoration tests pass.",
+    "UI components are responsive and accessible across different devices and browsers.",
+    "Data governance complies with LGPD and user opt-in/out preferences are respected.",
+    "System integrations with WhatsApp Business and Google Workspace work via secure OAuth with minimum scopes."
+  ],
+  "code_summary": {
+    "tech_stack": [
+      "TypeScript",
+      "React",
+      "Vite",
+      "Supabase",
+      "Tailwind CSS",
+      "shadcn/ui",
+      "React Router",
+      "React Hook Form",
+      "Zod",
+      "TanStack React Query",
+      "Recharts",
+      "Lucide React",
+      "Framer Motion",
+      "Playwright",
+      "Vitest"
+    ],
+    "features": [
+      {
+        "name": "Authentication System",
+        "description": "Sistema de autenticação com Supabase, incluindo login, cadastro e gerenciamento de perfil",
+        "files": [
+          "src/contexts/AuthContext.tsx",
+          "src/pages/auth/Login.tsx",
+          "src/pages/auth/Signup.tsx",
+          "src/pages/Profile.tsx",
+          "src/integrations/supabase/client.ts"
+        ]
+      },
+      {
+        "name": "Dashboard Financeiro",
+        "description": "Dashboard principal com métricas financeiras, gráficos e resumos",
+        "files": [
+          "src/pages/Dashboard.tsx",
+          "src/components/DashboardGoalCard.tsx",
+          "src/components/DashboardUpcomingBills.tsx",
+          "src/components/InsightsCard.tsx"
+        ]
+      },
+      {
+        "name": "Gestão de Contas",
+        "description": "Sistema de controle de entradas e saídas financeiras com categorização",
+        "files": [
+          "src/pages/Contas.tsx",
+          "src/components/ContaItem.tsx",
+          "src/components/FinanceRecordForm.tsx",
+          "src/hooks/useFinancialData.ts"
+        ]
+      },
+      {
+        "name": "Sistema de Agenda",
+        "description": "Agenda completa com múltiplas visualizações (dia, semana, mês, timeline)",
+        "files": [
+          "src/pages/Agenda.tsx",
+          "src/components/AgendaFilters.tsx",
+          "src/components/AgendaGridDay.tsx",
+          "src/components/AgendaGridWeek.tsx",
+          "src/components/AgendaGridMonth.tsx",
+          "src/components/AgendaList.tsx",
+          "src/components/AgendaTimeline.tsx",
+          "src/components/AgendaYearHeatmap.tsx",
+          "src/components/EventForm.tsx",
+          "src/components/EventCard.tsx",
+          "src/components/EventPopover.tsx",
+          "src/components/EventQuickCreatePopover.tsx",
+          "src/hooks/useAgendaData.ts"
+        ]
+      },
+      {
+        "name": "Sistema de Metas",
+        "description": "Gestão de metas financeiras e pessoais com acompanhamento de progresso",
+        "files": [
+          "src/pages/Goals.tsx",
+          "src/components/GoalForm.tsx",
+          "src/components/GoalListItem.tsx",
+          "src/components/GoalIcons.tsx",
+          "src/hooks/useGoalsData.ts"
+        ]
+      },
+      {
+        "name": "Sistema de Tarefas",
+        "description": "Gestão de tarefas com filtros, estatísticas e acompanhamento",
+        "files": [
+          "src/pages/Tasks.tsx",
+          "src/components/TaskForm.tsx",
+          "src/components/TaskItem.tsx",
+          "src/components/TaskFilters.tsx",
+          "src/components/TaskStats.tsx",
+          "src/components/UpcomingTasksCard.tsx",
+          "src/hooks/useTasksData.ts"
+        ]
+      },
+      {
+        "name": "Relatórios e Análises",
+        "description": "Sistema completo de relatórios com gráficos, exportação e filtros avançados",
+        "files": [
+          "src/pages/Reports.tsx",
+          "src/pages/Relatorios.tsx",
+          "src/components/DespesasPorCategoriaChart.tsx",
+          "src/components/StatusTimelineChart.tsx",
+          "src/components/PeriodFilter.tsx"
+        ]
+      },
+      {
+        "name": "Sistema de Notificações",
+        "description": "Centro de notificações com alertas e lembretes",
+        "files": [
+          "src/pages/Notifications.tsx",
+          "src/components/NotificationBell.tsx",
+          "src/components/NotificationItem.tsx",
+          "src/components/NotificationsDropdown.tsx",
+          "src/components/AlertsSection.tsx",
+          "src/hooks/useNotificationsData.ts",
+          "src/hooks/useAlertsData.ts",
+          "src/contexts/NotificationContext.tsx"
+        ]
+      },
+      {
+        "name": "Sistema de Suporte",
+        "description": "Sistema completo de suporte com tickets, FAQ e chat",
+        "files": [
+          "src/components/SupportDialog.tsx",
+          "src/components/SupportTabs.tsx",
+          "src/components/SupportFAQ.tsx",
+          "src/components/SupportTicketForm.tsx",
+          "src/components/SupportTicketList.tsx",
+          "src/components/HelpAndSupport.tsx",
+          "src/hooks/useSupportTickets.ts"
+        ]
+      },
+      {
+        "name": "Sistema de Planos",
+        "description": "Gestão de planos de assinatura com controle de permissões",
+        "files": [
+          "src/components/PlanInfoCard.tsx",
+          "src/components/PlansSection.tsx",
+          "src/components/ProtectedFeature.tsx",
+          "src/hooks/usePlanInfo.ts",
+          "src/hooks/usePermissions.ts"
+        ]
+      },
+      {
+        "name": "Layout e Navegação",
+        "description": "Sistema de layout responsivo com sidebar, header e navegação",
+        "files": [
+          "src/components/layout/AppLayout.tsx",
+          "src/components/layout/AppSidebar.tsx",
+          "src/components/layout/AppHeader.tsx",
+          "src/components/layout/AppFooter.tsx",
+          "src/components/layout/AuthLayout.tsx",
+          "src/components/layout/Header.tsx",
+          "src/components/layout/PageHeader.tsx",
+          "src/components/Logo.tsx",
+          "src/components/QuickActions.tsx"
+        ]
+      },
+      {
+        "name": "Componentes UI Base",
+        "description": "Biblioteca de componentes UI baseados em shadcn/ui e Radix UI",
+        "files": [
+          "src/components/ui/button.tsx",
+          "src/components/ui/card.tsx",
+          "src/components/ui/dialog.tsx",
+          "src/components/ui/form.tsx",
+          "src/components/ui/input.tsx",
+          "src/components/ui/select.tsx",
+          "src/components/ui/calendar.tsx",
+          "src/components/ui/tabs.tsx",
+          "src/components/ui/toast.tsx",
+          "src/components/ui/skeleton.tsx",
+          "src/components/ui/spinner.tsx",
+          "src/components/ui/animated-tabs.tsx",
+          "src/components/ui/pricing-card.tsx",
+          "src/components/ui/currency-input.tsx"
+        ]
+      },
+      {
+        "name": "Sistema de Temas",
+        "description": "Sistema de temas com suporte a modo claro/escuro",
+        "files": [
+          "src/contexts/ThemeContext.tsx",
+          "src/components/ds/ThemeSwitch.tsx"
+        ]
+      },
+      {
+        "name": "Sistema de Busca",
+        "description": "Sistema global de busca com contexto compartilhado",
+        "files": [
+          "src/contexts/SearchContext.tsx"
+        ]
+      },
+      {
+        "name": "Utilitários e Helpers",
+        "description": "Funções utilitárias e helpers para formatação e validação",
+        "files": [
+          "src/lib/utils.ts",
+          "src/constants/categories.ts",
+          "src/hooks/use-mobile.tsx",
+          "src/hooks/use-toast.ts"
+        ]
+      },
+      {
+        "name": "Sistema de Backup",
+        "description": "Funcionalidades de backup e exportação de dados",
+        "files": [
+          "src/components/BackupSection.tsx",
+          "src/components/PrivacySection.tsx"
+        ]
+      },
+      {
+        "name": "Componentes Especiais",
+        "description": "Componentes específicos como upload de avatar, relógio mundial e cards especiais",
+        "files": [
+          "src/components/AvatarUpload.tsx",
+          "src/components/WorldClock.tsx",
+          "src/components/EmptyDayCard.tsx",
+          "src/components/UpcomingBillCard.tsx"
+        ]
+      },
+      {
+        "name": "Sistema de Diálogos",
+        "description": "Sistema de diálogos para confirmação e edição",
+        "files": [
+          "src/components/DeleteRecordDialog.tsx",
+          "src/components/DeleteTaskDialog.tsx",
+          "src/components/EditRecordDialog.tsx",
+          "src/components/BulkDeleteDialog.tsx"
+        ]
+      }
+    ]
+  }
+}

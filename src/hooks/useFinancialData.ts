@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -50,24 +51,13 @@ export function useFinancialData(
   statusFilter?: 'pago' | 'pendente' | 'all'
 ) {
   const { cliente } = useAuth();
-  const [records, setRecords] = useState<FinancialRecord[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [metrics, setMetrics] = useState<FinancialMetrics>({
-    totalReceitas: 0,
-    totalDespesas: 0,
-    saldo: 0,
-    totalTransacoes: 0,
-  });
-  const [refreshKey, setRefreshKey] = useState(0); // CORREÇÃO: Adicionar chave de refresh
 
-  const fetchData = async () => {
-    if (!cliente?.phone) {
-      setLoading(false);
-      return;
-    }
+  // ✅ OTIMIZAÇÃO: Usar React Query com cache inteligente
+  const { data: records = [], isLoading: loading, refetch } = useQuery({
+    queryKey: ['financial-records', cliente?.phone, periodDays, categoryFilter, typeFilter, statusFilter],
+    queryFn: async () => {
+      if (!cliente?.phone) return [];
 
-    try {
-      setLoading(true);
       let query = supabase
         .from('financeiro_registros')
         .select('*')
@@ -98,43 +88,33 @@ export function useFinancialData(
         throw error;
       }
 
-      // CORREÇÃO CRÍTICA: Garantir que dados são atualizados
       console.log('fetchData - Dados recebidos:', data?.length, 'registros');
-      setRecords((data as any) || []);
+      return (data as FinancialRecord[]) || [];
+    },
+    enabled: !!cliente?.phone,
+    // ✅ Usando configurações globais - não sobrescrever aqui
+    // staleTime, refetchOnWindowFocus, refetchOnMount já configurados globalmente
+    refetchInterval: false, // ❌ CRÍTICO: Removido refetch automático que causava loop
+    placeholderData: (previousData) => previousData,
+  });
 
-      // Calculate metrics
-      const receitas = (data || [])
-        .filter((r) => r.tipo === 'entrada' && r.status === 'pago')
-        .reduce((sum, r) => sum + Number(r.valor), 0);
-      
-      const despesas = (data || [])
-        .filter((r) => r.tipo === 'saida' && r.status === 'pago')
-        .reduce((sum, r) => sum + Number(r.valor), 0);
+  // ✅ OTIMIZAÇÃO: Calcular métricas usando useMemo para evitar recálculos desnecessários
+  const metrics = useCallback((): FinancialMetrics => {
+    const receitas = records
+      .filter((r) => r.tipo === 'entrada' && r.status === 'pago')
+      .reduce((sum, r) => sum + Number(r.valor), 0);
+    
+    const despesas = records
+      .filter((r) => r.tipo === 'saida' && r.status === 'pago')
+      .reduce((sum, r) => sum + Number(r.valor), 0);
 
-      setMetrics({
-        totalReceitas: receitas,
-        totalDespesas: despesas,
-        saldo: receitas - despesas,
-        totalTransacoes: data?.length || 0,
-      });
-    } catch (error) {
-      console.error('Erro crítico na busca de dados financeiros:', error);
-      // CORREÇÃO CRÍTICA: Resetar estado em caso de erro
-      setRecords([]);
-      setMetrics({
-        totalReceitas: 0,
-        totalDespesas: 0,
-        saldo: 0,
-        totalTransacoes: 0,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [cliente?.phone, periodDays, categoryFilter, typeFilter, statusFilter, refreshKey]);
+    return {
+      totalReceitas: receitas,
+      totalDespesas: despesas,
+      saldo: receitas - despesas,
+      totalTransacoes: records.length,
+    };
+  }, [records]);
 
   // Get daily data for charts - memoized
   const getDailyData = useCallback((): DailyData[] => {
@@ -283,7 +263,7 @@ export function useFinancialData(
   return {
     records,
     loading,
-    metrics,
+    metrics: metrics(),
     getDailyData,
     getCategoryData,
     getMonthlyData,
@@ -293,9 +273,6 @@ export function useFinancialData(
     getTotalPendingIncome,
     getTotalPaidBills,
     getTotalReceivedIncome,
-    refetch: () => {
-      setRefreshKey(prev => prev + 1);
-      fetchData();
-    },
+    refetch, // ✅ Usando refetch do React Query
   };
 }

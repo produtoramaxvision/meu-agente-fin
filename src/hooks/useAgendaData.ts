@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -111,8 +111,12 @@ export function useAgendaData(options: UseAgendaDataOptions) {
   const { cliente } = useAuth();
   const queryClient = useQueryClient();
   const [channel, setChannel] = useState<RealtimeChannel | null>(null);
+  
+  // ✅ PROTEÇÃO: Contador de requisições para detectar loops infinitos
+  const requestCountRef = useRef(0);
+  const lastRequestTimeRef = useRef(0);
 
-  // Fetch calendars com cache otimizado
+  // Fetch calendars com cache otimizado - usando configurações globais
   const { data: calendars = [], isLoading: calendarsLoading } = useQuery({
     queryKey: ['calendars', cliente?.phone],
     queryFn: async () => {
@@ -135,10 +139,9 @@ export function useAgendaData(options: UseAgendaDataOptions) {
       return (data as Calendar[]) || [];
     },
     enabled: !!cliente?.phone,
-    staleTime: 1000 * 60 * 5, // 5 minutos de cache
-    refetchOnWindowFocus: false, // Reduzir refetch desnecessário
-    refetchOnMount: false, // Usar cache quando possível
-    refetchInterval: 1000 * 60 * 10, // Refetch a cada 10 minutos
+    // ✅ Usando configurações globais - não sobrescrever aqui
+    // staleTime, refetchOnWindowFocus, refetchOnMount já configurados globalmente
+    refetchInterval: false, // ❌ CRÍTICO: Removido refetch automático que causava loop
   });
 
   // Estabilizar query key usando useMemo para evitar loop infinito
@@ -155,17 +158,44 @@ export function useAgendaData(options: UseAgendaDataOptions) {
     options.searchQuery
   ], [cliente?.phone, options.view, options.startDate, options.endDate, options.calendarIds, options.categories, options.priorities, options.statuses, options.searchQuery]);
 
-  // Fetch events with expansion of recurring events e cache otimizado
+  // Fetch events with expansion of recurring events - usando configurações globais
   const { data: events = [], isLoading: eventsLoading, refetch } = useQuery({
     queryKey,
     queryFn: async () => {
       if (!cliente?.phone) return [];
 
+      // ✅ PROTEÇÃO: Detectar loops infinitos
+      const now = Date.now();
+      const timeSinceLastRequest = now - lastRequestTimeRef.current;
+      
+      if (timeSinceLastRequest < 100) { // Menos de 100ms desde a última requisição
+        requestCountRef.current++;
+        if (requestCountRef.current > 10) { // Mais de 10 requisições em sequência rápida
+          console.error('🚨 LOOP INFINITO DETECTADO! Bloqueando requisição para evitar sobrecarga do Supabase');
+          throw new Error('Loop infinito detectado - requisição bloqueada');
+        }
+      } else {
+        requestCountRef.current = 0; // Reset contador se passou tempo suficiente
+      }
+      
+      lastRequestTimeRef.current = now;
+
+      // ✅ CORREÇÃO CRÍTICA: Validar datas antes de usar na query
+      const startDate = options.startDate;
+      const endDate = options.endDate;
+      
+      // Validar se as datas são válidas e diferentes
+      if (!startDate || !endDate || startDate >= endDate) {
+        console.warn('useAgendaData: Datas inválidas ou iguais:', { startDate, endDate });
+        return [];
+      }
+      
+      // ✅ CORREÇÃO: Query otimizada com lógica de datas correta
       let query = supabase
         .from('events')
         .select('*')
         .eq('phone', cliente.phone)
-        .or(`and(start_ts.gte.${options.startDate.toISOString()},start_ts.lte.${options.endDate.toISOString()}),and(end_ts.gte.${options.startDate.toISOString()},end_ts.lte.${options.endDate.toISOString()}),rrule.not.is.null`);
+        .or(`and(start_ts.gte.${startDate.toISOString()},start_ts.lte.${endDate.toISOString()}),and(end_ts.gte.${startDate.toISOString()},end_ts.lte.${endDate.toISOString()}),and(start_ts.lte.${startDate.toISOString()},end_ts.gte.${endDate.toISOString()}),rrule.not.is.null`);
 
       if (options.calendarIds && options.calendarIds.length > 0) {
         query = query.in('calendar_id', options.calendarIds);
@@ -253,15 +283,14 @@ export function useAgendaData(options: UseAgendaDataOptions) {
       return expandedEvents;
     },
     enabled: !!cliente?.phone,
-    staleTime: 1000 * 60 * 5, // 5 minutos de cache para eventos
-    refetchOnWindowFocus: false, // Reduzir refetch desnecessário
-    refetchOnMount: false, // Usar cache quando possível
-    refetchInterval: false, // ❌ REMOVIDO - causava loop infinito
+    // ✅ Usando configurações globais - não sobrescrever aqui
+    // staleTime, refetchOnWindowFocus, refetchOnMount já configurados globalmente
+    refetchInterval: false, // ❌ CRÍTICO: Removido refetch automático que causava loop
     // Usar placeholderData para melhor UX
     placeholderData: (previousData) => previousData,
   });
 
-  // Fetch resources com cache otimizado
+  // Fetch resources com cache otimizado - usando configurações globais
   const { data: resources = [], isLoading: resourcesLoading } = useQuery({
     queryKey: ['resources', cliente?.phone],
     queryFn: async () => {
@@ -278,10 +307,9 @@ export function useAgendaData(options: UseAgendaDataOptions) {
       return (data as Resource[]) || [];
     },
     enabled: !!cliente?.phone,
-    staleTime: 1000 * 60 * 10, // 10 minutos de cache para recursos
-    refetchOnWindowFocus: false, // Reduzir refetch desnecessário
-    refetchOnMount: false, // Usar cache quando possível
-    refetchInterval: 1000 * 60 * 15, // Refetch a cada 15 minutos
+    // ✅ Usando configurações globais - não sobrescrever aqui
+    // staleTime, refetchOnWindowFocus, refetchOnMount já configurados globalmente
+    refetchInterval: false, // ❌ CRÍTICO: Removido refetch automático que causava loop
     placeholderData: (previousData) => previousData,
   });
 
