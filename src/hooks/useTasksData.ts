@@ -39,6 +39,8 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
     queryFn: async () => {
       if (!cliente?.phone) return [];
 
+      console.log('🔍 useTasksData: Buscando tarefas para:', cliente.phone);
+
       let query = supabase
         .from('tasks')
         .select('*')
@@ -56,7 +58,12 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
 
       const { data, error } = await query;
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ useTasksData: Erro ao buscar tarefas:', error);
+        throw error;
+      }
+
+      console.log('✅ useTasksData: Tarefas encontradas:', data?.length || 0);
       return (data as Task[]) || [];
     },
     enabled: !!cliente?.phone,
@@ -64,6 +71,9 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
     // staleTime, refetchOnWindowFocus, refetchOnMount já configurados globalmente
     refetchInterval: false, // ❌ CRÍTICO: Removido refetch automático que causava loop
     placeholderData: (previousData) => previousData,
+    // ✅ CORREÇÃO: Forçar refetch para garantir dados atualizados
+    staleTime: 0, // Dados sempre considerados stale
+    refetchOnMount: true, // Sempre refetch no mount
   });
 
   // Setup Realtime subscription

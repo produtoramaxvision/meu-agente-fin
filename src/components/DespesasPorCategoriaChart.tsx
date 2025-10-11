@@ -19,7 +19,8 @@ export const DespesasPorCategoriaChart = memo(function DespesasPorCategoriaChart
   const { chartData, totalValue, topCategory } = useMemo(() => {
     if (!records) return { chartData: [], totalValue: 0, topCategory: null };
     
-    const filteredRecords = records.filter(r => r.tipo === categoryType && r.status === 'pago');
+    // ✅ CORREÇÃO: Incluir todos os registros, não apenas os pagos
+    const filteredRecords = records.filter(r => r.tipo === categoryType);
     const groupedByCategory = filteredRecords.reduce((acc, record) => {
       const categoria = record.categoria || 'Sem Categoria';
       const valor = Math.abs(Number(record.valor));

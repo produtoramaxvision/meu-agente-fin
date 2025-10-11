@@ -100,12 +100,14 @@ export function useFinancialData(
 
   // ✅ OTIMIZAÇÃO: Calcular métricas usando useMemo para evitar recálculos desnecessários
   const metrics = useCallback((): FinancialMetrics => {
+    // ✅ CORREÇÃO CRÍTICA: Incluir todos os registros, não apenas os pagos
+    // O dashboard deve mostrar o total geral, não apenas os pagos
     const receitas = records
-      .filter((r) => r.tipo === 'entrada' && r.status === 'pago')
+      .filter((r) => r.tipo === 'entrada')
       .reduce((sum, r) => sum + Number(r.valor), 0);
     
     const despesas = records
-      .filter((r) => r.tipo === 'saida' && r.status === 'pago')
+      .filter((r) => r.tipo === 'saida')
       .reduce((sum, r) => sum + Number(r.valor), 0);
 
     return {
