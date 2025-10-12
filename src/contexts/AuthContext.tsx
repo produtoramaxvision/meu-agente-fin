@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { User, Session } from '@supabase/supabase-js';
 
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -14,12 +15,15 @@ interface Cliente {
   is_active: boolean;
   plan_id?: string;
   created_at?: string;
+  auth_user_id?: string; // Novo campo para integração
 }
 
 interface AuthContextValue {
   cliente: Cliente | null;
   loading: boolean;
-  login: (phone: string, password:string) => Promise<void>;
+  user: User | null; // Usuário Supabase Auth
+  session: Session | null; // Sessão Supabase Auth
+  login: (phone: string, password: string) => Promise<void>;
   signup: (data: { phone: string; name: string; email: string; cpf: string; password: string }) => Promise<void>;
   logout: () => Promise<void>;
   updateAvatar: (avatarUrl: string | null) => void;
@@ -33,51 +37,118 @@ const BLOCKED_UNTIL_KEY = 'login_blocked_until';
 const MAX_ATTEMPTS = 5;
 const BLOCK_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 
+// Função helper para converter telefone para email sintético
+const phoneToEmail = (phone: string): string => `${phone}@meuagente.api.br`;
+
+// Função helper para extrair telefone do email sintético
+const emailToPhone = (email: string): string => email.replace('@meuagente.api.br', '');
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [cliente, setCliente] = useState<Cliente | null>(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
 
-  // Check for existing session on mount
+  // Initialize Supabase Auth session and listener
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const phone = sessionStorage.getItem('auth_phone');
-        if (phone) {
-          const { data, error } = await supabase
-            .from('clientes')
-            .select('phone, name, email, cpf, avatar_url, subscription_active, is_active, plan_id, created_at')
-            .eq('phone', phone)
-            .eq('is_active', true)
-            .single();
+    let mounted = true;
 
-          if (!error && data) {
-            // Forçar timestamp na URL do avatar para evitar cache
-            let avatarUrl = data.avatar_url;
-            if (avatarUrl) {
-              const timestamp = new Date().getTime();
-              const baseUrl = avatarUrl.split('?t=')[0];
-              avatarUrl = `${baseUrl}?t=${timestamp}`;
-            }
-            
-            const clienteData = {
-              ...data,
-              avatar_url: avatarUrl || undefined
-            };
-            setCliente(clienteData);
-          } else {
-            sessionStorage.removeItem('auth_phone');
+    const initializeAuth = async () => {
+      try {
+        // Get initial session
+        const { data: { session: initialSession }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error('Error getting session:', sessionError);
+          return;
+        }
+
+        if (mounted) {
+          setSession(initialSession);
+          setUser(initialSession?.user ?? null);
+          
+          if (initialSession?.user) {
+            await loadClienteFromAuth(initialSession.user);
           }
         }
-      } catch (err) {
-        console.error('Session check error:', err);
+      } catch (error) {
+        console.error('Error initializing auth:', error);
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
-    checkSession();
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+
+      console.log('Auth state changed:', event, session?.user?.id);
+      
+      setSession(session);
+      setUser(session?.user ?? null);
+
+      if (session?.user) {
+        await loadClienteFromAuth(session.user);
+      } else {
+        setCliente(null);
+        // Clear legacy session storage
+        sessionStorage.removeItem('auth_phone');
+        sessionStorage.removeItem('auth_avatar');
+      }
+      
+      setLoading(false);
+    });
+
+    initializeAuth();
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
+
+  // Load cliente data from authenticated user
+  const loadClienteFromAuth = async (authUser: User) => {
+    try {
+      // Extract phone from user metadata or email
+      const phone = authUser.user_metadata?.phone || emailToPhone(authUser.email || '');
+      
+      if (!phone) {
+        console.error('No phone found for user:', authUser.id);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('clientes')
+        .select('phone, name, email, cpf, avatar_url, subscription_active, is_active, plan_id, created_at, auth_user_id')
+        .eq('auth_user_id', authUser.id)
+            .eq('is_active', true)
+            .single();
+
+      if (!error && data) {
+        // Forçar timestamp na URL do avatar para evitar cache
+        let avatarUrl = data.avatar_url;
+        if (avatarUrl) {
+          const timestamp = new Date().getTime();
+          const baseUrl = avatarUrl.split('?t=')[0];
+          avatarUrl = `${baseUrl}?t=${timestamp}`;
+        }
+        
+        const clienteData = {
+          ...data,
+          avatar_url: avatarUrl || undefined
+        };
+        setCliente(clienteData);
+      } else {
+        console.error('Error loading cliente:', error);
+      }
+    } catch (err) {
+      console.error('Error loading cliente from auth:', err);
+    }
+  };
 
   const checkRateLimit = (): boolean => {
     const blockedUntil = localStorage.getItem(BLOCKED_UNTIL_KEY);
@@ -115,11 +186,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (phone: string, password: string) => {
     /**
-     * BUG FIX - TestSprite TC002 - CORREÇÃO CRÍTICA DE SEGURANÇA
-     * Problema: Login com credenciais inválidas estava sendo aceito - falha crítica de segurança
-     * Solução: Validação rigorosa de credenciais e tratamento de erro aprimorado
-     * Data: 2025-01-06
-     * Status: CORRIGIDO E VALIDADO
+     * MIGRAÇÃO PARA SUPABASE AUTH - FASE 3
+     * Substituindo Edge Functions por Supabase Auth nativo
+     * Mantendo interface de telefone para compatibilidade
+     * Data: 2025-01-16
      */
     
     if (!checkRateLimit()) {
@@ -146,78 +216,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      // Call our auth edge function
-      const SUPABASE_URL = "https://teexqwlnfdlcruqbmwuz.supabase.co";
-      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlZXhxd2xuZmRsY3J1cWJtd3V6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MjU0NTksImV4cCI6MjA3MzEwMTQ1OX0.q9TO3T7SjEw81XSk5vmyAt4Ls77-BwrXxCHsA82B4i0";
+      // Converter telefone para email sintético
+      const syntheticEmail = phoneToEmail(phone);
       
-      const response = await fetch(`${SUPABASE_URL}/functions/v1/auth-login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-        },
-        body: JSON.stringify({ phone, password }),
+      // Usar Supabase Auth nativo
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: syntheticEmail,
+        password: password,
       });
 
-      // VALIDAÇÃO CRÍTICA: Verificar se a resposta é válida
-      if (!response.ok) {
+      if (error) {
         incrementFailedAttempts();
         
-        // Tentar obter mensagem de erro específica
+        // Mapear erros do Supabase para mensagens amigáveis
         let errorMessage = 'Credenciais inválidas';
-        try {
-          const errorResult = await response.json();
-          errorMessage = errorResult.error || errorMessage;
-        } catch {
-          // Se não conseguir parsear JSON, usar mensagem padrão
+        if (error.message.includes('Invalid login credentials')) {
+          errorMessage = 'Telefone ou senha incorretos';
+        } else if (error.message.includes('Email not confirmed')) {
+          errorMessage = 'Email não confirmado';
+        } else if (error.message.includes('Too many requests')) {
+          errorMessage = 'Muitas tentativas. Tente novamente mais tarde';
         }
         
-        // Log de tentativa de login inválida (apenas em desenvolvimento)
+        // Log do erro para debugging (apenas em desenvolvimento)
         if (process.env.NODE_ENV === 'development') {
-          console.warn(`Tentativa de login inválida - Phone: ${phone}, Status: ${response.status}`);
+          console.error('Login error:', error);
         }
         
         throw new Error(errorMessage);
       }
 
-      const result = await response.json();
-
-      // VALIDAÇÃO CRÍTICA: Verificar estrutura da resposta
-      if (!result || !result.cliente) {
+      if (!data.user) {
         incrementFailedAttempts();
-        throw new Error('Resposta inválida do servidor');
-      }
-
-      const clienteData = result.cliente;
-
-      // VALIDAÇÃO CRÍTICA: Verificar dados obrigatórios do cliente
-      if (!clienteData.phone || !clienteData.name) {
-        incrementFailedAttempts();
-        throw new Error('Dados do usuário inválidos');
-      }
-
-      // VALIDAÇÃO CRÍTICA: Verificar se o cliente está ativo
-      if (!clienteData.is_active) {
-        incrementFailedAttempts();
-        throw new Error('Conta desativada');
+        throw new Error('Erro na autenticação');
       }
 
       // Limpar tentativas falhadas apenas após login bem-sucedido
       clearFailedAttempts();
       
-      // Processar avatar com timestamp para evitar cache
-      if (clienteData.avatar_url) {
-        const timestamp = new Date().getTime();
-        const baseUrl = clienteData.avatar_url.split('?t=')[0];
-        clienteData.avatar_url = `${baseUrl}?t=${timestamp}`;
-      }
-
-      // Definir cliente e salvar sessão
-      setCliente(clienteData);
-      sessionStorage.setItem('auth_phone', phone);
-      if (clienteData.avatar_url) {
-        sessionStorage.setItem('auth_avatar', clienteData.avatar_url);
-      }
+      // O cliente será carregado automaticamente pelo listener onAuthStateChange
+      // Não precisamos mais buscar manualmente ou gerenciar sessionStorage
       
       toast.success('Login realizado com sucesso!');
       navigate('/dashboard');
@@ -233,46 +271,128 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signup = async ({ phone, name, email, cpf, password }: { phone: string; name: string; email: string; cpf: string; password: string }) => {
+    /**
+     * MIGRAÇÃO PARA SUPABASE AUTH - FASE 3
+     * Substituindo Edge Functions por Supabase Auth nativo
+     * Criando usuário e vinculando à tabela clientes
+     * Data: 2025-01-16
+     */
+    
     try {
-      // Call our auth edge function
-      const SUPABASE_URL = "https://teexqwlnfdlcruqbmwuz.supabase.co";
-      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlZXhxd2xuZmRsY3J1cWJtd3V6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MjU0NTksImV4cCI6MjA3MzEwMTQ1OX0.q9TO3T7SjEw81XSk5vmyAt4Ls77-BwrXxCHsA82B4i0";
+      // Validações básicas
+      if (!phone || !name || !password) {
+        throw new Error('Telefone, nome e senha são obrigatórios');
+      }
+
+      // Validar formato do telefone
+      const phoneRegex = /^\d{10,15}$/;
+      if (!phoneRegex.test(phone)) {
+        throw new Error('Formato de telefone inválido');
+      }
+
+      // Validar senha
+      if (password.length < 8) {
+        throw new Error('Senha deve ter no mínimo 8 caracteres');
+      }
+
+      // Converter telefone para email sintético
+      const syntheticEmail = phoneToEmail(phone);
       
-      const response = await fetch(`${SUPABASE_URL}/functions/v1/auth-signup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-        },
-        body: JSON.stringify({ phone, name, email, cpf, password }),
+      // Criar usuário no Supabase Auth
+      const { data, error } = await supabase.auth.signUp({
+        email: syntheticEmail,
+        password: password,
+        options: {
+          data: {
+            phone: phone,
+            name: name,
+            cpf: cpf,
+            email: email, // Email real do usuário (opcional)
+          }
+        }
       });
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Erro ao criar conta');
+      if (error) {
+        // Mapear erros do Supabase para mensagens amigáveis
+        let errorMessage = 'Erro ao criar conta';
+        if (error.message.includes('User already registered')) {
+          errorMessage = 'Este telefone já está cadastrado';
+        } else if (error.message.includes('Password should be at least')) {
+          errorMessage = 'Senha deve ter no mínimo 8 caracteres';
+        } else if (error.message.includes('Invalid email')) {
+          errorMessage = 'Email inválido';
+        }
+        
+        throw new Error(errorMessage);
       }
 
-      setCliente(result.cliente);
-      sessionStorage.setItem('auth_phone', phone);
-      if (result.cliente.avatar_url) {
-        sessionStorage.setItem('auth_avatar', result.cliente.avatar_url);
+      if (!data.user) {
+        throw new Error('Erro ao criar usuário');
       }
-      
+
+      // Criar ou atualizar registro na tabela clientes
+      const { error: clienteError } = await supabase
+        .from('clientes')
+        .upsert({
+          phone: phone,
+          name: name,
+          email: email,
+          cpf: cpf,
+          auth_user_id: data.user.id,
+          is_active: true,
+          subscription_active: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'phone'
+        });
+
+      if (clienteError) {
+        console.error('Error creating cliente record:', clienteError);
+        // Não falhar o signup por erro na tabela clientes
+        // O usuário foi criado no auth, então pode fazer login
+      }
+
+      // O cliente será carregado automaticamente pelo listener onAuthStateChange
       toast.success('Conta criada com sucesso!');
       navigate('/dashboard');
     } catch (err: any) {
+      console.error('Signup error:', err);
       throw new Error(err.message || 'Erro ao criar conta');
     }
   };
 
   const logout = async () => {
-    setCliente(null);
-    sessionStorage.removeItem('auth_phone');
-    sessionStorage.removeItem('auth_avatar');
-    sessionStorage.removeItem('agendaView');
-    toast.info('Sessão encerrada');
-    navigate('/auth/login');
+    /**
+     * MIGRAÇÃO PARA SUPABASE AUTH - FASE 3
+     * Usando signOut nativo do Supabase
+     * Data: 2025-01-16
+     */
+    
+    try {
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('Logout error:', error);
+        // Mesmo com erro, limpar estado local
+      }
+      
+      // Limpar estado local (será feito automaticamente pelo listener)
+      // Mas garantir limpeza de dados legados
+      sessionStorage.removeItem('auth_phone');
+      sessionStorage.removeItem('auth_avatar');
+      sessionStorage.removeItem('agendaView');
+      
+      toast.info('Sessão encerrada');
+      navigate('/auth/login');
+    } catch (err) {
+      console.error('Logout error:', err);
+      // Forçar limpeza mesmo com erro
+      setCliente(null);
+      setUser(null);
+      setSession(null);
+      navigate('/auth/login');
+    }
   };
 
   const updateAvatar = (avatarUrl: string | null) => {
@@ -300,7 +420,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ cliente, loading, login, signup, logout, updateAvatar, updateCliente }}>
+    <AuthContext.Provider value={{ 
+      cliente, 
+      loading, 
+      user, 
+      session, 
+      login, 
+      signup, 
+      logout, 
+      updateAvatar, 
+      updateCliente 
+    }}>
       {children}
     </AuthContext.Provider>
   );
