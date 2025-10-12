@@ -21,6 +21,7 @@ interface Cliente {
 interface AuthContextValue {
   cliente: Cliente | null;
   loading: boolean;
+  isLoggingOut: boolean; // Novo estado para loading do logout
   user: User | null; // Usuário Supabase Auth
   session: Session | null; // Sessão Supabase Auth
   login: (phone: string, password: string) => Promise<void>;
@@ -46,6 +47,7 @@ const emailToPhone = (email: string): string => email.replace('@meuagente.api.br
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [cliente, setCliente] = useState<Cliente | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false); // Estado para loading do logout
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
@@ -86,6 +88,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!mounted) return;
 
       console.log('Auth state changed:', event, session?.user?.id);
+      
+      // Não processar se foi logout manual - evitar race conditions
+      if (event === 'SIGNED_OUT' && !session) {
+        setSession(null);
+        setUser(null);
+        setCliente(null);
+        setLoading(false);
+        return;
+      }
       
       setSession(session);
       setUser(session?.user ?? null);
@@ -364,34 +375,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     /**
-     * MIGRAÇÃO PARA SUPABASE AUTH - FASE 3
-     * Usando signOut nativo do Supabase
+     * CORREÇÃO DO LOGOUT - FASE 3
+     * Implementando loading state e melhorias de UX
      * Data: 2025-01-16
      */
     
+    setIsLoggingOut(true);
+    
     try {
+      // 1. Limpar estado local primeiro para evitar race conditions
+      setCliente(null);
+      setUser(null);
+      setSession(null);
+      
+      // 2. Limpar dados de sessão e localStorage
+      sessionStorage.removeItem('auth_phone');
+      sessionStorage.removeItem('auth_avatar');
+      sessionStorage.removeItem('agendaView');
+      localStorage.removeItem('login_failed_attempts');
+      localStorage.removeItem('login_blocked_until');
+      
+      // 3. Fazer logout no Supabase
       const { error } = await supabase.auth.signOut();
       
       if (error) {
         console.error('Logout error:', error);
-        // Mesmo com erro, limpar estado local
+        // Continuar mesmo com erro - estado já foi limpo
       }
       
-      // Limpar estado local (será feito automaticamente pelo listener)
-      // Mas garantir limpeza de dados legados
-      sessionStorage.removeItem('auth_phone');
-      sessionStorage.removeItem('auth_avatar');
-      sessionStorage.removeItem('agendaView');
-      
+      // 4. Mostrar feedback e navegar
       toast.info('Sessão encerrada');
       navigate('/auth/login');
+      
     } catch (err) {
       console.error('Logout error:', err);
-      // Forçar limpeza mesmo com erro
-      setCliente(null);
-      setUser(null);
-      setSession(null);
+      // Garantir navegação mesmo com erro
       navigate('/auth/login');
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -423,6 +444,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     <AuthContext.Provider value={{ 
       cliente, 
       loading, 
+      isLoggingOut,
       user, 
       session, 
       login, 

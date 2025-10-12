@@ -1,4 +1,4 @@
-import { Bell, Menu, Search, Settings, User, LogOut, Sun, Moon } from 'lucide-react';
+import { Bell, Menu, Search, Settings, User, LogOut, Sun, Moon, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -12,15 +12,19 @@ import { ScrollArea } from '../ui/scroll-area';
 import { Link, useNavigate } from 'react-router-dom';
 
 export function Header() {
-  const { cliente, logout } = useAuth();
+  const { cliente, logout, isLoggingOut } = useAuth();
   const { toggleSidebar } = useSidebar();
   const { theme, toggleTheme } = useTheme();
   const { notifications, unreadCount, markAsRead, markAsUnread, deleteNotification } = useNotificationsData();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
-    await logout();
-    navigate('/login');
+    /**
+     * CORREÇÃO DO LOGOUT - FASE 2
+     * Removendo navegação dupla - AuthContext já navega
+     * Data: 2025-01-16
+     */
+    await logout(); // AuthContext já navega para /auth/login
   };
 
   return (
@@ -104,9 +108,17 @@ export function Header() {
               <span>Configurações</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleSignOut}>
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Sair</span>
+            <DropdownMenuItem 
+              onClick={handleSignOut}
+              disabled={isLoggingOut}
+              className="data-[disabled]:opacity-50 data-[disabled]:pointer-events-none"
+            >
+              {isLoggingOut ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <LogOut className="mr-2 h-4 w-4" />
+              )}
+              <span>{isLoggingOut ? 'Saindo...' : 'Sair'}</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

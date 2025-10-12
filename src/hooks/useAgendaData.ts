@@ -115,6 +115,7 @@ export function useAgendaData(options: UseAgendaDataOptions) {
   // ✅ PROTEÇÃO: Contador de requisições para detectar loops infinitos
   const requestCountRef = useRef(0);
   const lastRequestTimeRef = useRef(0);
+  const isBlockedRef = useRef(false);
 
   // Fetch calendars com cache otimizado - usando configurações globais
   const { data: calendars = [], isLoading: calendarsLoading } = useQuery({
@@ -164,15 +165,27 @@ export function useAgendaData(options: UseAgendaDataOptions) {
     queryFn: async () => {
       if (!cliente?.phone) return [];
 
-      // ✅ PROTEÇÃO: Detectar loops infinitos
+      // ✅ PROTEÇÃO: Detectar e prevenir loops infinitos
       const now = Date.now();
       const timeSinceLastRequest = now - lastRequestTimeRef.current;
       
+      // Se está bloqueado, aguardar um tempo antes de tentar novamente
+      if (isBlockedRef.current) {
+        if (timeSinceLastRequest > 5000) { // 5 segundos
+          isBlockedRef.current = false;
+          requestCountRef.current = 0;
+        } else {
+          console.warn('useAgendaData: Requisição bloqueada temporariamente');
+          return []; // Retornar array vazio em vez de erro
+        }
+      }
+      
       if (timeSinceLastRequest < 100) { // Menos de 100ms desde a última requisição
         requestCountRef.current++;
-        if (requestCountRef.current > 10) { // Mais de 10 requisições em sequência rápida
-          console.error('🚨 LOOP INFINITO DETECTADO! Bloqueando requisição para evitar sobrecarga do Supabase');
-          throw new Error('Loop infinito detectado - requisição bloqueada');
+        if (requestCountRef.current > 15) { // Mais de 15 requisições em sequência rápida
+          console.error('🚨 LOOP INFINITO DETECTADO! Bloqueando requisições por 5 segundos');
+          isBlockedRef.current = true;
+          return []; // Retornar array vazio em vez de erro
         }
       } else {
         requestCountRef.current = 0; // Reset contador se passou tempo suficiente

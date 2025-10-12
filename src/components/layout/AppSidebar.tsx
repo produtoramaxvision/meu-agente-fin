@@ -1,5 +1,5 @@
-import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, FileText, User, LogOut, Wallet, Target, Bell, CheckSquare, CalendarDays, X } from 'lucide-react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, FileText, User, LogOut, Wallet, Target, Bell, CheckSquare, CalendarDays, X, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotificationsData } from '@/hooks/useNotificationsData';
 import { cn } from '@/lib/utils';
@@ -25,9 +25,25 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ collapsed, onToggle, showCloseButton = false }: AppSidebarProps) {
-  const { logout } = useAuth();
+  const { logout, isLoggingOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const { unreadCount } = useNotificationsData();
+
+  const handleLogout = async () => {
+    /**
+     * CORREÇÃO DO LOGOUT - FASE 2
+     * Adicionando tratamento de erro robusto
+     * Data: 2025-01-16
+     */
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Fallback: navegar manualmente se logout falhar
+      navigate('/auth/login');
+    }
+  };
 
   return (
     <aside
@@ -134,17 +150,27 @@ export function AppSidebar({ collapsed, onToggle, showCloseButton = false }: App
           <button
             onClick={(e) => {
               e.stopPropagation();
-              logout();
+              handleLogout();
             }}
+            disabled={isLoggingOut}
             className={cn(
               "group relative overflow-hidden flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
               'text-[hsl(var(--sidebar-text-muted))] hover:bg-[hsl(var(--sidebar-hover))] hover:text-[hsl(var(--sidebar-text))] hover:scale-105 hover:shadow-lg',
+              'disabled:opacity-50 disabled:pointer-events-none disabled:hover:scale-100',
               collapsed && 'justify-center'
             )}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none" />
-            <LogOut className="h-5 w-5 flex-shrink-0 relative z-10 transition-transform group-hover:scale-110" />
-            {!collapsed && <span className="relative z-10">Sair</span>}
+            {isLoggingOut ? (
+              <Loader2 className="h-5 w-5 flex-shrink-0 relative z-10 animate-spin" />
+            ) : (
+              <LogOut className="h-5 w-5 flex-shrink-0 relative z-10 transition-transform group-hover:scale-110" />
+            )}
+            {!collapsed && (
+              <span className="relative z-10">
+                {isLoggingOut ? 'Saindo...' : 'Sair'}
+              </span>
+            )}
           </button>
         </div>
       </div>

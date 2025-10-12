@@ -1,0 +1,506 @@
+[
+  {
+    "id": "TC001",
+    "title": "Phone-based Authentication Success",
+    "description": "Verify that users can successfully authenticate using phone-based login with valid phone numbers and receive a session token.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter a valid phone number"
+      },
+      {
+        "type": "action",
+        "description": "Complete multi-factor authentication if required"
+      },
+      {
+        "type": "action",
+        "description": "Submit login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Check that user is logged in and session is created"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Phone-based Authentication Failure with Invalid Number",
+    "description": "Verify that authentication fails when using invalid phone numbers and appropriate error messages are displayed.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page"
+      },
+      {
+        "type": "action",
+        "description": "Enter an invalid phone number format"
+      },
+      {
+        "type": "action",
+        "description": "Submit login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Validate error message is displayed indicating invalid phone number"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no session is created"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Rate Limiting on Authentication Attempts",
+    "description": "Verify that the authentication system enforces rate limiting to prevent abuse and provides informative feedback.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Attempt multiple consecutive login attempts within a short time frame from the same phone number or IP"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm that further attempts are blocked or delayed with rate limit message"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Financial Record Creation and Categorization",
+    "description": "Verify users can add financial records with correct categorization and all data fields accepted correctly.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as a Business or Premium user"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to financial records page"
+      },
+      {
+        "type": "action",
+        "description": "Create a new income record with valid data, selecting appropriate category"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm record is saved and visible with correct categorization"
+      },
+      {
+        "type": "action",
+        "description": "Create an expense record with valid data"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify expense record is added and correctly categorized"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Financial Record Export Functionality",
+    "description": "Verify that financial records can be exported correctly in CSV and PDF formats for paid plans.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as a paid plan user"
+      },
+      {
+        "type": "action",
+        "description": "Go to financial management section"
+      },
+      {
+        "type": "action",
+        "description": "Perform export of records filtered by date range and categories"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify exported CSV and PDF files include all selected records accurately and have correct formatting"
+      },
+      {
+        "type": "action",
+        "description": "Attempt export as a free plan user"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm export option is disabled or access denied"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Google Workspace Integration for Calendar Events",
+    "description": "Verify users can create, update, and delete calendar events synchronized with Google Calendar and reflect changes accurately.",
+    "category": "integration",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login with account linked to Google Workspace"
+      },
+      {
+        "type": "action",
+        "description": "Create an event via app calendar interface"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm event is visible both in app and Google Calendar"
+      },
+      {
+        "type": "action",
+        "description": "Modify the event’s date/time and details"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify updates sync to Google Calendar correctly"
+      },
+      {
+        "type": "action",
+        "description": "Delete the event from app"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm event is removed from Google Calendar"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "WhatsApp Opt-in and Opt-out Message Handling",
+    "description": "Ensure the system correctly handles WhatsApp opt-in/out status and respects messaging limits to prevent spam flags.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Send opt-in request message from user via WhatsApp"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm system registers opt-in and enables messaging"
+      },
+      {
+        "type": "action",
+        "description": "Send opt-out request message via WhatsApp"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm system disables outbound messaging and respects user choice"
+      },
+      {
+        "type": "action",
+        "description": "Send multiple automated messages within WhatsApp limits"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify system enforces message rate limits and does not exceed WhatsApp policies"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Role-Based Access Control and Plan Restrictions",
+    "description": "Verify that features and sub-agent types are accessible only according to user's role and subscription level with proper enforcement.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login with Free plan user"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify unavailability of Premium-only features and sub-agents"
+      },
+      {
+        "type": "action",
+        "description": "Login with Business plan user"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm access to Business sub-agents and features, deny Premium-only"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to access restricted feature directly via URL or API"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm access is denied with appropriate message"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Backup System Daily Off-site Backup and Restoration",
+    "description": "Validate that daily backups are created securely for Premium users and test restoration from backup data periodically.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as Premium user"
+      },
+      {
+        "type": "action",
+        "description": "Trigger or wait for automatic daily backup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify backup file creation in off-site location with secure encryption"
+      },
+      {
+        "type": "action",
+        "description": "Perform restoration from backup"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm data integrity and restoration completeness"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Support Ticket Creation and Priority Handling",
+    "description": "Verify that users can create support tickets, receive FAQs, and that higher-tier users receive prioritized responses.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as Free plan user"
+      },
+      {
+        "type": "action",
+        "description": "Submit a support ticket with detailed description"
+      },
+      {
+        "type": "assertion",
+        "description": "Ticket is created and queued with standard priority"
+      },
+      {
+        "type": "action",
+        "description": "Access support FAQ section"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm relevant FAQs are displayed"
+      },
+      {
+        "type": "action",
+        "description": "Login as Premium user"
+      },
+      {
+        "type": "action",
+        "description": "Submit a support ticket"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify ticket is marked with priority flag for expedited handling"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Dashboard Real-Time Data and Export Reports",
+    "description": "Ensure dashboard displays real-time insights, charts update correctly, and reports export accurate data with filters applied.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and navigate to dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all overview cards and charts show current data"
+      },
+      {
+        "type": "action",
+        "description": "Apply filters and refresh dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm charts and metrics update accordingly"
+      },
+      {
+        "type": "action",
+        "description": "Export reports in available formats on paid plan"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that exported files contain correct filtered data"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "AI Sub-agent Functionalities per Subscription Plan",
+    "description": "Validate that sub-agent features (e.g., SDR, Marketing, Scheduling, Video Generation) function correctly and only activate for permitted plans.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as Free plan user"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify sub-agent options are limited"
+      },
+      {
+        "type": "action",
+        "description": "Login as Business user"
+      },
+      {
+        "type": "assertion",
+        "description": "Access sub-agents like SDR, Marketing, Scheduling successfully"
+      },
+      {
+        "type": "action",
+        "description": "Login as Premium user"
+      },
+      {
+        "type": "action",
+        "description": "Use Video generation and Development sub-agents"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm these features work and restrict disables with invalid user role or plan"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "UI Responsiveness and Theme Toggle",
+    "description": "Confirm the UI adapts seamlessly across screen sizes and theme toggle switches between dark and light modes preserving user preferences.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login and load main application UI"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI elements and layouts render correctly on desktop, tablet, and mobile viewports"
+      },
+      {
+        "type": "action",
+        "description": "Toggle theme switch to dark mode"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm UI updates colors and styles accordingly"
+      },
+      {
+        "type": "action",
+        "description": "Reload page and verify theme preference persists"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "LGPD Compliance: Data Privacy and Opt-out Management",
+    "description": "Ensure system handles user data privacy requests correctly, implements opt-out functionality adhering to LGPD, and deletes or anonymizes data as required.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Request data export for personal data"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify export contains correct user data in proper format"
+      },
+      {
+        "type": "action",
+        "description": "Submit data deletion request"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm data is deleted or anonymized in compliance with LGPD"
+      },
+      {
+        "type": "action",
+        "description": "Send opt-out message via WhatsApp"
+      },
+      {
+        "type": "assertion",
+        "description": "System disables all messaging and respects user privacy accordingly"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Support System FAQ Accessibility and Search",
+    "description": "Verify that the FAQ section is accessible from support interface and global search can locate relevant FAQ articles quickly.",
+    "category": "functional",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to support section"
+      },
+      {
+        "type": "action",
+        "description": "Access FAQ tab and browse categories"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm FAQs load correctly and are relevant"
+      },
+      {
+        "type": "action",
+        "description": "Perform global search with keywords related to common support queries"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify search results include matching FAQ articles"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Scheduling Agent Sending WhatsApp Reminders",
+    "description": "Validate scheduling agents create calendar events with associated WhatsApp reminders sent on schedule respecting messaging limits and opt-in status.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Schedule an appointment via scheduling sub-agent"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm event appears in Google Calendar and app agenda"
+      },
+      {
+        "type": "action",
+        "description": "Ensure user is opted-in to WhatsApp reminders"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify reminder message is sent via WhatsApp at configured time"
+      },
+      {
+        "type": "action",
+        "description": "Monitor message counts to verify limits are not breached"
+      }
+    ]
+  }
+]

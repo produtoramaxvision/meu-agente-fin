@@ -1,0 +1,306 @@
+{
+  "tech_stack": [
+    "TypeScript",
+    "React",
+    "Vite",
+    "Supabase",
+    "PostgreSQL",
+    "Tailwind CSS",
+    "Shadcn/UI",
+    "React Router",
+    "React Hook Form",
+    "Zod",
+    "Sonner",
+    "Lucide React",
+    "Framer Motion",
+    "Playwright"
+  ],
+  "features": [
+    {
+      "name": "Authentication System",
+      "description": "Complete authentication system using Supabase Auth with phone-based login, rate limiting, and session management",
+      "files": [
+        "src/contexts/AuthContext.tsx",
+        "src/pages/auth/Login.tsx",
+        "src/pages/auth/Signup.tsx",
+        "src/components/ProtectedRoute.tsx"
+      ]
+    },
+    {
+      "name": "Financial Management",
+      "description": "Financial records management with income/expense tracking, categories, and export functionality",
+      "files": [
+        "src/pages/Contas.tsx",
+        "src/components/FinanceRecordForm.tsx",
+        "src/components/EditRecordDialog.tsx",
+        "src/components/DeleteRecordDialog.tsx",
+        "src/components/BulkDeleteDialog.tsx",
+        "src/components/ContaItem.tsx",
+        "src/components/DashboardUpcomingBills.tsx",
+        "src/components/UpcomingBillCard.tsx",
+        "src/components/DespesasPorCategoriaChart.tsx",
+        "src/hooks/useFinancialData.ts"
+      ]
+    },
+    {
+      "name": "Task Management",
+      "description": "Task management system with priorities, categories, due dates, and status tracking",
+      "files": [
+        "src/pages/Tasks.tsx",
+        "src/components/TaskForm.tsx",
+        "src/components/TaskItem.tsx",
+        "src/components/TaskFilters.tsx",
+        "src/components/TaskStats.tsx",
+        "src/components/DeleteTaskDialog.tsx",
+        "src/components/UpcomingTasksCard.tsx",
+        "src/hooks/useTasksData.ts"
+      ]
+    },
+    {
+      "name": "Goals Management",
+      "description": "Goal setting and tracking system with progress monitoring and visual indicators",
+      "files": [
+        "src/pages/Goals.tsx",
+        "src/components/GoalForm.tsx",
+        "src/components/GoalListItem.tsx",
+        "src/components/GoalIcons.tsx",
+        "src/components/DashboardGoalCard.tsx",
+        "src/hooks/useGoalsData.ts"
+      ]
+    },
+    {
+      "name": "Calendar and Agenda",
+      "description": "Calendar system with events, scheduling, and multiple view modes",
+      "files": [
+        "src/pages/Agenda.tsx",
+        "src/components/AgendaFilters.tsx",
+        "src/components/AgendaGridDay.tsx",
+        "src/components/AgendaGridWeek.tsx",
+        "src/components/AgendaGridMonth.tsx",
+        "src/components/AgendaList.tsx",
+        "src/components/AgendaTimeline.tsx",
+        "src/components/AgendaYearHeatmap.tsx",
+        "src/components/EventCard.tsx",
+        "src/components/EventForm.tsx",
+        "src/components/EventPopover.tsx",
+        "src/components/EventQuickCreatePopover.tsx",
+        "src/components/CalendarForm.tsx",
+        "src/components/EmptyDayCard.tsx",
+        "src/hooks/useAgendaData.ts"
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "description": "Main dashboard with overview cards, charts, and quick actions",
+      "files": [
+        "src/pages/Dashboard.tsx",
+        "src/components/QuickActions.tsx",
+        "src/components/InsightsCard.tsx",
+        "src/components/StatusTimelineChart.tsx",
+        "src/components/WorldClock.tsx"
+      ]
+    },
+    {
+      "name": "Notifications System",
+      "description": "Notification management with real-time updates and user preferences",
+      "files": [
+        "src/pages/Notifications.tsx",
+        "src/components/NotificationBell.tsx",
+        "src/components/NotificationItem.tsx",
+        "src/components/NotificationsDropdown.tsx",
+        "src/contexts/NotificationContext.tsx",
+        "src/hooks/useNotificationsData.ts"
+      ]
+    },
+    {
+      "name": "User Profile Management",
+      "description": "User profile management with avatar upload, privacy settings, and plan management",
+      "files": [
+        "src/pages/Profile.tsx",
+        "src/components/AvatarUpload.tsx",
+        "src/components/PrivacySection.tsx",
+        "src/components/PlanInfoCard.tsx",
+        "src/components/PlansSection.tsx"
+      ]
+    },
+    {
+      "name": "Backup System",
+      "description": "Data backup and restoration system for premium users",
+      "files": [
+        "src/components/BackupSection.tsx"
+      ]
+    },
+    {
+      "name": "Support System",
+      "description": "Support ticket system with FAQ and ticket management",
+      "files": [
+        "src/components/SupportDialog.tsx",
+        "src/components/SupportFAQ.tsx",
+        "src/components/SupportTabs.tsx",
+        "src/components/SupportTicketForm.tsx",
+        "src/components/SupportTicketList.tsx",
+        "src/hooks/useSupportTickets.ts"
+      ]
+    },
+    {
+      "name": "Permission System",
+      "description": "Role-based access control with plan-based feature restrictions",
+      "files": [
+        "src/hooks/usePermissions.ts",
+        "src/components/ProtectedFeature.tsx",
+        "src/hooks/usePlanInfo.ts"
+      ]
+    },
+    {
+      "name": "Reports and Analytics",
+      "description": "Reporting system with data visualization and export capabilities",
+      "files": [
+        "src/pages/Reports.tsx",
+        "src/pages/Relatorios.tsx"
+      ]
+    },
+    {
+      "name": "Layout Components",
+      "description": "Application layout with sidebar, header, footer, and responsive design",
+      "files": [
+        "src/components/layout/AppLayout.tsx",
+        "src/components/layout/AppSidebar.tsx",
+        "src/components/layout/AppHeader.tsx",
+        "src/components/layout/AppFooter.tsx",
+        "src/components/layout/AuthLayout.tsx",
+        "src/components/layout/Header.tsx",
+        "src/components/layout/PageHeader.tsx"
+      ]
+    },
+    {
+      "name": "UI Components",
+      "description": "Reusable UI components built with Shadcn/UI and Tailwind CSS",
+      "files": [
+        "src/components/ui/button.tsx",
+        "src/components/ui/card.tsx",
+        "src/components/ui/input.tsx",
+        "src/components/ui/form.tsx",
+        "src/components/ui/dialog.tsx",
+        "src/components/ui/dropdown-menu.tsx",
+        "src/components/ui/tabs.tsx",
+        "src/components/ui/switch.tsx",
+        "src/components/ui/badge.tsx",
+        "src/components/ui/progress.tsx",
+        "src/components/ui/alert.tsx",
+        "src/components/ui/separator.tsx",
+        "src/components/ui/label.tsx",
+        "src/components/ui/toast.tsx",
+        "src/components/ui/sonner.tsx",
+        "src/components/ui/tooltip.tsx",
+        "src/components/ui/popover.tsx",
+        "src/components/ui/calendar.tsx",
+        "src/components/ui/select.tsx",
+        "src/components/ui/textarea.tsx",
+        "src/components/ui/checkbox.tsx",
+        "src/components/ui/radio-group.tsx",
+        "src/components/ui/slider.tsx",
+        "src/components/ui/skeleton.tsx",
+        "src/components/ui/spinner.tsx",
+        "src/components/ui/table.tsx",
+        "src/components/ui/toggle.tsx",
+        "src/components/ui/toggle-group.tsx",
+        "src/components/ui/hover-card.tsx",
+        "src/components/ui/context-menu.tsx",
+        "src/components/ui/menubar.tsx",
+        "src/components/ui/navigation-menu.tsx",
+        "src/components/ui/pagination.tsx",
+        "src/components/ui/resizable.tsx",
+        "src/components/ui/scroll-area.tsx",
+        "src/components/ui/sheet.tsx",
+        "src/components/ui/sidebar.tsx",
+        "src/components/ui/empty.tsx",
+        "src/components/ui/field.tsx",
+        "src/components/ui/item.tsx",
+        "src/components/ui/kbd.tsx",
+        "src/components/ui/aspect-ratio.tsx",
+        "src/components/ui/accordion.tsx",
+        "src/components/ui/alert-dialog.tsx",
+        "src/components/ui/avatar.tsx",
+        "src/components/ui/breadcrumb.tsx",
+        "src/components/ui/carousel.tsx",
+        "src/components/ui/chart.tsx",
+        "src/components/ui/collapsible.tsx",
+        "src/components/ui/command.tsx",
+        "src/components/ui/drawer.tsx",
+        "src/components/ui/input-group.tsx",
+        "src/components/ui/input-otp.tsx",
+        "src/components/ui/button-group.tsx",
+        "src/components/ui/animated-tabs.tsx"
+      ]
+    },
+    {
+      "name": "Theme System",
+      "description": "Dark/light theme system with context management",
+      "files": [
+        "src/contexts/ThemeContext.tsx",
+        "src/components/ds/ThemeSwitch.tsx"
+      ]
+    },
+    {
+      "name": "Search System",
+      "description": "Global search functionality with context management",
+      "files": [
+        "src/contexts/SearchContext.tsx"
+      ]
+    },
+    {
+      "name": "Data Hooks",
+      "description": "Custom hooks for data fetching and state management",
+      "files": [
+        "src/hooks/use-mobile.tsx",
+        "src/hooks/use-toast.ts",
+        "src/hooks/useDebounce.ts",
+        "src/hooks/useAlertsData.ts"
+      ]
+    },
+    {
+      "name": "Supabase Integration",
+      "description": "Supabase client configuration and type definitions",
+      "files": [
+        "src/integrations/supabase/client.ts",
+        "src/integrations/supabase/types.ts"
+      ]
+    },
+    {
+      "name": "Utilities",
+      "description": "Utility functions and constants",
+      "files": [
+        "src/lib/utils.ts",
+        "src/constants/categories.ts"
+      ]
+    },
+    {
+      "name": "Logo and Branding",
+      "description": "Logo component and branding elements",
+      "files": [
+        "src/components/Logo.tsx"
+      ]
+    },
+    {
+      "name": "Help and Support",
+      "description": "Help system with floating support widget",
+      "files": [
+        "src/components/HelpAndSupport.tsx"
+      ]
+    },
+    {
+      "name": "Period Filter",
+      "description": "Date range filtering component",
+      "files": [
+        "src/components/PeriodFilter.tsx"
+      ]
+    },
+    {
+      "name": "Alerts Section",
+      "description": "Alert management and display system",
+      "files": [
+        "src/components/AlertsSection.tsx"
+      ]
+    }
+  ]
+}
