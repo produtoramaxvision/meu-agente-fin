@@ -45,6 +45,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Switch } from '@/components/ui/switch';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 
 const formSchema = z.object({
   tipo: z.enum(['entrada', 'saida']),
@@ -252,37 +253,19 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
                   <FormItem>
                     <FormLabel>Tipo</FormLabel>
                     <FormControl>
-                      {/* BUG FIX - TestSprite TC005
-                          Problema: Não era possível alternar o tipo de transação de 'Saída' para 'Entrada' no modal
-                          Solução: Substituir Select por botões de toggle com estado visual claro
-                          Data: 2025-01-06
-                          Validado: sim */}
-                      <div className="flex rounded-lg border p-1 bg-surface-2">
-                        <button
-                          type="button"
-                          onClick={() => field.onChange('saida')}
-                          className={cn(
-                            "flex-1 px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
-                            field.value === 'saida'
-                              ? "bg-brand text-white shadow-sm"
-                              : "text-text-muted hover:text-text hover:bg-surface-3"
-                          )}
-                        >
-                          Saída
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => field.onChange('entrada')}
-                          className={cn(
-                            "flex-1 px-3 py-2 text-sm font-medium rounded-md transition-all duration-200",
-                            field.value === 'entrada'
-                              ? "bg-brand text-white shadow-sm"
-                              : "text-text-muted hover:text-text hover:bg-surface-3"
-                          )}
-                        >
-                          Entrada
-                        </button>
-                      </div>
+                      {/* PADRONIZAÇÃO - Aplicando SegmentedControl com padrão da agenda
+                          Mantendo funcionalidade existente com design consistente
+                          Data: 2025-01-16 */}
+                      <SegmentedControl
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        options={[
+                          { value: "saida", label: "Saída" },
+                          { value: "entrada", label: "Entrada" },
+                        ]}
+                        size="md"
+                        className="w-full"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

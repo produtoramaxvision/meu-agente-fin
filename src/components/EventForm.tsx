@@ -19,6 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { SegmentedControl } from '@/components/ui/segmented-control';
 
 const formSchema = z.object({
   title: z.string().min(1, 'Título é obrigatório').max(200, 'Título muito longo'),
@@ -564,18 +565,19 @@ export function EventForm({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Prioridade</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="low">{priorityLabels.low}</SelectItem>
-                              <SelectItem value="medium">{priorityLabels.medium}</SelectItem>
-                              <SelectItem value="high">{priorityLabels.high}</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <FormControl>
+                            <SegmentedControl
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              options={[
+                                { value: "low", label: priorityLabels.low },
+                                { value: "medium", label: priorityLabels.medium },
+                                { value: "high", label: priorityLabels.high },
+                              ]}
+                              size="sm"
+                              className="w-full"
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -589,18 +591,19 @@ export function EventForm({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Status</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="confirmed">{statusLabels.confirmed}</SelectItem>
-                              <SelectItem value="tentative">{statusLabels.tentative}</SelectItem>
-                              <SelectItem value="cancelled">{statusLabels.cancelled}</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <FormControl>
+                            <SegmentedControl
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              options={[
+                                { value: "confirmed", label: statusLabels.confirmed },
+                                { value: "tentative", label: statusLabels.tentative },
+                                { value: "cancelled", label: statusLabels.cancelled },
+                              ]}
+                              size="sm"
+                              className="w-full"
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -612,18 +615,19 @@ export function EventForm({
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Privacidade</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="default">{privacyLabels.default}</SelectItem>
-                              <SelectItem value="public">{privacyLabels.public}</SelectItem>
-                              <SelectItem value="private">{privacyLabels.private}</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <FormControl>
+                            <SegmentedControl
+                              value={field.value}
+                              onValueChange={field.onChange}
+                              options={[
+                                { value: "default", label: privacyLabels.default },
+                                { value: "public", label: privacyLabels.public },
+                                { value: "private", label: privacyLabels.private },
+                              ]}
+                              size="sm"
+                              className="w-full"
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
