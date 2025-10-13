@@ -50,17 +50,29 @@ export function AppSidebar({ collapsed, onToggle, showCloseButton = false }: App
       onClick={(e) => {
         const target = e.target as HTMLElement;
         
+        // CORREÇÃO CRÍTICA - Melhorar detecção de elementos interativos
+        // Problema: onClick do aside interferia com NavLinks causando múltiplos cliques
+        // Solução: Detecção mais precisa de elementos interativos
+        // Data: 2025-01-16
+        
         // Verificar se o clique foi em um elemento interativo
         const isInteractive = target.closest(`
           a, button, input, textarea, select, 
-          [role="button"], [role="link"], [role="menuitem"],
-          [data-radix-portal], [role="dialog"]
+          [role="button"], [role="link"], [role="menuitem"], [role="tab"],
+          [data-radix-portal], [role="dialog"], [data-state],
+          .group, [class*="hover:"], [class*="transition"]
         `);
+        
+        // Verificar se o clique foi especificamente em um NavLink
+        const isNavLink = target.closest('a[href]');
         
         // Verificar se há algum modal/dialog aberto
         const hasOpenModal = document.querySelector('[role="dialog"][data-state="open"]');
         
-        if (!isInteractive && !hasOpenModal) {
+        // Verificar se o sidebar está colapsado (só deve toggle quando colapsado)
+        const shouldToggle = collapsed && !isInteractive && !isNavLink && !hasOpenModal;
+        
+        if (shouldToggle) {
           onToggle();
         }
       }}
