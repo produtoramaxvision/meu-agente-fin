@@ -102,6 +102,8 @@ export function EventForm({
   isSubmitting = false,
   defaultEventData,
 }: EventFormProps) {
+  const [isStartDatePickerOpen, setIsStartDatePickerOpen] = useState(false);
+  const [isEndDatePickerOpen, setIsEndDatePickerOpen] = useState(false);
   const [calendarFormOpen, setCalendarFormOpen] = useState(false);
   
   const form = useForm<z.infer<typeof formSchema>>({
@@ -310,7 +312,7 @@ export function EventForm({
                       render={({ field }) => (
                         <FormItem className="flex flex-col">
                           <FormLabel>Data de Início</FormLabel>
-                          <Popover>
+                          <Popover open={isStartDatePickerOpen} onOpenChange={setIsStartDatePickerOpen}>
                             <PopoverTrigger asChild>
                               <FormControl>
                                 <Button
@@ -333,7 +335,10 @@ export function EventForm({
                               <CalendarPicker
                                 mode="single"
                                 selected={field.value}
-                                onSelect={field.onChange}
+                                onSelect={(date) => {
+                                  field.onChange(date);
+                                  setIsStartDatePickerOpen(false);
+                                }}
                                 initialFocus
                                 className="calendar-responsive"
                               />
@@ -379,7 +384,7 @@ export function EventForm({
                       render={({ field }) => (
                         <FormItem className="flex flex-col">
                           <FormLabel>Data de Término</FormLabel>
-                          <Popover>
+                          <Popover open={isEndDatePickerOpen} onOpenChange={setIsEndDatePickerOpen}>
                             <PopoverTrigger asChild>
                               <FormControl>
                                 <Button
@@ -402,7 +407,10 @@ export function EventForm({
                               <CalendarPicker
                                 mode="single"
                                 selected={field.value}
-                                onSelect={field.onChange}
+                                onSelect={(date) => {
+                                  field.onChange(date);
+                                  setIsEndDatePickerOpen(false);
+                                }}
                                 initialFocus
                                 className="calendar-responsive"
                               />

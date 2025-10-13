@@ -72,6 +72,8 @@ interface FinanceRecordFormProps {
 export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: controlledOpen, onOpenChange }: FinanceRecordFormProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isRecurrenceDatePickerOpen, setIsRecurrenceDatePickerOpen] = useState(false);
   const { cliente } = useAuth();
 
   const isControlled = controlledOpen !== undefined && onOpenChange !== undefined;
@@ -319,7 +321,7 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>{isPaid ? 'Data do Pagamento/Recebimento' : 'Data de Vencimento'}</FormLabel>
-                  <Popover>
+                  <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button variant="outline" className={cn('pl-3 text-left font-normal', !field.value && 'text-text-muted')}>
@@ -329,7 +331,15 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                      <Calendar 
+                        mode="single" 
+                        selected={field.value} 
+                        onSelect={(date) => {
+                          field.onChange(date);
+                          setIsDatePickerOpen(false);
+                        }} 
+                        initialFocus 
+                      />
                     </PopoverContent>
                   </Popover>
                   <FormMessage />
@@ -371,7 +381,7 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
                   render={({ field }) => (
                     <FormItem className="flex flex-col pt-2">
                       <FormLabel>Data final da recorrência</FormLabel>
-                      <Popover>
+                      <Popover open={isRecurrenceDatePickerOpen} onOpenChange={setIsRecurrenceDatePickerOpen}>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button variant="outline" className={cn('pl-3 text-left font-normal', !field.value && 'text-text-muted')}>
@@ -381,7 +391,15 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                          <Calendar 
+                            mode="single" 
+                            selected={field.value} 
+                            onSelect={(date) => {
+                              field.onChange(date);
+                              setIsRecurrenceDatePickerOpen(false);
+                            }} 
+                            initialFocus 
+                          />
                         </PopoverContent>
                       </Popover>
                       <FormMessage />

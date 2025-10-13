@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -34,6 +34,8 @@ interface TaskFormProps {
 }
 
 export function TaskForm({ open, onOpenChange, onSubmit, taskToEdit, isSubmitting = false }: TaskFormProps) {
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -189,7 +191,7 @@ export function TaskForm({ open, onOpenChange, onSubmit, taskToEdit, isSubmittin
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Data de Vencimento</FormLabel>
-                  <Popover>
+                  <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
@@ -212,7 +214,10 @@ export function TaskForm({ open, onOpenChange, onSubmit, taskToEdit, isSubmittin
                       <Calendar
                         mode="single"
                         selected={field.value || undefined}
-                        onSelect={field.onChange}
+                        onSelect={(date) => {
+                          field.onChange(date);
+                          setIsDatePickerOpen(false);
+                        }}
                         initialFocus
                       />
                     </PopoverContent>
