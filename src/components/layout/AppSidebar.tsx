@@ -49,8 +49,18 @@ export function AppSidebar({ collapsed, onToggle, showCloseButton = false }: App
     <aside
       onClick={(e) => {
         const target = e.target as HTMLElement;
-        const isInteractive = target.closest('a, button, input, [role="button"]');
-        if (!isInteractive) {
+        
+        // Verificar se o clique foi em um elemento interativo
+        const isInteractive = target.closest(`
+          a, button, input, textarea, select, 
+          [role="button"], [role="link"], [role="menuitem"],
+          [data-radix-portal], [role="dialog"]
+        `);
+        
+        // Verificar se há algum modal/dialog aberto
+        const hasOpenModal = document.querySelector('[role="dialog"][data-state="open"]');
+        
+        if (!isInteractive && !hasOpenModal) {
           onToggle();
         }
       }}
