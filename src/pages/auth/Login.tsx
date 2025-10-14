@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,9 +15,12 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  if (cliente) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  // ✅ CORREÇÃO: Remover redirecionamento duplicado
+  // O AuthContext já gerencia o redirecionamento após login bem-sucedido
+  // e o ProtectedRoute gerencia o acesso às rotas protegidas
+  // if (cliente) {
+  //   return <Navigate to="/dashboard" replace />;
+  // }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

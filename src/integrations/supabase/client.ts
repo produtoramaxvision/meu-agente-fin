@@ -10,8 +10,10 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
-    storage: sessionStorage,
+    storage: localStorage, // ✅ CORREÇÃO: Usar localStorage para persistir sessão entre recarregamentos
     persistSession: true,
     autoRefreshToken: true,
+    detectSessionInUrl: false, // ✅ CORREÇÃO: Evitar conflitos com URLs
+    flowType: 'pkce', // ✅ CORREÇÃO: Usar PKCE para melhor segurança
   }
 });

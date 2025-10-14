@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { cliente, loading } = useAuth();
+  const { cliente, loading, user, session } = useAuth();
 
   if (loading) {
     return (
@@ -12,7 +12,9 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!cliente) {
+  // ✅ CORREÇÃO: Verificar session/user em vez de cliente para evitar ciclo de redirecionamento
+  // O cliente é carregado de forma assíncrona após a sessão ser estabelecida
+  if (!session || !user) {
     return <Navigate to="/auth/login" replace />;
   }
 

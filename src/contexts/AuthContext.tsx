@@ -58,11 +58,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const initializeAuth = async () => {
       try {
-        // Get initial session
+        // Aguardar um pouco para garantir que o localStorage foi carregado
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         const { data: { session: initialSession }, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
           console.error('Error getting session:', sessionError);
+          if (mounted) {
+            setLoading(false);
+          }
           return;
         }
 
@@ -71,12 +76,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(initialSession?.user ?? null);
           
           if (initialSession?.user) {
-            await loadClienteFromAuth(initialSession.user);
+            // Carregar dados do cliente de forma assíncrona
+            loadClienteFromAuth(initialSession.user).catch(err => {
+              console.error('Error loading cliente:', err);
+            });
+          } else {
+            // Se não há sessão, garantir que o estado está limpo
+            setCliente(null);
+            setUser(null);
+            setSession(null);
           }
+          
+          // ✅ CORREÇÃO: Definir loading como false apenas após processar a sessão
+          // Isso evita que o ProtectedRoute redirecione antes da sessão estar pronta
+          setLoading(false);
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
-      } finally {
         if (mounted) {
           setLoading(false);
         }
@@ -89,25 +105,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       console.log('Auth state changed:', event, session?.user?.id);
       
-      // Não processar se foi logout manual - evitar race conditions
-      if (event === 'SIGNED_OUT' && !session) {
-        setSession(null);
-        setUser(null);
-        setCliente(null);
-        setLoading(false);
-        return;
-      }
-      
-      setSession(session);
-      setUser(session?.user ?? null);
-
-      if (session?.user) {
-        await loadClienteFromAuth(session.user);
-      } else {
-        setCliente(null);
-        // Clear legacy session storage
-        sessionStorage.removeItem('auth_phone');
-        sessionStorage.removeItem('auth_avatar');
+      // Processar diferentes eventos de autenticação
+      switch (event) {
+        case 'SIGNED_IN':
+        case 'TOKEN_REFRESHED':
+          if (session?.user) {
+            setSession(session);
+            setUser(session.user);
+            // Carregar dados do cliente de forma assíncrona
+            loadClienteFromAuth(session.user).catch(err => {
+              console.error('Error loading cliente in listener:', err);
+            });
+          }
+          break;
+          
+        case 'SIGNED_OUT':
+          setSession(null);
+          setUser(null);
+          setCliente(null);
+          // Limpar dados de sessão
+          sessionStorage.removeItem('auth_phone');
+          sessionStorage.removeItem('auth_avatar');
+          break;
+          
+        case 'USER_UPDATED':
+          if (session?.user) {
+            setUser(session.user);
+            // Carregar dados do cliente de forma assíncrona
+            loadClienteFromAuth(session.user).catch(err => {
+              console.error('Error loading cliente in listener:', err);
+            });
+          }
+          break;
+          
+        default:
+          // Para outros eventos, apenas atualizar o estado
+          setSession(session);
+          setUser(session?.user ?? null);
+          if (session?.user) {
+            // Carregar dados do cliente de forma assíncrona
+            loadClienteFromAuth(session.user).catch(err => {
+              console.error('Error loading cliente in listener:', err);
+            });
+          } else {
+            setCliente(null);
+          }
       }
       
       setLoading(false);
