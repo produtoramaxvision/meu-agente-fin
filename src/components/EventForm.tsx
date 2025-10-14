@@ -305,12 +305,12 @@ export function EventForm({
                     )}
                   />
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-4 items-start">
                     <FormField
                       control={form.control}
                       name="start_date"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col">
+                        <FormItem>
                           <FormLabel>Data de Início</FormLabel>
                           <Popover open={isStartDatePickerOpen} onOpenChange={setIsStartDatePickerOpen}>
                             <PopoverTrigger asChild>
@@ -318,7 +318,7 @@ export function EventForm({
                                 <Button
                                   variant="outline"
                                   className={cn(
-                                    'pl-3 text-left font-normal',
+                                    'w-full h-10 pl-3 text-left font-normal justify-start',
                                     !field.value && 'text-text-muted'
                                   )}
                                 >
@@ -360,7 +360,7 @@ export function EventForm({
                               <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
                               <Input
                                 type="text"
-                                className="pl-9"
+                                className="pl-9 h-10"
                                 {...field}
                                 onBlur={(e) => {
                                   field.onChange(formatTimeToHHMM(e.target.value));
@@ -377,12 +377,12 @@ export function EventForm({
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-4 items-start">
                     <FormField
                       control={form.control}
                       name="end_date"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col">
+                        <FormItem>
                           <FormLabel>Data de Término</FormLabel>
                           <Popover open={isEndDatePickerOpen} onOpenChange={setIsEndDatePickerOpen}>
                             <PopoverTrigger asChild>
@@ -390,7 +390,7 @@ export function EventForm({
                                 <Button
                                   variant="outline"
                                   className={cn(
-                                    'pl-3 text-left font-normal',
+                                    'w-full h-10 pl-3 text-left font-normal justify-start',
                                     !field.value && 'text-text-muted'
                                   )}
                                 >
@@ -432,7 +432,7 @@ export function EventForm({
                               <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
                               <Input
                                 type="text"
-                                className="pl-9"
+                                className="pl-9 h-10"
                                 {...field}
                                 onBlur={(e) => {
                                   field.onChange(formatTimeToHHMM(e.target.value));
