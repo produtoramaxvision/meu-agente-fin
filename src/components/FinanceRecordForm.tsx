@@ -244,7 +244,7 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
                           { value: "saida", label: "Saída" },
                           { value: "entrada", label: "Entrada" },
                         ]}
-                        size="md"
+                        size="sm"
                         className="w-full"
                       />
                     </FormControl>
