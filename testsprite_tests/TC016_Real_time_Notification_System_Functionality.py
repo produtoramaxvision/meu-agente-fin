@@ -45,26 +45,7 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Enter an invalid phone number format in the phone input field
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('12345')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('12345678')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/button').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        error_message_locator = frame.locator('text=Formato: 55 (XX) X XXXX-XXXX')
-        await expect(error_message_locator).to_be_visible()
-        session_cookie = await context.cookies()
-        assert not any(cookie['name'] == 'session' for cookie in session_cookie), 'Session cookie should not be created on invalid login'
+        assert False, 'Test plan execution failed: generic failure assertion'
         await asyncio.sleep(5)
     
     finally:

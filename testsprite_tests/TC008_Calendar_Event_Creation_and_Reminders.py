@@ -45,47 +45,6 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Input phone number and password, then click Entrar to log in
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('5511949746110')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('12345678')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/button').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Navigate to Perfil (Profile) to find data export or privacy options
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[8]').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Click on Privacidade tab to access data export and deletion options
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div/div/button[2]').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Click the 'Exportar Meus Dados' button to request data export
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[3]/div[2]/div[2]/button').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Submit data deletion request by clicking 'Deletar Todos os Dados' button
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[3]/div[2]/div[2]/button[2]').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Final generic failing assertion since expected result is unknown
         assert False, 'Test plan execution failed: generic failure assertion'
         await asyncio.sleep(5)
     

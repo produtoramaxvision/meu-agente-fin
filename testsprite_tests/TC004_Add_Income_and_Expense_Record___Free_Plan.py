@@ -45,7 +45,7 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Input phone number and password for Premium user and click login button
+        # Input phone number and password, then click login button
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
         await page.wait_for_timeout(3000); await elem.fill('5511949746110')
@@ -61,56 +61,47 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Navigate to backup management or settings page to check backup status or trigger backup
+        # Click on 'Contas' link to navigate to financial records page
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[8]').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[3]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click on the Backup tab to check backup status or trigger backup
+        # Click on 'Nova Transação' button to add new income record
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div/div/button[3]').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Download the latest automatic backup file to verify secure encryption and off-site storage indication
+        # Select 'Entrada' (income) type, input amount, select category, set date, and save the income record.
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[3]/div[2]/div/div/div/div/div[2]/div/button').nth(0)
+        elem = frame.locator('xpath=html/body/div[3]/form/div[2]/div/div/button[2]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Perform restoration from the latest automatic backup to verify data integrity and restoration completeness
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[3]/div[2]/div/div/div/div/div[2]/div/button[2]').nth(0)
+        elem = frame.locator('xpath=html/body/div[3]/form/div[2]/div[2]/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('1000')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[3]/form/div[3]/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Verify data integrity and restoration completeness by checking key user data or dashboard elements
+        # Select a category for the income record and save it.
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a').nth(0)
+        elem = frame.locator('xpath=html/body/div[4]/div/div/div').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Verify backup encryption and off-site storage compliance by checking backup metadata or system logs if accessible
+        # Click 'Salvar' button to save the income record and verify it appears in the list.
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div[3]/div[2]/div/div/div[3]/a').nth(0)
+        elem = frame.locator('xpath=html/body/div[3]/form/div[7]/button[2]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Assertion: Verify backup file creation in off-site location with secure encryption
-        backup_file_element = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[3]/div[2]/div/div/div/div/div[2]/div/button').nth(0)
-        assert await backup_file_element.is_visible(), 'Backup file download button should be visible indicating backup file presence'
-        # Additional check for secure encryption and off-site storage indication could be metadata or label presence
-        encryption_label = frame.locator('text=Encrypted')
-        offsite_label = frame.locator('text=Off-site')
-        assert await encryption_label.count() > 0, 'Encryption label should be present indicating secure encryption'
-        assert await offsite_label.count() > 0, 'Off-site label should be present indicating off-site backup storage'
-        # Assertion: Confirm data integrity and restoration completeness
-        # Check for key user data or dashboard elements after restoration
-        dashboard_title = frame.locator('text=Meu Agente - Dashboard Financeiro')
-        assert await dashboard_title.is_visible(), 'Dashboard title should be visible indicating restoration completeness'
-        balance_element = frame.locator('text=R$ 0')
-        assert await balance_element.is_visible(), 'Balance element should be visible indicating data integrity'
+        assert False, 'Test plan execution failed: generic failure assertion'
         await asyncio.sleep(5)
     
     finally:

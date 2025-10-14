@@ -45,7 +45,7 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Input phone number and password for Free plan user and click login button
+        # Input phone number and password and click Entrar to attempt login and check for consent prompt
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
         await page.wait_for_timeout(3000); await elem.fill('5511949746110')
@@ -61,35 +61,47 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click on 'Ajuda' button to access support section for submitting a ticket
+        # Navigate to profile or privacy settings page to check for consent management and privacy options
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/div[3]/div/button').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[8]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click on 'Suporte' button to open support ticket creation form
+        # Click on 'Privacidade' tab to check user consent management and privacy options
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/div[2]/button').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div/div/button[2]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Fill in the subject and detailed description fields with valid text and submit the ticket
+        # Toggle off 'Processamento de Dados' (index 26) and 'E-mails de Marketing' (index 28) to simulate opt-out, then save settings by clicking 'Salvar Configurações' (index 31)
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/div[2]/div/div[2]/div/div/form/div[2]/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('Problema com login')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/div[2]/div/div[2]/div/div/form/div[3]/textarea').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('Não consigo acessar minha conta usando o aplicativo móvel. Aparece erro de autenticação.')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/div[2]/div/div[2]/div/div/form/div[5]/button').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[2]/div[2]/div/div[3]/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        assert False, 'Test plan execution failed: generic failure assertion'
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[2]/div[2]/div/div[7]/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[2]/div[2]/div[2]/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Click 'Deletar Todos os Dados' button (index 34) to test data deletion functionality and system response
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[3]/div[2]/div[2]/button[2]').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Click 'Deletar Todos os Dados' button (index 34) again to confirm data deletion and observe system response
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[3]/div[2]/div[2]/button[2]').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        assert False, 'Test plan execution failed: user consent and privacy options verification could not be completed.'
         await asyncio.sleep(5)
     
     finally:

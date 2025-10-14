@@ -45,7 +45,7 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Input phone number and password, then click login button
+        # Input phone number and password, then click Entrar to login
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
         await page.wait_for_timeout(3000); await elem.fill('5511949746110')
@@ -61,93 +61,87 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click on 'Contas' or relevant menu to navigate to financial records page
+        # Navigate to profile or settings to enable Google Workspace integration
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[3]').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[8]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click on 'Nova Transação' button to start creating a new financial record
+        # Locate and enable Google Workspace integration option in profile or settings
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/button').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div/div/button[4]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Fill in the form for a new income record: select 'Entrada' (income), enter a valid value, select a category, set due date, optionally add description, and submit the form.
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div[2]/div/div/button[2]').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div[2]/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('1500.00')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div[3]/button').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Select a category (e.g., 'Salário') for the income record and click 'Salvar' to save the new record.
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[4]/div/div/div').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Click 'Salvar' button to save the new income record and verify it appears correctly in the financial records list with correct categorization.
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div[7]/button[2]').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Verify the newly added income record is visible in the financial records list with correct category 'Salário' and value R$1500.00, then proceed to create a new expense record.
+        # Scroll down the 'Configurações' page to locate Google Workspace integration option or related toggles
         await page.mouse.wheel(0, window.innerHeight)
         
 
-        # Create a new expense record with valid data and appropriate category, then verify it appears correctly in the list.
+        # Scroll down further or search for any links or buttons related to Google Workspace, Google Calendar, or Google Drive integration
+        await page.mouse.wheel(0, window.innerHeight)
+        
+
+        # Check other tabs in profile such as 'Privacidade' or 'Backup' for Google Workspace integration settings
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/button').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div/div/button[2]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Fill in the form for a new expense record: select 'Saída' (expense), enter a valid value, select a category, set due date, optionally add description, and submit the form.
+        # Check 'Backup' tab in profile for Google Workspace integration settings
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div[2]/div/div/button').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div/div/button[3]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
+        # Return to 'Configurações' tab and look for expandable menus, links, or buttons related to integrations or connected apps
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div[2]/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('200.00')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div[3]/button').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div/div/button[4]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Select a category (e.g., 'Alimentação') for the expense record and click 'Salvar' to save the new record.
+        # Navigate to main dashboard or other main menu sections to look for Google Workspace integration settings
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[4]/div/div/div[2]').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click 'Salvar' button to save the new expense record and verify it appears correctly in the financial records list with correct categorization.
+        # Click on 'Agenda' tab to check for Google Calendar integration settings or options
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div[7]/button[2]').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[2]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Check the 'A Receber' tab to see if the income record appears there, then check the 'Pagas' and 'Recebidas' tabs for the expense record visibility.
+        # Click 'Novo Evento' button to open the form for creating a new calendar event
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div[4]/div/div/button[2]').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div[3]/div[2]/div/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click on the 'A Pagar' tab to check if the newly added expense record with category 'Alimentação' and value R$200.00 is visible.
+        # Fill in the event form with test data and save the event to verify syncing with Google Calendar
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div[4]/div/div/button').nth(0)
+        elem = frame.locator('xpath=html/body/div[3]/form/div/div[2]/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('Teste de Integração Google Calendar')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[3]/form/div/div[2]/div[2]/textarea').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('Evento para verificar a integração com Google Calendar.')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[3]/form/div/div[2]/div[3]/div/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Close the date picker and click 'Salvar' to save the event and verify it appears in Google Calendar
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[3]/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Proceed to upload or link a document from Google Drive via Meu Agente interface to verify document handling and permissions
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[8]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 

@@ -45,31 +45,7 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Enter valid phone number and password
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('5511949746110')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('12345678')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/button').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Assert user is logged in by checking user name and phone on dashboard
-        frame = context.pages[-1]
-        user_name = await frame.locator('xpath=//div[contains(@class, "dashboard")]//div[contains(text(), "Max Muller")]').text_content()
-        assert user_name == 'Max Muller', f"Expected user name to be 'Max Muller' but got {user_name}"
-        user_phone = await frame.locator('xpath=//div[contains(@class, "dashboard")]//div[contains(text(), "5511949746110")]').text_content()
-        assert user_phone == '5511949746110', f"Expected user phone to be '5511949746110' but got {user_phone}"
-        # Optionally check for avatar image presence
-        avatar_url = await frame.locator('xpath=//img[contains(@src, "avatar.png")]').get_attribute('src')
-        assert '5511949746110' in avatar_url, f"Expected avatar URL to contain phone number but got {avatar_url}"
+        assert False, 'Test plan execution failed: generic failure assertion'
         await asyncio.sleep(5)
     
     finally:

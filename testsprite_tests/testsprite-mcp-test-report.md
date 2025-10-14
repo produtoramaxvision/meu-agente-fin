@@ -1,13 +1,11 @@
-# TestSprite AI Testing Report(MCP)
+# TestSprite AI Testing Report (MCP)
 
 ---
 
 ## 1️⃣ Document Metadata
 - **Project Name:** meu-agente-fin
-- **Date:** 2025-01-16
+- **Date:** 2025-10-14
 - **Prepared by:** TestSprite AI Team
-- **Test Environment:** Local Development (http://localhost:8080)
-- **Test Scope:** Frontend Application Testing
 
 ---
 
@@ -15,257 +13,329 @@
 
 ### 🔐 Authentication & Security Requirements
 
-#### Test TC001
-- **Test Name:** Phone-based Authentication Success
-- **Test Code:** [TC001_Phone_based_Authentication_Success.py](./TC001_Phone_based_Authentication_Success.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/6229967a-f4f6-4d88-81e2-922f25a0bd56
-- **Status:** ✅ Passed
-- **Analysis / Findings:** Authentication system funciona corretamente com telefone como identificador. Login com credenciais válidas é bem-sucedido e redireciona para o dashboard. Sistema de autenticação baseado em Supabase Auth está operacional.
+#### Test TC001 - Phone OTP Authentication Success
+- **Test Name:** Phone OTP Authentication Success
+- **Test Code:** [TC001_Phone_OTP_Authentication_Success.py](./TC001_Phone_OTP_Authentication_Success.py)
+- **Test Error:** Failed to go to the start URL. Err: Error executing action go_to_url: Page.goto: Timeout 60000ms exceeded.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/5b3e7ac2-4e8a-46c9-bb99-254813f07d3f
+- **Status:** ❌ Failed
+- **Analysis / Findings:** O aplicativo não está respondendo na porta 8080, indicando que o servidor não está rodando ou há problemas de conectividade. Isso impede a execução de todos os testes de autenticação.
+
 ---
 
-#### Test TC002
-- **Test Name:** Phone-based Authentication Failure with Invalid Number
-- **Test Code:** [TC002_Phone_based_Authentication_Failure_with_Invalid_Number.py](./TC002_Phone_based_Authentication_Failure_with_Invalid_Number.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/72cbf0b7-b3f1-4541-a684-2ce08d0ec603
-- **Status:** ✅ Passed
-- **Analysis / Findings:** Sistema de validação de telefone funciona corretamente, rejeitando números inválidos e exibindo mensagens de erro apropriadas. Segurança de autenticação está adequada.
+#### Test TC002 - Phone OTP Authentication Rate Limiting
+- **Test Name:** Phone OTP Authentication Rate Limiting
+- **Test Code:** [TC002_Phone_OTP_Authentication_Rate_Limiting.py](./TC002_Phone_OTP_Authentication_Rate_Limiting.py)
+- **Test Error:** Failed to go to the start URL. Err: Error executing action go_to_url: Page.goto: Timeout 60000ms exceeded.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/43cf7423-392e-406f-b09c-b40a96c9f6ed
+- **Status:** ❌ Failed
+- **Analysis / Findings:** Mesmo problema de conectividade. Não foi possível testar o sistema de rate limiting devido à falha na conexão inicial.
+
 ---
 
-#### Test TC003
-- **Test Name:** Rate Limiting on Authentication Attempts
-- **Test Code:** [TC003_Rate_Limiting_on_Authentication_Attempts.py](./TC003_Rate_Limiting_on_Authentication_Attempts.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/a08dafcf-3427-403b-9a64-cb2927b04c73
-- **Status:** ✅ Passed
-- **Analysis / Findings:** Sistema de rate limiting está funcionando corretamente, protegendo contra ataques de força bruta. Limite de tentativas de login está adequadamente configurado.
+#### Test TC003 - Authentication with Invalid OTP
+- **Test Name:** Authentication with Invalid OTP
+- **Test Code:** [TC003_Authentication_with_Invalid_OTP.py](./TC003_Authentication_with_Invalid_OTP.py)
+- **Test Error:** The task to verify login failure with invalid or expired OTP codes and appropriate error messages was not fully completed because the invalid or expired OTP input test was not performed.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/216d57ca-74b1-4b48-8885-14f50e8d2738
+- **Status:** ❌ Failed
+- **Analysis / Findings:** **CRÍTICO**: Detectado loop infinito no hook `useAgendaData` que está causando múltiplas requisições desnecessárias. O sistema está bloqueando requisições temporariamente, mas isso indica um problema sério de performance que pode afetar toda a aplicação.
+
 ---
 
 ### 💰 Financial Management Requirements
 
-#### Test TC004
-- **Test Name:** Financial Record Creation and Categorization
-- **Test Code:** [TC004_Financial_Record_Creation_and_Categorization.py](./TC004_Financial_Record_Creation_and_Categorization.py)
-- **Test Error:** Tested adding financial records with correct categorization and data fields. Income record was saved and visible correctly. Expense record was saved but not visible in the list, indicating a display or filtering issue. Task stopped due to this issue.
-Browser Console Logs:
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Sun Oct 12 2025 15:29:32 GMT+0000 (Coordinated Universal Time), endDate: Sun Oct 12 2025 15:29:32 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:85:24)
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisição para evitar sobrecarga do Supabase (at http://localhost:8080/src/hooks/useAgendaData.ts:73:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/bf281020-26e7-4d20-9ba1-744f7af604ca
+#### Test TC004 - Add Income and Expense Record - Free Plan
+- **Test Name:** Add Income and Expense Record - Free Plan
+- **Test Code:** [TC004_Add_Income_and_Expense_Record___Free_Plan.py](./TC004_Add_Income_and_Expense_Record___Free_Plan.py)
+- **Test Error:** Test failed: Free plan user cannot add income records as the records do not appear after saving.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/cef62cd3-e489-46f5-bc06-af77f7f66a07
 - **Status:** ❌ Failed
-- **Analysis / Findings:** **CRÍTICO**: Loop infinito detectado no hook useAgendaData (linha 73). Registros financeiros são salvos no banco mas não aparecem na interface devido ao loop. Necessita correção urgente para evitar sobrecarga do Supabase.
+- **Analysis / Findings:** **CRÍTICO**: Funcionalidade básica de criação de registros financeiros não está funcionando no plano gratuito. Os registros não aparecem após serem salvos, indicando problema na persistência de dados ou na exibição.
+
 ---
 
-#### Test TC005
-- **Test Name:** Financial Record Export Functionality
-- **Test Code:** [TC005_Financial_Record_Export_Functionality.py](./TC005_Financial_Record_Export_Functionality.py)
-- **Test Error:** The financial records export functionality for paid plan users was successfully tested for CSV format with filters applied for date range (01/10/2025 to 12/10/2025) and category ('Salário'). The exported CSV file contained all selected records accurately as confirmed by the success message and record count (16). The PDF export and export restriction for free plan users were not tested yet, so the task is not fully complete.
-Browser Console Logs:
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisição para evitar sobrecarga do Supabase (at http://localhost:8080/src/hooks/useAgendaData.ts:73:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/2abf0032-ace5-4ac8-889c-4870e3d90508
+#### Test TC005 - Export Financial Data CSV/PDF - Business Plan
+- **Test Name:** Export Financial Data CSV/PDF - Business Plan
+- **Test Code:** [null](./null)
+- **Test Error:** Test execution timed out after 15 minutes
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/389e4ae4-1a06-471a-bf57-5d22162ce86b
 - **Status:** ❌ Failed
-- **Analysis / Findings:** Exportação CSV funciona parcialmente (16 registros exportados), mas o loop infinito impede testes completos. Funcionalidade de exportação está implementada mas afetada pelo problema de performance.
+- **Analysis / Findings:** **CRÍTICO**: Timeout de 15 minutos indica que a funcionalidade de exportação está travada ou com problemas graves de performance.
+
 ---
 
-### 📅 Calendar & Event Management Requirements
+### 📋 Task Management Requirements
 
-#### Test TC006
-- **Test Name:** Google Workspace Integration for Calendar Events
-- **Test Code:** [TC006_Google_Workspace_Integration_for_Calendar_Events.py](./TC006_Google_Workspace_Integration_for_Calendar_Events.py)
-- **Test Error:** Tested creating a calendar event successfully in the app. Verification of synchronization with Google Calendar failed due to CAPTCHA blocking external search. The app calendar page is stuck loading and does not allow further update or delete event tests. Reporting this issue for investigation. Test incomplete.
-Browser Console Logs:
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisição para evitar sobrecarga do Supabase (at http://localhost:8080/src/hooks/useAgendaData.ts:73:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/658e1c5d-f0fa-4657-88a4-e960445c0bc8
+#### Test TC006 - Task Creation and Status Update
+- **Test Name:** Task Creation and Status Update
+- **Test Code:** [TC006_Task_Creation_and_Status_Update.py](./TC006_Task_Creation_and_Status_Update.py)
+- **Test Error:** The test to create a task with priority, category, due date, and update status was partially successful. However, attempts to input the category and due date failed due to interaction issues with those fields.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/33949625-3158-47ed-98c9-c723311d0ce9
 - **Status:** ❌ Failed
-- **Analysis / Findings:** Criação de eventos funciona, mas página de agenda fica travada devido ao loop infinito. Integração com Google Calendar não pode ser testada devido ao CAPTCHA. Problema principal é o loop infinito no useAgendaData.
+- **Analysis / Findings:** **ALTO**: Problemas de interação com campos de categoria e data de vencimento no formulário de tarefas. Os campos não estão respondendo adequadamente aos cliques ou entrada de dados.
+
 ---
 
-#### Test TC016
-- **Test Name:** Scheduling Agent Sending WhatsApp Reminders
-- **Test Code:** [TC016_Scheduling_Agent_Sending_WhatsApp_Reminders.py](./TC016_Scheduling_Agent_Sending_WhatsApp_Reminders.py)
-- **Test Error:** Test completed with partial success. The event was successfully scheduled and visible in the app agenda. Verification in Google Calendar was blocked by CAPTCHA. The agenda page is persistently stuck loading, preventing further verification of WhatsApp reminder opt-in status and message sending. Please investigate the agenda page loading issue to continue testing.
-Browser Console Logs:
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisição para evitar sobrecarga do Supabase (at http://localhost:8080/src/hooks/useAgendaData.ts:73:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/d20c80d2-a946-4d17-bb07-a2381d24966b
+### 🎯 Goals Management Requirements
+
+#### Test TC007 - Goal Setting and Progress Tracking
+- **Test Name:** Goal Setting and Progress Tracking
+- **Test Code:** [TC007_Goal_Setting_and_Progress_Tracking.py](./TC007_Goal_Setting_and_Progress_Tracking.py)
+- **Test Error:** Tested goal creation and display with progress bar successfully. However, the progress update functionality could not be tested due to missing or inaccessible UI controls for updating progress.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/3307fbc0-da1b-4cc0-8fe9-4bd58a923424
 - **Status:** ❌ Failed
-- **Analysis / Findings:** Agendamento de eventos funciona, mas página de agenda travada impede testes de lembretes WhatsApp. Mesmo problema do loop infinito afetando funcionalidades de agenda.
+- **Analysis / Findings:** **MÉDIO**: Criação de metas funciona, mas falta interface para atualizar progresso. Funcionalidade parcialmente implementada.
+
 ---
 
-### 🔒 Access Control & Plan Management Requirements
+### 📅 Calendar & Agenda Requirements
 
-#### Test TC008
-- **Test Name:** Role-Based Access Control and Plan Restrictions
-- **Test Code:** [TC008_Role_Based_Access_Control_and_Plan_Restrictions.py](./TC008_Role_Based_Access_Control_and_Plan_Restrictions.py)
-- **Test Error:** Logout functionality is broken, preventing switching users for further role-based access tests. Reporting this critical issue and stopping further testing until resolved.
-Browser Console Logs:
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisição para evitar sobrecarga do Supabase (at http://localhost:8080/src/hooks/useAgendaData.ts:73:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/9c322de5-2236-4af0-ae40-3ea1ad0a0077
+#### Test TC008 - Calendar Event Creation and Reminders
+- **Test Name:** Calendar Event Creation and Reminders
+- **Test Code:** [TC008_Calendar_Event_Creation_and_Reminders.py](./TC008_Calendar_Event_Creation_and_Reminders.py)
+- **Test Error:** Failed to go to the start URL. Err: Error executing action go_to_url: Page.goto: Timeout 60000ms exceeded.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/05030c0e-4f6f-4356-82d0-d15ff9446e64
 - **Status:** ❌ Failed
-- **Analysis / Findings:** **CRÍTICO**: Funcionalidade de logout está quebrada, impedindo testes de controle de acesso baseado em planos. Necessita correção urgente para permitir testes de diferentes usuários e planos.
+- **Analysis / Findings:** Problema de conectividade impediu teste da funcionalidade de agenda.
+
 ---
 
-#### Test TC012
-- **Test Name:** AI Sub-agent Functionalities per Subscription Plan
-- **Test Code:** [TC012_AI_Sub_agent_Functionalities_per_Subscription_Plan.py](./TC012_AI_Sub_agent_Functionalities_per_Subscription_Plan.py)
-- **Test Error:** Logout functionality is broken, preventing switching between user accounts. Cannot proceed with testing sub-agent features for Business and Premium plans. Reporting issue and stopping further actions.
-Browser Console Logs:
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisição para evitar sobrecarga do Supabase (at http://localhost:8080/src/hooks/useAgendaData.ts:73:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/e079fd0c-e316-438b-99e6-f9102b2070b8
+### 🤖 AI Sub-Agent Requirements
+
+#### Test TC009 - AI Sub-Agent Interaction - Business Plan
+- **Test Name:** AI Sub-Agent Interaction - Business Plan
+- **Test Code:** [TC009_AI_Sub_Agent_Interaction___Business_Plan.py](./TC009_AI_Sub_Agent_Interaction___Business_Plan.py)
+- **Test Error:** Dashboard page is not loading properly, stuck on loading spinner.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/e641e4b7-802c-4e13-9af4-20e845dacff9
 - **Status:** ❌ Failed
-- **Analysis / Findings:** Mesmo problema de logout impedindo testes de funcionalidades por plano de assinatura. Controle de acesso por planos não pode ser validado devido ao problema de logout.
+- **Analysis / Findings:** **CRÍTICO**: Dashboard não carrega adequadamente, ficando travado em loading spinner. Isso impede o acesso às funcionalidades principais do aplicativo.
+
 ---
 
-### 🎧 WhatsApp Integration Requirements
-
-#### Test TC007
-- **Test Name:** WhatsApp Opt-in and Opt-out Message Handling
-- **Test Code:** [TC007_WhatsApp_Opt_in_and_Opt_out_Message_Handling.py](./TC007_WhatsApp_Opt_in_and_Opt_out_Message_Handling.py)
-- **Test Error:** Stopped testing due to missing WhatsApp opt-in/out management section in the system UI. Unable to proceed with the task to ensure correct handling of WhatsApp opt-in/out status and messaging limits.
-Browser Console Logs:
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisição para evitar sobrecarga do Supabase (at http://localhost:8080/src/hooks/useAgendaData.ts:73:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/119b6e27-5205-4bad-bd7a-af3e730f41b0
+#### Test TC010 - AI Sub-Agent Inactive in Free Plan
+- **Test Name:** AI Sub-Agent Inactive in Free Plan
+- **Test Code:** [TC010_AI_Sub_Agent_Inactive_in_Free_Plan.py](./TC010_AI_Sub_Agent_Inactive_in_Free_Plan.py)
+- **Test Error:** Failed to go to the start URL. Err: Error executing action go_to_url: Page.goto: Timeout 60000ms exceeded.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/728884db-7e2d-4026-9feb-2bff2852b18b
 - **Status:** ❌ Failed
-- **Analysis / Findings:** Interface de gerenciamento WhatsApp opt-in/out não encontrada na UI. Funcionalidade WhatsApp não está implementada conforme especificado no plano de correção.
----
+- **Analysis / Findings:** Problema de conectividade impediu teste das restrições do plano gratuito.
 
-### 💾 Backup & Data Management Requirements
-
-#### Test TC009
-- **Test Name:** Backup System Daily Off-site Backup and Restoration
-- **Test Code:** [TC009_Backup_System_Daily_Off_site_Backup_and_Restoration.py](./TC009_Backup_System_Daily_Off_site_Backup_and_Restoration.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/bf356347-e702-420e-a85f-c2a283205c65
-- **Status:** ✅ Passed
-- **Analysis / Findings:** Sistema de backup funciona corretamente. Backup manual e restauração estão operacionais. Funcionalidade de backup está implementada e funcionando conforme esperado.
 ---
 
 ### 🎫 Support System Requirements
 
-#### Test TC010
-- **Test Name:** Support Ticket Creation and Priority Handling
-- **Test Code:** [TC010_Support_Ticket_Creation_and_Priority_Handling.py](./TC010_Support_Ticket_Creation_and_Priority_Handling.py)
-- **Test Error:** Testing stopped due to critical row-level security policy violation blocking support ticket creation for Free plan users. Issue reported for resolution. Cannot proceed further with ticket creation and priority verification tests.
-Browser Console Logs:
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisição para evitar sobrecarga do Supabase (at http://localhost:8080/src/hooks/useAgendaData.ts:73:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/05e5abaf-3dc6-4c87-b71e-1be9a01e3934
+#### Test TC011 - Support Ticket Creation and Tracking - Premium Plan
+- **Test Name:** Support Ticket Creation and Tracking - Premium Plan
+- **Test Code:** [TC011_Support_Ticket_Creation_and_Tracking___Premium_Plan.py](./TC011_Support_Ticket_Creation_and_Tracking___Premium_Plan.py)
+- **Test Error:** Failed to go to the start URL. Err: Error executing action go_to_url: Page.goto: Timeout 60000ms exceeded.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/60c04897-a050-4cef-8be9-c1829b20ceff
 - **Status:** ❌ Failed
-- **Analysis / Findings:** **CRÍTICO**: Violação de política RLS bloqueia criação de tickets de suporte para usuários do plano Free. Políticas RLS da tabela support_tickets precisam ser corrigidas para permitir acesso adequado.
+- **Analysis / Findings:** Problema de conectividade impediu teste do sistema de suporte.
+
 ---
 
-#### Test TC015
-- **Test Name:** Support System FAQ Accessibility and Search
-- **Test Code:** [TC015_Support_System_FAQ_Accessibility_and_Search.py](./TC015_Support_System_FAQ_Accessibility_and_Search.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/53fea097-49a0-406a-8278-3eeb8a7f6893
-- **Status:** ✅ Passed
-- **Analysis / Findings:** Sistema de FAQ funciona corretamente. Busca e navegação pelos FAQs estão operacionais. Funcionalidade de suporte está implementada e funcionando.
+### 💳 Plan Management Requirements
+
+#### Test TC012 - Plan Upgrade Unlocks Features
+- **Test Name:** Plan Upgrade Unlocks Features
+- **Test Code:** [TC012_Plan_Upgrade_Unlocks_Features.py](./TC012_Plan_Upgrade_Unlocks_Features.py)
+- **Test Error:** Upgrade button for Business plan is not working, blocking verification of premium feature access after upgrade.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/bdb08ba9-3a6c-4b57-afdf-d9f1e9851aad
+- **Status:** ❌ Failed
+- **Analysis / Findings:** **ALTO**: Botão de upgrade não está funcionando, impedindo a verificação de funcionalidades premium após upgrade de plano.
+
 ---
 
-### 📊 Dashboard & Reporting Requirements
+### 💾 Backup & Data Management Requirements
 
-#### Test TC011
-- **Test Name:** Dashboard Real-Time Data and Export Reports
-- **Test Code:** [TC011_Dashboard_Real_Time_Data_and_Export_Reports.py](./TC011_Dashboard_Real_Time_Data_and_Export_Reports.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/7715236c-82a9-445b-9c05-e673a5a2b40a
+#### Test TC013 - Backup Execution and Integrity Validation - Premium Plan
+- **Test Name:** Backup Execution and Integrity Validation - Premium Plan
+- **Test Code:** [TC013_Backup_Execution_and_Integrity_Validation___Premium_Plan.py](./TC013_Backup_Execution_and_Integrity_Validation___Premium_Plan.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/187b3392-3ad2-415f-9f28-fa156787d324
 - **Status:** ✅ Passed
-- **Analysis / Findings:** Dashboard funciona corretamente com dados em tempo real. Relatórios de exportação estão operacionais. Funcionalidade de dashboard está implementada e funcionando.
+- **Analysis / Findings:** **SUCESSO**: Funcionalidade de backup está funcionando corretamente no plano Premium.
+
+---
+
+### 🔒 Privacy & Compliance Requirements
+
+#### Test TC014 - Enforcement of LGPD Consent and Privacy Settings
+- **Test Name:** Enforcement of LGPD Consent and Privacy Settings
+- **Test Code:** [TC014_Enforcement_of_LGPD_Consent_and_Privacy_Settings.py](./TC014_Enforcement_of_LGPD_Consent_and_Privacy_Settings.py)
+- **Test Error:** User consent management and privacy options were verified. However, the data deletion functionality does not provide any confirmation or indication of success, which is a critical issue.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/ef695e69-c488-4d88-a81e-6df9f4505c49
+- **Status:** ❌ Failed
+- **Analysis / Findings:** **CRÍTICO**: Funcionalidade de exclusão de dados não fornece confirmação de sucesso, o que é um problema crítico de conformidade com LGPD.
+
+---
+
+### 🔗 Integration Requirements
+
+#### Test TC015 - Google Workspace Integration Functionality
+- **Test Name:** Google Workspace Integration Functionality
+- **Test Code:** [TC015_Google_Workspace_Integration_Functionality.py](./TC015_Google_Workspace_Integration_Functionality.py)
+- **Test Error:** We successfully logged in and created a calendar event, but did not find an explicit toggle or option to enable Google Workspace integration.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/f1ea9b45-c1c9-43be-afcf-d6bb26a3f37a
+- **Status:** ❌ Failed
+- **Analysis / Findings:** **MÉDIO**: Integração com Google Workspace não está claramente implementada ou visível na interface. Falta interface para configurar integração.
+
+---
+
+### 🔔 Notification Requirements
+
+#### Test TC016 - Real-time Notification System Functionality
+- **Test Name:** Real-time Notification System Functionality
+- **Test Code:** [TC016_Real_time_Notification_System_Functionality.py](./TC016_Real_time_Notification_System_Functionality.py)
+- **Test Error:** Failed to go to the start URL. Err: Error executing action go_to_url: Page.goto: Timeout 60000ms exceeded.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/e0da5946-13c2-4422-ba43-f92fdf7ab6f3
+- **Status:** ❌ Failed
+- **Analysis / Findings:** Problema de conectividade impediu teste do sistema de notificações.
+
 ---
 
 ### 🎨 UI/UX Requirements
 
-#### Test TC013
-- **Test Name:** UI Responsiveness and Theme Toggle
-- **Test Code:** [TC013_UI_Responsiveness_and_Theme_Toggle.py](./TC013_UI_Responsiveness_and_Theme_Toggle.py)
-- **Test Error:** Testing stopped due to persistent dashboard loading issue preventing UI verification. Reported the issue for resolution.
-Browser Console Logs:
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisição para evitar sobrecarga do Supabase (at http://localhost:8080/src/hooks/useAgendaData.ts:73:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/33517d36-4504-42b4-b6e0-2c2126d0e1f7
+#### Test TC017 - Dark and Light Theme Toggle Responsiveness
+- **Test Name:** Dark and Light Theme Toggle Responsiveness
+- **Test Code:** [TC017_Dark_and_Light_Theme_Toggle_Responsiveness.py](./TC017_Dark_and_Light_Theme_Toggle_Responsiveness.py)
+- **Test Error:** Testing stopped due to critical login issue blocking access to dashboard and theme switch verification.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/b83e0fa3-c790-455a-b00f-28b826cfa7ea
 - **Status:** ❌ Failed
-- **Analysis / Findings:** Dashboard fica travado devido ao loop infinito, impedindo testes de responsividade e toggle de tema. UI não pode ser testada adequadamente devido ao problema de performance.
+- **Analysis / Findings:** Problemas de login impediram teste da funcionalidade de alternância de tema.
+
 ---
 
-### 🔒 LGPD Compliance Requirements
-
-#### Test TC014
-- **Test Name:** LGPD Compliance: Data Privacy and Opt-out Management
-- **Test Code:** [TC014_LGPD_Compliance_Data_Privacy_and_Opt_out_Management.py](./TC014_LGPD_Compliance_Data_Privacy_and_Opt_out_Management.py)
-- **Test Error:** Testing stopped due to failure in data deletion functionality. Data export works, but deletion request does not respond, blocking LGPD compliance verification. Issue reported for developer attention.
-Browser Console Logs:
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisição para evitar sobrecarga do Supabase (at http://localhost:8080/src/hooks/useAgendaData.ts:73:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/8dedef91-8f75-4ccd-bf96-5e925d7fe17c/f92ce29c-264e-4e9a-ba00-2f53fa5befd1
+#### Test TC018 - Global Search and Filtering Across Modules
+- **Test Name:** Global Search and Filtering Across Modules
+- **Test Code:** [TC018_Global_Search_and_Filtering_Across_Modules.py](./TC018_Global_Search_and_Filtering_Across_Modules.py)
+- **Test Error:** Tested global search input with query 'Salário' after successful login. No relevant results or filtering appeared across financial, task, goals, and calendar modules as expected.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/1b4c7716-e04f-4201-9637-659bd282e5c5
 - **Status:** ❌ Failed
-- **Analysis / Findings:** **CRÍTICO**: Exportação de dados funciona, mas exclusão de dados não responde. Conformidade LGPD comprometida devido à falha na funcionalidade de exclusão. Necessita correção urgente para conformidade legal.
+- **Analysis / Findings:** **ALTO**: Sistema de busca global não está funcionando. Não retorna resultados relevantes nos módulos financeiro, tarefas, metas e calendário.
+
+---
+
+#### Test TC020 - UI Responsiveness and Accessibility Check
+- **Test Name:** UI Responsiveness and Accessibility Check
+- **Test Code:** [TC020_UI_Responsiveness_and_Accessibility_Check.py](./TC020_UI_Responsiveness_and_Accessibility_Check.py)
+- **Test Error:** Failed to go to the start URL. Err: Error executing action go_to_url: Page.goto: Timeout 60000ms exceeded.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/78513afb-73ce-4864-a4e2-b5717de7e880
+- **Status:** ❌ Failed
+- **Analysis / Findings:** Problema de conectividade impediu teste de responsividade e acessibilidade.
+
+---
+
+### 🎬 Advanced Features Requirements
+
+#### Test TC019 - Video Content Generation Request - Business Plan
+- **Test Name:** Video Content Generation Request - Business Plan
+- **Test Code:** [TC019_Video_Content_Generation_Request___Business_Plan.py](./TC019_Video_Content_Generation_Request___Business_Plan.py)
+- **Test Error:** Failed to go to the start URL. Err: Error executing action go_to_url: Page.goto: Timeout 60000ms exceeded.
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/07778ff7-3d99-4338-b6f6-3ebe4abc57b3/ecc4aef8-1dd0-4c31-9c7a-ec6c2dd306fb
+- **Status:** ❌ Failed
+- **Analysis / Findings:** Problema de conectividade impediu teste da funcionalidade de geração de vídeo.
+
 ---
 
 ## 3️⃣ Coverage & Matching Metrics
 
-- **37.50%** of tests passed (6 de 16 testes)
+- **1** de **20** testes passaram (5% de sucesso)
 
-| Requirement Category        | Total Tests | ✅ Passed | ❌ Failed  |
-|----------------------------|-------------|-----------|------------|
-| Authentication & Security  | 3           | 3         | 0          |
-| Financial Management       | 2           | 0         | 2          |
-| Calendar & Events          | 2           | 0         | 2          |
-| Access Control & Plans     | 2           | 0         | 2          |
-| WhatsApp Integration       | 1           | 0         | 1          |
-| Backup & Data Management   | 1           | 1         | 0          |
-| Support System             | 2           | 1         | 1          |
-| Dashboard & Reporting      | 1           | 1         | 0          |
-| UI/UX                      | 1           | 0         | 1          |
-| LGPD Compliance            | 1           | 0         | 1          |
+| Requirement Category | Total Tests | ✅ Passed | ❌ Failed |
+|---------------------|-------------|-----------|-----------|
+| Authentication & Security | 3 | 0 | 3 |
+| Financial Management | 2 | 0 | 2 |
+| Task Management | 1 | 0 | 1 |
+| Goals Management | 1 | 0 | 1 |
+| Calendar & Agenda | 1 | 0 | 1 |
+| AI Sub-Agent | 2 | 0 | 2 |
+| Support System | 1 | 0 | 1 |
+| Plan Management | 1 | 0 | 1 |
+| Backup & Data Management | 1 | 1 | 0 |
+| Privacy & Compliance | 1 | 0 | 1 |
+| Integration | 1 | 0 | 1 |
+| Notification | 1 | 0 | 1 |
+| UI/UX | 3 | 0 | 3 |
+| Advanced Features | 1 | 0 | 1 |
 
 ---
 
 ## 4️⃣ Key Gaps / Risks
 
-### 🚨 **PROBLEMAS CRÍTICOS IDENTIFICADOS**
+### 🚨 Critical Issues (Must Fix Immediately)
 
-#### 1. **Loop Infinito no useAgendaData** ⚠️ CRÍTICO
-- **Arquivo**: `src/hooks/useAgendaData.ts:73`
-- **Impacto**: Sobrecarga do Supabase, travamento da UI
-- **Causa**: Validação de datas incorreta causando re-renders infinitos
-- **Solução**: Corrigir validação de datas e implementar debounce
+1. **Loop Infinito no useAgendaData**: O hook está causando múltiplas requisições desnecessárias, bloqueando a aplicação e causando problemas de performance críticos.
 
-#### 2. **Políticas RLS do Supabase** ⚠️ CRÍTICO  
-- **Tabela**: `support_tickets`
-- **Impacto**: Bloqueia criação de tickets de suporte
-- **Causa**: Políticas RLS mal configuradas
-- **Solução**: Corrigir políticas RLS para permitir acesso adequado
+2. **Dashboard Não Carrega**: O dashboard principal fica travado em loading spinner, impedindo acesso às funcionalidades principais.
 
-#### 3. **Funcionalidade de Exclusão LGPD** ⚠️ CRÍTICO
-- **Impacto**: Não conformidade com LGPD
-- **Causa**: Função `delete_user_data` não responde
-- **Solução**: Corrigir função de exclusão de dados
+3. **Criação de Registros Financeiros Falha**: Usuários do plano gratuito não conseguem criar registros financeiros - funcionalidade básica não funciona.
 
-#### 4. **Funcionalidade de Logout** ⚠️ CRÍTICO
-- **Impacto**: Impede testes de controle de acesso
-- **Causa**: Logout não funciona corretamente
-- **Solução**: Corrigir funcionalidade de logout
+4. **Timeout na Exportação**: Funcionalidade de exportação trava completamente com timeout de 15 minutos.
 
-#### 5. **Interface WhatsApp** ⚠️ ALTO
-- **Impacto**: Funcionalidade WhatsApp não implementada
-- **Causa**: Interface de opt-in/out não encontrada
-- **Solução**: Implementar interface WhatsApp conforme plano
+5. **Conformidade LGPD**: Funcionalidade de exclusão de dados não fornece confirmação de sucesso, violando requisitos de conformidade.
 
-### 📊 **RESUMO DE STATUS**
+### ⚠️ High Priority Issues
 
-#### ✅ **FUNCIONANDO CORRETAMENTE**
-- Sistema de autenticação (3/3 testes)
-- Sistema de backup (1/1 teste)
-- Sistema de FAQ (1/1 teste)
-- Dashboard e relatórios (1/1 teste)
+1. **Sistema de Busca Global Não Funciona**: Busca não retorna resultados em nenhum módulo.
 
-#### ❌ **PROBLEMAS CRÍTICOS**
-- Loop infinito no useAgendaData (afeta 8 testes)
-- Políticas RLS do support_tickets (afeta 1 teste)
-- Funcionalidade de exclusão LGPD (afeta 1 teste)
-- Funcionalidade de logout (afeta 2 testes)
-- Interface WhatsApp não implementada (afeta 1 teste)
+2. **Botão de Upgrade Não Funciona**: Usuários não conseguem fazer upgrade de plano.
 
-### 🎯 **PRIORIDADES DE CORREÇÃO**
+3. **Problemas de Interação com Formulários**: Campos de categoria e data não respondem adequadamente nos formulários de tarefas.
 
-1. **URGENTE**: Corrigir loop infinito no useAgendaData
-2. **URGENTE**: Corrigir políticas RLS do support_tickets
-3. **URGENTE**: Corrigir funcionalidade de exclusão LGPD
-4. **ALTO**: Corrigir funcionalidade de logout
-5. **MÉDIO**: Implementar interface WhatsApp
+### 🔧 Medium Priority Issues
+
+1. **Interface de Atualização de Progresso de Metas**: Falta interface para atualizar progresso das metas.
+
+2. **Integração Google Workspace**: Não há interface clara para configurar integração com Google.
+
+### 📊 Performance Issues
+
+1. **Múltiplos Timeouts de Conexão**: Muitos testes falharam por timeout de conexão, indicando problemas de conectividade ou servidor não rodando.
+
+2. **Warnings de Datas Inválidas**: Múltiplos warnings sobre datas inválidas ou iguais no sistema de agenda.
 
 ---
 
-**Status**: ✅ **ETAPA 2 IMPLEMENTADA COM SUCESSO - POLÍTICAS RLS OTIMIZADAS**
-**Próximo Passo**: Corrigir problemas críticos identificados nos testes
+## 5️⃣ Recommendations
+
+### Immediate Actions Required
+
+1. **Investigar e Corrigir Loop Infinito**: Prioridade máxima para resolver o problema no `useAgendaData.ts` que está causando bloqueio de requisições.
+
+2. **Verificar Servidor de Desenvolvimento**: Garantir que o servidor está rodando corretamente na porta 8080 e acessível.
+
+3. **Corrigir Funcionalidade de Criação de Registros**: Implementar ou corrigir a persistência de dados para registros financeiros.
+
+4. **Implementar Confirmação de Exclusão**: Adicionar feedback visual para operações de exclusão de dados para conformidade LGPD.
+
+### Short-term Improvements
+
+1. **Implementar Sistema de Busca Global**: Desenvolver funcionalidade de busca que funcione em todos os módulos.
+
+2. **Corrigir Funcionalidade de Upgrade**: Implementar ou corrigir o processo de upgrade de planos.
+
+3. **Melhorar Interação com Formulários**: Corrigir problemas de interação com campos específicos nos formulários.
+
+### Long-term Enhancements
+
+1. **Implementar Interface de Integração Google**: Desenvolver interface clara para configuração de integrações.
+
+2. **Melhorar Sistema de Notificações**: Implementar sistema de notificações em tempo real.
+
+3. **Otimizar Performance**: Resolver problemas de performance e timeouts.
+
+---
+
+## 6️⃣ Test Environment Notes
+
+- **Test Execution Date**: 2025-10-14
+- **Test Environment**: Local development server (port 8080)
+- **Browser**: Automated testing environment
+- **Test Duration**: Approximately 15 minutes per test case
+- **Total Tests Executed**: 20 test cases
+- **Success Rate**: 5% (1/20 tests passed)
+
+---
+
+*Este relatório foi gerado automaticamente pelo TestSprite AI Testing System. Para mais detalhes sobre os testes específicos, consulte os links de visualização fornecidos para cada caso de teste.*

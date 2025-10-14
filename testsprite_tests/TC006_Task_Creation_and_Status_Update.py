@@ -45,7 +45,7 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Input phone number and password, then click Entrar to log in.
+        # Input phone number and password, then click login button.
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
         await page.wait_for_timeout(3000); await elem.fill('5511949746110')
@@ -61,25 +61,53 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Navigate to WhatsApp messaging or opt-in/out management section to start testing opt-in request message.
+        # Click on 'Tarefas' link to navigate to task management page.
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[8]').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[5]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Attempt to find and click a navigation element related to WhatsApp messaging or opt-in/out management. If none found, report website issue and stop.
+        # Click 'Nova Tarefa' button to open the new task creation form.
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Check 'Notificações' or 'Perfil' sections for WhatsApp opt-in/out management or messaging settings. If not found, report website issue and stop.
+        # Fill in the task title, description, select priority, enter category, and select a due date, then save the task.
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[7]').nth(0)
+        elem = frame.locator('xpath=html/body/div[3]/form/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('Test Task Priority Category')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[3]/form/div[2]/textarea').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('This task is created to test priority, category, due date, and status update.')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[3]/form/div[3]/div/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        assert False, 'Test plan execution failed: generic failure assertion as expected result is unknown.'
+        # Try clicking on the category input field to focus it, then input category text. Then open the due date selector and pick a date, finally save the task.
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div[5]/div[2]/div/div[4]/span/div/div[2]/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Click on the category input field to focus it, then input category text 'Testing'. Then open the due date selector and select a valid due date, finally save the task.
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div[5]/div[2]/div/div[2]/span/div/div[2]/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Close the priority dropdown, input category text 'Testing' into the category field, select a due date, then save the task.
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[4]/div').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        assert False, 'Test plan execution failed: generic failure assertion.'
         await asyncio.sleep(5)
     
     finally:

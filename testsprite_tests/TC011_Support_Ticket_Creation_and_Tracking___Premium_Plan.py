@@ -45,38 +45,7 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Input phone and password for Free plan user and click Entrar button to login
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('5511949746110')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('12345678')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/button').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Check for presence or absence of Premium-only features and sub-agents on dashboard or navigation menu
-        await page.mouse.wheel(0, window.innerHeight)
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[5]').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Logout Free plan user to prepare for Business plan user login
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/div[3]/div[2]/button').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        assert False, 'Test plan execution failed: generic failure assertion as expected.'
+        assert False, 'Test plan execution failed: generic failure assertion.'
         await asyncio.sleep(5)
     
     finally:

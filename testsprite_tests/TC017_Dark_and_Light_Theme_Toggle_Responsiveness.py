@@ -45,7 +45,7 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Input phone number and password, then click Entrar to login
+        # Input phone number and password, then click login button
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
         await page.wait_for_timeout(3000); await elem.fill('5511949746110')
@@ -61,46 +61,60 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Navigate to 'Agenda' (calendar) page to create a new event
+        # Click the theme switch button to toggle to light mode and verify UI updates
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[2]').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/header/div[2]/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click 'Novo Evento' button to open event creation form
+        # Resize browser or simulate different device form factors to verify theme persistence and UI responsiveness
+        await page.goto('http://localhost:8080/dashboard', timeout=10000)
+        
+
+        # Try to reload the dashboard page to recover from loading issue
+        await page.goto('http://localhost:8080/dashboard', timeout=10000)
+        
+
+        # Input phone number and password, then click login button to login again
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div[3]/div[2]/div/button').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('5511949746110')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div[2]/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('12345678')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Fill in the event title, description, start and end date/time, and save the event
+        # Retry login by clearing inputs and re-entering credentials, then clicking login button again
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('Reunião de Teste com Cliente')
+        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('')
         
 
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div/div[2]/div[2]/textarea').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('Discussão dos pontos do projeto e próximos passos.')
+        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div[2]/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('')
         
 
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div/div[2]/div[3]/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('15:00')
+        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('5511949746110')
         
 
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div/div[2]/div[4]/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('16:00')
+        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div[2]/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('12345678')
         
 
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div[2]/button[2]').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/main/div/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Reload the calendar page to attempt to resolve the loading issue and regain access to the calendar interface
-        await page.goto('http://localhost:8080/agenda', timeout=10000)
         
 
         assert False, 'Test plan execution failed: generic failure assertion.'

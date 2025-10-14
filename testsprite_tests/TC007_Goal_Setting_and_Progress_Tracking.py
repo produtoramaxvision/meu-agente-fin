@@ -45,7 +45,7 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Input phone number and password, then click login button to authenticate as paid plan user.
+        # Input phone number and password, then click Entrar to login
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
         await page.wait_for_timeout(3000); await elem.fill('5511949746110')
@@ -61,79 +61,58 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click on 'Contas' or 'Relatórios' menu item to access financial management or reports section.
+        # Click on 'Metas' (Goals) link in the navigation menu to go to goals management page
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[3]').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[4]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Locate and interact with export options or filters to set date range and categories for export.
+        # Click on 'Nova Meta' button to start creating a new goal
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[6]').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Set filters for date range and category, then click the export button to test CSV export.
+        # Fill in the 'Título da Meta' with 'Test Goal Creation', 'Valor Atual' with 0, 'Valor da Meta' with 5, select an icon, set 'Prazo (meses)' to 12, and save the goal.
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div[2]/div[2]/div/div/button').nth(0)
+        elem = frame.locator('xpath=html/body/div[3]/form/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('Test Goal Creation')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[3]/form/div[2]/div/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('0')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[3]/form/div[2]/div[2]/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('5')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[3]/form/div[3]/div/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Select 'Personalizado' (custom) date range option, set specific start and end dates, then set category filter and proceed to export.
+        # Select the 'Carro' icon (index 15) from the dropdown, fill in the 'Prazo (meses)' field with 12, and save the new goal.
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[2]/div/div/div[4]').nth(0)
+        elem = frame.locator('xpath=html/body/div[4]/div/div/div').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Use date picker UI to select start date and end date for the custom date range, then set category filter and proceed to export.
+        # Verify that the new goal 'Test Goal Creation' is displayed in the goals list with a progress bar and visual indicator.
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div[2]/div[2]/div[2]/div/button').nth(0)
+        elem = frame.locator('xpath=html/body/div[3]/form/div[5]/button[2]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Select October 1, 2025 as start date, then open end date picker and select October 12, 2025 as end date, set category filter to 'Salário', and perform export.
+        # Update the progress of the 'Test Goal Creation' goal to a new value and verify the progress bar and visual indicator update accordingly.
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[2]/div/div/div/div/table/tbody/tr/td[4]/button').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div[2]/div[2]/span/div/div[2]/div/div[2]/div[2]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click on end date picker, select 12/10/2025 as end date, set category filter to 'Salário', then click export button to test CSV export.
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div[2]/div[2]/div[2]/div[2]/button').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Select October 12, 2025 as end date, set category filter to 'Salário', then click export button to test CSV export.
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[2]/div/div/div/div/table/tbody/tr[3]/td/button').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Set category filter to 'Salário' and then click the export button to test CSV export.
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div[2]/div[2]/div/div[2]/button').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Select 'Salário' category from dropdown and then click export button to test CSV export.
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[2]/div/div/div[2]').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Click the export button and select CSV format to export the filtered financial records.
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div/div[2]/div/div/button').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Click on 'Exportar CSV' to export the filtered financial records in CSV format and verify the exported file.
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[2]/div/div[3]').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        assert False, 'Test plan execution failed: Unable to verify exported financial records due to unknown expected results.'
+        assert False, 'Test plan execution failed: generic failure assertion.'
         await asyncio.sleep(5)
     
     finally:

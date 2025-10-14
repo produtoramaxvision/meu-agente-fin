@@ -66,11 +66,24 @@ export function AppSidebar({ collapsed, onToggle, showCloseButton = false }: App
         // Verificar se o clique foi especificamente em um NavLink
         const isNavLink = target.closest('a[href]');
         
-        // Verificar se há algum modal/dialog aberto
+        // Verificar se há algum modal/dialog aberto (incluindo popovers)
         const hasOpenModal = document.querySelector('[role="dialog"][data-state="open"]');
+        const hasOpenPopover = document.querySelector('[data-radix-popper-content-wrapper]');
+        const hasOpenTooltip = document.querySelector('[data-radix-tooltip-content]');
         
-        // Verificar se o sidebar está colapsado (só deve toggle quando colapsado)
-        const shouldToggle = collapsed && !isInteractive && !isNavLink && !hasOpenModal;
+        // Verificar se o clique foi em uma área vazia (background do sidebar)
+        const isInEmptyArea = target === e.currentTarget || 
+          (target.classList.contains('relative') && 
+          !target.closest('nav, button, a, [role="button"]'));
+        
+        // Permitir toggle apenas quando colapsado, em áreas vazias e sem elementos interativos
+        const shouldToggle = collapsed && 
+                           !isInteractive && 
+                           !isNavLink && 
+                           !hasOpenModal && 
+                           !hasOpenPopover && 
+                           !hasOpenTooltip &&
+                           isInEmptyArea;
         
         if (shouldToggle) {
           onToggle();
@@ -118,6 +131,18 @@ export function AppSidebar({ collapsed, onToggle, showCloseButton = false }: App
           >
             <Logo showText={!collapsed} size={collapsed ? 'sm' : 'md'} />
           </NavLink>
+          
+          {/* Área clicável para expandir quando colapsado */}
+          {collapsed && (
+            <div 
+              className="absolute inset-0 cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggle();
+              }}
+              title="Clique para expandir sidebar"
+            />
+          )}
         </div>
       )}
 
@@ -127,7 +152,7 @@ export function AppSidebar({ collapsed, onToggle, showCloseButton = false }: App
       </div>
 
       {/* Navigation */}
-      <nav className={cn("flex-1 space-y-1 transition-all", collapsed ? 'p-2' : 'p-4')}>
+      <nav className={cn("flex-1 space-y-1 transition-all relative", collapsed ? 'p-2' : 'p-4')}>
         {navigation.map((item) => {
           const isActive = location.pathname === item.href;
           const isNotifications = item.name === 'Notificações';
@@ -158,6 +183,18 @@ export function AppSidebar({ collapsed, onToggle, showCloseButton = false }: App
           </NavLink>
           );
         })}
+        
+        {/* Área clicável para expandir quando colapsado */}
+        {collapsed && (
+          <div 
+            className="absolute inset-0 cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle();
+            }}
+            title="Clique para expandir sidebar"
+          />
+        )}
       </nav>
 
       {/* Help and Logout Section */}

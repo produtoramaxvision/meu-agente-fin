@@ -45,7 +45,7 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Input phone number and password, then click Entrar to log in
+        # Input phone number and password, then click login button
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
         await page.wait_for_timeout(3000); await elem.fill('5511949746110')
@@ -61,49 +61,52 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Navigate to Agenda page to schedule an appointment
+        # Navigate to backup settings or backup management page to verify backup tasks and trigger manual backup
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[2]').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[8]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click 'Novo Evento' button to open the form for creating a new event
+        # Click on Backup tab to access backup settings and options
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div[3]/div[2]/div/button').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div/div/button[3]').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Fill in the event details with title, description, start and end times, then save the event
+        # Click 'Criar Backup Manual' button to trigger a manual backup and verify it completes without error
         frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('Reunião de Teste com Cliente')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div/div[2]/div[2]/textarea').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('Evento para testar agendamento e lembrete via WhatsApp.')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div/div[2]/div[3]/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('15:00')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div/div[2]/div[4]/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('16:00')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div[3]/form/div[2]/button[2]').nth(0)
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[2]/div[2]/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Try to reload the agenda page to resolve the loading issue and regain access to verify event and WhatsApp opt-in status
-        await page.goto('http://localhost:8080/agenda', timeout=10000)
+        # Download the latest manual backup file to verify data integrity and completeness
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[3]/div[2]/div/div/div/div/div[2]/div/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        assert False, 'Test plan execution failed: generic failure assertion as expected result is unknown.'
+        # Assert backup summary shows all backups completed
+        backup_summary = await frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[1]/div').innerText()
+        assert 'total_backups' in backup_summary or 'completed_backups' in backup_summary or 'Concluído' in backup_summary, 'Backup summary does not indicate completed backups',
+        # Assert last backup status is 'Concluído' (Completed)
+        backup_history_items = await frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[2]/div[1]/div').allInnerTexts()
+        assert any('Concluído' in item for item in backup_history_items), 'No completed backup found in backup history',
+        # Assert automatic daily backups exist and are completed
+        assert any('Automático' in item and 'Concluído' in item for item in backup_history_items), 'No completed automatic daily backup found',
+        # Assert manual backup creation button is visible and enabled
+        manual_backup_button = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[2]/div[2]/button')
+        assert await manual_backup_button.is_enabled(), 'Manual backup button is not enabled',
+        # Assert backup data integrity by checking backup sizes are non-zero and consistent
+        backup_sizes = []
+        for item in backup_history_items:
+            # Extract size from string, example: '2.71 MB'
+            import re
+            match = re.search(r'\d+\.\d+ MB', item)
+            if match:
+                size_str = match.group(0).replace(' MB', '')
+                size = float(size_str)
+                backup_sizes.append(size)
+        assert all(size > 0 for size in backup_sizes), 'One or more backup files have zero size, indicating possible corruption'
         await asyncio.sleep(5)
     
     finally:

@@ -45,7 +45,7 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Perform first login attempt with phone 5511949746110 and password 12345678
+        # Enter valid phone number and request OTP
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
         await page.wait_for_timeout(3000); await elem.fill('5511949746110')
@@ -61,13 +61,13 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Log out to prepare for next login attempt to test rate limiting
+        # Log out to return to login page to test OTP failure
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/div/aside/div[3]/div[2]/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Perform second login attempt with phone 5511949746110 and password 12345678
+        # Enter valid phone number and password, then submit to request OTP
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
         await page.wait_for_timeout(3000); await elem.fill('5511949746110')
@@ -83,13 +83,13 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click 'Sair' button to log out and prepare for the third login attempt
+        # Click logout button to return to login page
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/div/aside/div[3]/div[2]/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Perform third login attempt with phone 5511949746110 and password 12345678
+        # Enter valid phone number and password, then submit to request OTP
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
         await page.wait_for_timeout(3000); await elem.fill('5511949746110')
@@ -105,13 +105,13 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click 'Sair' button to log out and prepare for the fourth login attempt
+        # Click logout button to return to login page
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/div/aside/div[3]/div[2]/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Perform fourth login attempt with phone 5511949746110 and password 12345678
+        # Enter valid phone number and password, then submit to request OTP
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
         await page.wait_for_timeout(3000); await elem.fill('5511949746110')
@@ -127,13 +127,13 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Click 'Sair' button to log out and prepare for the fifth login attempt
+        # Click logout button to return to login page
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/div/aside/div[3]/div[2]/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Perform fifth login attempt with phone 5511949746110 and password 12345678
+        # Enter valid phone number and password, then submit to request OTP
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
         await page.wait_for_timeout(3000); await elem.fill('5511949746110')
@@ -149,13 +149,13 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Attempt an immediate additional login attempt to check if rate limiting triggers beyond 5 attempts and observe any feedback messages
+        # Click logout button to return to login page
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/div/aside/div[3]/div[2]/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Perform an immediate additional login attempt with the same phone number and password to check if rate limiting triggers and observe any feedback messages.
+        # Enter valid phone number and password, then submit to request OTP
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
         await page.wait_for_timeout(3000); await elem.fill('5511949746110')
@@ -171,17 +171,35 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        # Assert that a rate limit message or blocking feedback is displayed after multiple login attempts
-        rate_limit_message_locator = frame.locator('text=rate limit').first
-        assert await rate_limit_message_locator.is_visible(), 'Rate limit message should be visible after multiple login attempts'
-        # Alternatively, check for common rate limit feedback messages
-        possible_messages = ['Too many attempts', 'Try again later', 'Rate limit exceeded', 'Please wait before retrying']
-        message_found = False
-        for msg in possible_messages:
-            if await frame.locator(f'text={msg}').is_visible():
-                message_found = True
-                break
-        assert message_found, 'Expected rate limit feedback message not found after multiple login attempts'
+        # Click logout button to return to login page
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/div[3]/div[2]/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Enter valid phone number and password, then submit to request OTP
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('5511949746110')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div[2]/div/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('12345678')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Click logout button to return to login page
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/div[3]/div[2]/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        assert False, 'Test failed: Login did not fail as expected with invalid or expired OTP.'
         await asyncio.sleep(5)
     
     finally:

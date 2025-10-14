@@ -45,44 +45,7 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Input phone number and password, then click login button to load main application UI
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('5511949746110')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('12345678')
-        
-
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/button').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        # Verify UI elements and layout render correctly on desktop viewport
-        await page.mouse.wheel(0, window.innerHeight)
-        
-
-        # Resize viewport to tablet size and verify UI elements and layout
-        await page.goto('http://localhost:8080/dashboard', timeout=10000)
-        
-
-        await page.mouse.wheel(0, window.innerHeight)
-        
-
-        # Refresh the dashboard page to attempt to resolve loading issue and verify UI elements again
-        await page.goto('http://localhost:8080/dashboard', timeout=10000)
-        
-
-        # Try to locate and click any visible elements or buttons to bypass loading or check for error messages
-        frame = context.pages[-1]
-        elem = frame.locator('xpath=html/body/div').nth(0)
-        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
-        
-
-        assert False, 'Test plan execution failed: generic failure assertion'
+        assert False, 'Test failed: OTP rate limiting enforcement could not be verified.'
         await asyncio.sleep(5)
     
     finally:
