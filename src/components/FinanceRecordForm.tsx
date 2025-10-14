@@ -226,27 +226,6 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2 rounded-lg border p-4">
-              <FormField
-                control={form.control}
-                name="agendar"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between">
-                    <FormLabel>Marcar como pago/recebido?</FormLabel>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <p className="text-sm text-text-muted">
-                {isPaid ? 'A transação será registrada como paga/recebida.' : 'A conta será criada como pendente (a pagar/receber).'}
-              </p>
-            </div>
-
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -407,6 +386,27 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
                   )}
                 />
               )}
+            </div>
+
+            <div className="space-y-2 rounded-lg border p-4">
+              <FormField
+                control={form.control}
+                name="agendar"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between">
+                    <FormLabel>Marcar como pago/recebido?</FormLabel>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <p className="text-sm text-text-muted">
+                {isPaid ? 'A transação será registrada como paga/recebida.' : 'A conta será criada como pendente (a pagar/receber).'}
+              </p>
             </div>
 
             <div className="flex gap-3 pt-4">
