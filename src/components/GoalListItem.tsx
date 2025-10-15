@@ -49,19 +49,14 @@ export function GoalListItem({ goal, onDelete, onUpdate }: GoalListItemProps) {
 
       if (error) throw error;
 
-      toast({
-        title: "Meta duplicada",
+      toast.success("Meta duplicada", {
         description: "Uma cópia da meta foi criada com sucesso.",
       });
 
       onUpdate();
     } catch (error) {
       console.error('Erro ao duplicar:', error);
-      toast({
-        title: "Erro ao duplicar",
-        description: "Não foi possível duplicar a meta. Tente novamente.",
-        variant: "destructive",
-      });
+      toast.error("Não foi possível duplicar a meta. Tente novamente.");
     }
   };
 

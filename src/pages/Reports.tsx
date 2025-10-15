@@ -120,8 +120,7 @@ export default function Reports() {
 
       if (error) throw error;
 
-      toast({
-        title: "Registro excluído",
+      toast.success("Registro excluído", {
         description: "O registro foi removido com sucesso.",
       });
 
@@ -130,11 +129,7 @@ export default function Reports() {
       setRecordToDelete(null);
     } catch (error) {
       console.error('Erro ao excluir:', error);
-      toast({
-        title: "Erro ao excluir",
-        description: "Não foi possível excluir o registro. Tente novamente.",
-        variant: "destructive",
-      });
+      toast.error("Não foi possível excluir o registro. Tente novamente.");
     }
   };
 
@@ -179,11 +174,7 @@ export default function Reports() {
       setBulkDeleteDialogOpen(false);
     } catch (error) {
       console.error('Erro ao excluir em massa:', error);
-      toast({
-        title: "Erro ao excluir",
-        description: "Não foi possível excluir os registros. Tente novamente.",
-        variant: "destructive",
-      });
+      toast.error("Não foi possível excluir os registros. Tente novamente.");
     } finally {
       setIsBulkDeleting(false);
     }
@@ -204,19 +195,12 @@ export default function Reports() {
 
       if (error) throw error;
 
-      toast({
-        title: "Registro duplicado",
-        description: "Uma cópia do registro foi criada com sucesso.",
-      });
+      toast.success("Uma cópia do registro foi criada com sucesso.");
 
       refetch();
     } catch (error) {
       console.error('Erro ao duplicar:', error);
-      toast({
-        title: "Erro ao duplicar",
-        description: "Não foi possível duplicar o registro. Tente novamente.",
-        variant: "destructive",
-      });
+      toast.error("Não foi possível duplicar o registro. Tente novamente.");
     }
   };
   

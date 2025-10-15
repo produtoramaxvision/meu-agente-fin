@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 export interface SupportTicket {
   id: string;
@@ -221,16 +221,13 @@ export function useSupportTickets() {
       queryClient.invalidateQueries({ queryKey: ['support-tickets', cliente?.phone] });
       queryClient.invalidateQueries({ queryKey: ['ticket-limit', cliente?.phone] });
       
-      toast({
-        title: 'Ticket criado com sucesso!',
+      toast.success('Ticket criado com sucesso!', {
         description: `Seu ticket ${data.ticket_number} foi criado e nossa equipe entrará em contato em breve.`,
       });
     },
     onError: (error) => {
-      toast({
-        title: 'Erro ao criar ticket',
+      toast.error('Erro ao criar ticket', {
         description: error.message,
-        variant: 'destructive',
       });
     },
   });
@@ -264,16 +261,13 @@ export function useSupportTickets() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['support-tickets', cliente?.phone] });
-      toast({
-        title: 'Ticket atualizado!',
+      toast.success('Ticket atualizado!', {
         description: 'Suas alterações foram salvas com sucesso.',
       });
     },
     onError: (error) => {
-      toast({
-        title: 'Erro ao atualizar ticket',
+      toast.error('Erro ao atualizar ticket', {
         description: error.message,
-        variant: 'destructive',
       });
     },
   });

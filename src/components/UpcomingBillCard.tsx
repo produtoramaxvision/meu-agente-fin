@@ -36,10 +36,10 @@ export function UpcomingBillCard({ bill, onStatusChange }: UpcomingBillCardProps
         .eq('id', bill.id);
 
       if (error) throw error;
-      toast({ title: 'Sucesso!', description: 'Conta marcada como paga.' });
+      toast.success('Conta marcada como paga.');
       onStatusChange();
     } catch (error) {
-      toast({ title: 'Erro', description: 'Não foi possível atualizar a conta.', variant: 'destructive' });
+      toast.error('Não foi possível atualizar a conta.');
     } finally {
       setIsPaying(false);
     }

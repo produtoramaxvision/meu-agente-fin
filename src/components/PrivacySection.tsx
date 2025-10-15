@@ -110,8 +110,7 @@ export function PrivacySection() {
 
       if (error) throw error;
 
-      toast({
-        title: "Configurações salvas",
+      toast.success("Configurações salvas", {
         description: "Suas preferências de privacidade foram atualizadas com sucesso.",
       });
 
@@ -122,11 +121,7 @@ export function PrivacySection() {
 
     } catch (error) {
       console.error('Erro ao salvar configurações:', error);
-      toast({
-        title: "Erro ao salvar",
-        description: "Não foi possível salvar suas configurações. Tente novamente.",
-        variant: "destructive",
-      });
+      toast.error("Não foi possível salvar suas configurações. Tente novamente.");
     } finally {
       setIsSaving(false);
     }
@@ -160,18 +155,13 @@ export function PrivacySection() {
       link.click();
       document.body.removeChild(link);
 
-      toast({
-        title: "Dados exportados",
+      toast.success("Dados exportados", {
         description: "Seus dados pessoais foram baixados com sucesso.",
       });
 
     } catch (error) {
       console.error('Erro ao exportar dados:', error);
-      toast({
-        title: "Erro na exportação",
-        description: "Não foi possível exportar seus dados. Tente novamente.",
-        variant: "destructive",
-      });
+      toast.error("Não foi possível exportar seus dados. Tente novamente.");
     }
   };
 
@@ -209,11 +199,7 @@ export function PrivacySection() {
 
     } catch (error) {
       console.error('Erro ao deletar dados:', error);
-      toast({
-        title: "Erro na exclusão",
-        description: "Não foi possível deletar seus dados. Tente novamente.",
-        variant: "destructive",
-      });
+      toast.error("Não foi possível deletar seus dados. Tente novamente.");
     } finally {
       setIsSaving(false);
     }

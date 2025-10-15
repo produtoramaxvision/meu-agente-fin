@@ -10,7 +10,7 @@ import { Bar, BarChart as RechartsBarChart, Pie, PieChart as RechartsPieChart, C
 import { DateRange } from 'react-day-picker';
 import { addDays } from 'date-fns';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#ff4d4d'];
 
@@ -39,19 +39,12 @@ export default function Relatorios() {
 
   const handleExport = (format: 'csv' | 'json' | 'pdf') => {
     if (!permissions.canExport) {
-      toast({
-        title: "Premium Bloqueado",
-        description: getUpgradeMessage('Exportação de dados'),
-        variant: "destructive",
-      });
+      toast.error(getUpgradeMessage('Exportação de dados'));
       return;
     }
 
     // Implementar lógica de exportação aqui
-    toast({
-      title: "Exportação iniciada",
-      description: `Exportando dados em formato ${format.toUpperCase()}...`,
-    });
+    toast.info(`Exportando dados em formato ${format.toUpperCase()}...`);
   };
 
   const summary = useMemo(() => {

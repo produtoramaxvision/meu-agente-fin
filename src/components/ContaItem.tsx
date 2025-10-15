@@ -110,8 +110,7 @@ export function ContaItem({ conta, onStatusChange }: ContaItemProps) {
 
       if (error) throw error;
 
-      toast({
-        title: "Registro excluído",
+      toast.success("Registro excluído", {
         description: "A conta foi removida com sucesso.",
       });
 
