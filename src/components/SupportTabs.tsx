@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -345,7 +346,7 @@ export function SupportFormTab({ onSuccess }: { onSuccess: (ticketNumber: string
       {/* Ticket Limit Info */}
       {!isLoadingLimit && ticketLimit && (
         <div className="bg-surface border rounded-lg p-3">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
+          <div className="flex flex-row items-center justify-between gap-2 text-sm">
             <span className="text-text-muted">Tickets disponíveis este mês:</span>
             <div className="flex items-center gap-2">
               {ticketLimit.isUnlimited ? (
@@ -382,17 +383,30 @@ export function SupportFormTab({ onSuccess }: { onSuccess: (ticketNumber: string
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecione o tipo de solicitação" />
+                      <SelectValue placeholder="Selecione o tipo de solicitação">
+                        {field.value && typeConfig[field.value as keyof typeof typeConfig] ? (
+                          <div className="flex items-center gap-2">
+                            {React.createElement(typeConfig[field.value as keyof typeof typeConfig].icon, { 
+                              className: "h-4 w-4 flex-shrink-0" 
+                            })}
+                            <span className="font-medium text-sm">
+                              {typeConfig[field.value as keyof typeof typeConfig].label}
+                            </span>
+                          </div>
+                        ) : (
+                          "Selecione o tipo de solicitação"
+                        )}
+                      </SelectValue>
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     {Object.entries(typeConfig).map(([key, config]) => (
                       <SelectItem key={key} value={key}>
-                        <div className="flex items-center gap-2">
-                          <config.icon className="h-4 w-4" />
-                          <div>
-                            <div className="font-medium">{config.label}</div>
-                            <div className="text-xs text-text-muted">{config.description}</div>
+                        <div className="flex items-center gap-3 w-full">
+                          <config.icon className="h-4 w-4 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-sm">{config.label}</div>
+                            <div className="text-xs text-text-muted truncate">{config.description}</div>
                           </div>
                         </div>
                       </SelectItem>
@@ -584,16 +598,16 @@ export function SupportTicketsTab() {
     <div className="w-full space-y-6 sm:space-y-8">
       {/* Resumo */}
       {ticketLimit && (
-        <div className="bg-surface border rounded-lg p-3 sm:p-4">
+        <div className="bg-surface border rounded-lg p-3">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
-              <h3 className="font-medium text-text text-sm sm:text-base">Resumo do Suporte</h3>
-              <p className="text-xs sm:text-sm text-text-muted">
+              <h3 className="font-medium text-text text-sm">Resumo do Suporte</h3>
+              <p className="text-xs text-text-muted">
                 {tickets.length} ticket(s) criado(s)
               </p>
             </div>
-            <div className="text-left sm:text-right">
-              <p className="text-xs sm:text-sm text-text-muted">Tickets disponíveis:</p>
+            <div className="text-center sm:text-right">
+              <p className="text-xs text-text-muted">Tickets disponíveis:</p>
               <Badge 
                 variant={ticketLimit.isUnlimited ? "secondary" : "default"}
                 className={`text-xs ${ticketLimit.isUnlimited ? "bg-green-100 text-green-700" : ""}`}

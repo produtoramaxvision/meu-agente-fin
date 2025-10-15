@@ -69,7 +69,7 @@ export function SupportDialog({ open, onOpenChange }: SupportDialogProps) {
                 <h3 className="font-medium text-text text-sm">Seu Plano de Suporte</h3>
                 <p className="text-xs text-text-muted">{currentSLA.description}</p>
               </div>
-              <div className="text-left sm:text-right">
+              <div className="text-center sm:text-right">
                 <p className="text-xs text-text-muted">Tempo de resposta:</p>
                 <Badge 
                   variant={currentSLA.priority === 'critical' ? 'destructive' : 
