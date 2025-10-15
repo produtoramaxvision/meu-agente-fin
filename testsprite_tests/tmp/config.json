@@ -9,10 +9,10 @@
     "projectName": "meu-agente-fin",
     "projectPath": "C:\\Users\\MaxVision\\Desktop\\app-cursor\\meu-agente-fin",
     "testIds": [],
-    "additionalInstruction": "Focar especificamente em testes de autenticação e segurança de sessão. Testar login, logout, registro, rate limiting, validações de formato, persistência de sessão, segurança de token JWT e múltiplas sessões. Usar os usuários de teste criados: 5511949746110/12345678 (existente), 5511111111111 (Free), 5522222222222 (Basic), 5533333333333 (Business), 5544444444444 (Premium).",
+    "additionalInstruction": "Execute todos os testes do plano de testes frontend para validar completamente a aplicação Meu Agente Financeiro",
     "envs": {
       "API_KEY": "sk-user-eGSLuqZfv6vFPnN79aVHkETaOTl154tCHC0opjgxfjJItNmfru3Yv4277bvozn3ZK_60hpBiG9yQlFocc6QwVfruu_ZTRk1oAaG8vxtbKIhf5Wm3LB5XWQj_VajxbOAGPBI"
     }
   },
-  "proxy": "http://4fa63a8d-24fc-45a3-b750-3d6683616470:GXiwRcfsWH2LLDv5dgIR8ZzguNxGav98@tun.testsprite.com:8080"
+  "proxy": "http://0f940896-f36b-435c-aeb0-180ebf1e9077:fQeCb8RramR5yeOTgJtgXpaNeJ8Q1Rts@tun.testsprite.com:8080"
 }

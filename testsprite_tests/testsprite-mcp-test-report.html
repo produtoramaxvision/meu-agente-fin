@@ -1109,7 +1109,7 @@ body {
         </div>
         <div class="metadata-row">
           <div class="metadata-label text-body-medium">Date</div>
-          <div class="metadata-value text-body">14/10/2025</div>
+          <div class="metadata-value text-body">15/10/2025</div>
         </div>
         <div class="metadata-row">
           <div class="metadata-label text-body-medium">Prepared by</div>
@@ -1133,195 +1133,79 @@ body {
             <li><span class="coverage-highlight">0/0</span> of tests passed</li>
             <li><span class="coverage-highlight">Key gaps / risks:</span>
             
-              <h3>🚨 Critical Security Issues</h3>
+              <h3><strong>🔴 CRÍTICOS (Prioridade Máxima)</strong></h3>
 <ol>
-<li>
-<p><strong>Sistema de Registro Completamente Quebrado</strong></p>
-<ul>
-<li>Usuários não conseguem criar novas contas</li>
-<li>Botão de registro permanece desabilitado</li>
-<li>Erro 400 do Supabase Auth</li>
-</ul>
-</li>
-<li>
-<p><strong>Usuários de Teste Não Sincronizados</strong></p>
-<ul>
-<li>Usuários criados na tabela <code>clientes</code> não existem em <code>auth.users</code></li>
-<li>Sistema de autenticação não reconhece usuários de teste</li>
-<li>Impossível testar funcionalidades por plano</li>
-</ul>
-</li>
-<li>
-<p><strong>Loop Infinito Crítico no useAgendaData</strong></p>
-<ul>
-<li>Hook causa requisições infinitas ao banco</li>
-<li>Performance degradada em toda aplicação</li>
-<li>Sistema bloqueia requisições por 5 segundos</li>
-</ul>
-</li>
-<li>
-<p><strong>Violação Crítica de LGPD</strong></p>
-<ul>
-<li>Sistema não aplica restrições quando consentimento é desabilitado</li>
-<li>Usuário não é informado sobre limitações</li>
-<li>Conformidade legal comprometida</li>
-</ul>
-</li>
+<li><strong>Sistema de Planos Quebrado</strong> - Funcionalidade de upgrade de planos não funciona, impactando diretamente a monetização</li>
+<li><strong>Drag-and-Drop de Tarefas</strong> - Funcionalidade remove tarefas ao invés de reordenar, causando perda de dados</li>
+<li><strong>Validação de Duplicatas Financeiras</strong> - Sistema aceita entradas duplicadas silenciosamente, causando inconsistências</li>
+<li><strong>Overflow Numérico</strong> - Valores muito grandes causam erro de overflow no banco de dados</li>
 </ol>
-<h3>⚠️ High Priority Issues</h3>
+<h3><strong>🟡 ALTOS (Prioridade Alta)</strong></h3>
 <ol start="5">
-<li>
-<p><strong>Exportação CSV Quebrada</strong></p>
-<ul>
-<li>Funcionalidade navega para página externa</li>
-<li>Exportação PDF funciona normalmente</li>
-</ul>
-</li>
-<li>
-<p><strong>Upload de Avatar Não Funcional</strong></p>
-<ul>
-<li>Botão não abre diálogo de upload</li>
-<li>Funcionalidade completamente quebrada</li>
-</ul>
-</li>
-<li>
-<p><strong>Navegação Inesperada</strong></p>
-<ul>
-<li>Sistema navega para páginas externas ao editar registros</li>
-<li>Contexto de aplicação perdido</li>
-</ul>
-</li>
-<li>
-<p><strong>Timeouts em Múltiplas Funcionalidades</strong></p>
-<ul>
-<li>Sistema de calendário não responsivo</li>
-<li>Sistema de notificações não responsivo</li>
-<li>Testes executam timeout após 15 minutos</li>
-</ul>
-</li>
+<li><strong>Exportação de Dados</strong> - Botão de exportar abre modal incorreto, impedindo exportação</li>
+<li><strong>Edição de Eventos</strong> - Não é possível editar eventos criados, quebrando funcionalidade de agenda</li>
+<li><strong>Sistema de Suporte</strong> - Erro 403 impede criação de tickets de suporte</li>
 </ol>
-<h3>📊 Performance Issues</h3>
-<ol start="9">
-<li><strong>Performance Geral Degradada</strong>
-<ul>
-<li>Múltiplos loops infinitos detectados</li>
-<li>Requisições bloqueadas temporariamente</li>
-<li>Sistema não responsivo</li>
-</ul>
-</li>
+<h3><strong>🟠 MÉDIOS (Prioridade Média)</strong></h3>
+<ol start="8">
+<li><strong>Integração WhatsApp</strong> - Testes bloqueados por problemas de compatibilidade do navegador</li>
+<li><strong>Gerenciamento de Notificações</strong> - Funcionalidades de marcar como lida/não lida não funcionam</li>
 </ol>
+<h3><strong>🟢 BAIXOS (Prioridade Baixa)</strong></h3>
+<ol start="10">
+<li><strong>Testes de Performance</strong> - Falta de endpoints específicos para testes automatizados</li>
+</ol>
+<h3><strong>✅ FUNCIONANDO CORRETAMENTE</strong></h3>
+<ul>
+<li>Sistema de autenticação e segurança</li>
+<li>Backup e restauração de dados</li>
+<li>Interface responsiva e acessibilidade</li>
+<li>Criação e filtros de registros financeiros</li>
+<li>Geração e exibição de notificações</li>
+</ul>
 <hr>
 <h2>5️⃣ Recommendations</h2>
-<h3>🔥 Immediate Actions Required</h3>
+<h3><strong>Ações Imediatas (Esta Semana)</strong></h3>
 <ol>
-<li>
-<p><strong>Fix Authentication System</strong></p>
-<ul>
-<li>Corrigir sistema de registro (signup)</li>
-<li>Sincronizar usuários de teste entre <code>clientes</code> e <code>auth.users</code></li>
-<li>Implementar rate limiting adequado</li>
-</ul>
-</li>
-<li>
-<p><strong>Fix Critical Performance Issues</strong></p>
-<ul>
-<li>Corrigir loop infinito no <code>useAgendaData</code></li>
-<li>Otimizar queries de banco de dados</li>
-<li>Implementar debounce adequado</li>
-</ul>
-</li>
-<li>
-<p><strong>Fix LGPD Compliance</strong></p>
-<ul>
-<li>Implementar restrições quando consentimento é desabilitado</li>
-<li>Adicionar notificações para usuário sobre limitações</li>
-<li>Validar conformidade legal</li>
-</ul>
-</li>
-<li>
-<p><strong>Fix Broken Features</strong></p>
-<ul>
-<li>Corrigir exportação CSV</li>
-<li>Corrigir upload de avatar</li>
-<li>Corrigir navegação inesperada</li>
-</ul>
-</li>
+<li><strong>Corrigir sistema de planos</strong> - Investigar e corrigir funcionalidade de upgrade</li>
+<li><strong>Corrigir drag-and-drop</strong> - Implementar reordenação correta de tarefas</li>
+<li><strong>Implementar validação de duplicatas</strong> - Adicionar verificação antes de inserir registros financeiros</li>
+<li><strong>Corrigir exportação</strong> - Verificar binding do botão de exportar</li>
 </ol>
-<h3>📋 Testing Recommendations</h3>
+<h3><strong>Ações de Curto Prazo (Próximas 2 Semanas)</strong></h3>
 <ol start="5">
-<li>
-<p><strong>Implement Proper Test Environment</strong></p>
-<ul>
-<li>Configurar ambiente de testes automatizados</li>
-<li>Criar usuários de teste adequados</li>
-<li>Implementar testes de integração</li>
-</ul>
-</li>
-<li>
-<p><strong>Add Comprehensive Error Handling</strong></p>
-<ul>
-<li>Implementar tratamento de erros adequado</li>
-<li>Adicionar logs de debug</li>
-<li>Implementar fallbacks para funcionalidades quebradas</li>
-</ul>
-</li>
+<li><strong>Corrigir edição de eventos</strong> - Investigar problema de abertura de eventos para edição</li>
+<li><strong>Resolver erro 403 do suporte</strong> - Verificar políticas RLS do Supabase para support_tickets</li>
+<li><strong>Implementar gerenciamento de notificações</strong> - Corrigir funcionalidades de marcar como lida</li>
+</ol>
+<h3><strong>Ações de Médio Prazo (Próximo Mês)</strong></h3>
+<ol start="8">
+<li><strong>Melhorar integração WhatsApp</strong> - Resolver problemas de compatibilidade</li>
+<li><strong>Implementar testes de performance</strong> - Criar endpoints específicos ou usar ferramentas externas</li>
+<li><strong>Adicionar validação de overflow</strong> - Implementar limites de valores no frontend</li>
 </ol>
 <hr>
-<h2>6️⃣ Production Readiness Assessment</h2>
-<h3>❌ NOT READY FOR PRODUCTION</h3>
-<p><strong>Critical Issues Blocking Production:</strong></p>
+<h2>6️⃣ Technical Debt &amp; Code Quality</h2>
+<h3><strong>Problemas Identificados</strong></h3>
 <ul>
-<li>Sistema de autenticação quebrado</li>
-<li>Violação de LGPD</li>
-<li>Performance degradada</li>
-<li>Múltiplas funcionalidades quebradas</li>
+<li><strong>Headers de Segurança</strong>: X-Frame-Options sendo definido em meta tag ao invés de header HTTP</li>
+<li><strong>Componente Select</strong>: Mudança entre controlled/uncontrolled causando warnings</li>
+<li><strong>Políticas RLS</strong>: Possíveis problemas de permissões no Supabase</li>
+<li><strong>Validação Frontend</strong>: Falta de validação de duplicatas e overflow numérico</li>
 </ul>
-<p><strong>Estimated Time to Fix:</strong> 2-3 weeks minimum</p>
-<p><strong>Risk Level:</strong> 🔴 CRITICAL</p>
+<h3><strong>Melhorias Sugeridas</strong></h3>
+<ul>
+<li>Implementar validação robusta no frontend</li>
+<li>Corrigir headers de segurança</li>
+<li>Revisar políticas RLS do Supabase</li>
+<li>Adicionar testes unitários para componentes críticos</li>
+<li>Implementar logging mais detalhado para debugging</li>
+</ul>
 <hr>
-<h2>7️⃣ Next Steps</h2>
-<ol>
-<li>
-<p><strong>Immediate Fixes (Week 1)</strong></p>
-<ul>
-<li>Fix authentication system</li>
-<li>Fix performance issues</li>
-<li>Fix LGPD compliance</li>
-</ul>
-</li>
-<li>
-<p><strong>Feature Fixes (Week 2)</strong></p>
-<ul>
-<li>Fix broken features</li>
-<li>Implement proper error handling</li>
-<li>Add comprehensive testing</li>
-</ul>
-</li>
-<li>
-<p><strong>Re-testing (Week 3)</strong></p>
-<ul>
-<li>Re-run all tests</li>
-<li>Validate fixes</li>
-<li>Performance testing</li>
-</ul>
-</li>
-<li>
-<p><strong>Production Deployment</strong></p>
-<ul>
-<li>Only after all critical issues are resolved</li>
-<li>Comprehensive security audit</li>
-<li>Performance validation</li>
-</ul>
-</li>
-</ol>
-<hr>
-<p><strong>Report Generated:</strong> 2025-10-14<br>
-<strong>Test Environment:</strong> localhost:8080<br>
-<strong>Total Tests:</strong> 16<br>
-<strong>Passed:</strong> 3 (18.75%)<br>
-<strong>Failed:</strong> 13 (81.25%)<br>
-<strong>Critical Issues:</strong> 9<br>
-<strong>Production Ready:</strong> ❌ NO</p>
+<p><strong>Relatório gerado em:</strong> 2025-10-15<br>
+<strong>Ambiente de teste:</strong> localhost:8080<br>
+<strong>Ferramenta:</strong> TestSprite MCP<br>
+<strong>Status geral:</strong> ⚠️ <strong>REQUER CORREÇÕES CRÍTICAS</strong></p>
 
             </li>
 </ul>

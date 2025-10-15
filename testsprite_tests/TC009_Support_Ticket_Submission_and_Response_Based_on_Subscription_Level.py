@@ -45,15 +45,15 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Input invalid phone number and incorrect password.
+        # Input phone and password for Business plan user and click Entrar to log in.
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('5511999999999')
+        await page.wait_for_timeout(3000); await elem.fill('5511949746110')
         
 
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('wrongpassword')
+        await page.wait_for_timeout(3000); await elem.fill('12345678')
         
 
         frame = context.pages[-1]
@@ -61,9 +61,35 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        error_message_locator = frame.locator('text=Credenciais inválidas ou incorretas')
-        await error_message_locator.wait_for(state='visible', timeout=5000)
-        assert await error_message_locator.is_visible(), 'Error message for invalid credentials is not visible'
+        # Click on 'Ajuda' button to access support and submit a ticket.
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/div[3]/div/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Click on 'Suporte' button to create a support ticket.
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[3]/div[2]/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Fill in the subject and detailed description fields with valid text and submit the support ticket.
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[3]/div[2]/div/div[2]/div/div/form/div[2]/input').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('Problema com acesso à conta')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[3]/div[2]/div/div[2]/div/div/form/div[3]/textarea').nth(0)
+        await page.wait_for_timeout(3000); await elem.fill('Não consigo acessar minha conta desde ontem. Aparece erro de autenticação.')
+        
+
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[3]/div[2]/div/div[2]/div/div/form/div[5]/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        assert False, 'Test plan execution failed: generic failure assertion.'
         await asyncio.sleep(5)
     
     finally:

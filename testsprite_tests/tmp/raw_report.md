@@ -5,7 +5,7 @@
 
 ## 1️⃣ Document Metadata
 - **Project Name:** meu-agente-fin
-- **Date:** 2025-10-14
+- **Date:** 2025-10-15
 - **Prepared by:** TestSprite AI Team
 
 ---
@@ -15,7 +15,7 @@
 #### Test TC001
 - **Test Name:** User Authentication Success
 - **Test Code:** [TC001_User_Authentication_Success.py](./TC001_User_Authentication_Success.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/f433d307-bc52-49c3-80ac-a0a4c8b99fb5
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/59d24863-b08b-4632-9d8a-3b9d23c1b852
 - **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
@@ -23,328 +23,145 @@
 #### Test TC002
 - **Test Name:** User Authentication Failure with Invalid Credentials
 - **Test Code:** [TC002_User_Authentication_Failure_with_Invalid_Credentials.py](./TC002_User_Authentication_Failure_with_Invalid_Credentials.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/9d9e932a-7eee-492b-8002-883057cb993c
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/5ab513a4-55c0-4648-9542-d107550abe0d
 - **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC003
-- **Test Name:** Sign Up Flow Success
-- **Test Code:** [TC003_Sign_Up_Flow_Success.py](./TC003_Sign_Up_Flow_Success.py)
-- **Test Error:** User registration test failed because the sign-up form cannot be submitted. The 'Criar Conta' button remains disabled despite valid inputs. Reporting this issue and stopping further testing.
+- **Test Name:** Subscription Plan Permissions Enforcement
+- **Test Code:** [TC003_Subscription_Plan_Permissions_Enforcement.py](./TC003_Subscription_Plan_Permissions_Enforcement.py)
+- **Test Error:** Subscription upgrade functionality is broken. Unable to verify feature unlocks for Basic, Business, and Premium plans. Testing stopped and issue reported.
 Browser Console Logs:
-[ERROR] Failed to load resource: the server responded with a status of 400 () (at https://teexqwlnfdlcruqbmwuz.supabase.co/auth/v1/signup:0:0)
-[ERROR] Signup error: Error: Erro ao criar conta
-    at signup (http://localhost:8080/src/contexts/AuthContext.tsx:262:15)
-    at async handleSubmit (http://localhost:8080/src/pages/auth/Signup.tsx:93:13) (at http://localhost:8080/src/contexts/AuthContext.tsx:285:14)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/a6ca94db-f03c-4bf6-9424-32ab23d67188
+[ERROR] X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>. (at http://localhost:8080/:15:0)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/f4cff742-3364-416f-b598-9eee3135b315
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC004
-- **Test Name:** Role and Plan Based Access Control
-- **Test Code:** [TC004_Role_and_Plan_Based_Access_Control.py](./TC004_Role_and_Plan_Based_Access_Control.py)
-- **Test Error:** Stopped testing due to inability to login with valid test user credentials. Cannot verify feature access restrictions without successful authentication.
+- **Test Name:** AI Agent WhatsApp Message Interpretation and Task Execution
+- **Test Code:** [TC004_AI_Agent_WhatsApp_Message_Interpretation_and_Task_Execution.py](./TC004_AI_Agent_WhatsApp_Message_Interpretation_and_Task_Execution.py)
+- **Test Error:** The task to verify AI sub-agents correctly interpret natural language inputs via WhatsApp was partially completed. Financial entry creation and ambiguous input handling were successfully tested within the application interface. However, direct WhatsApp messaging tests were blocked by browser compatibility issues preventing access to WhatsApp Web. Scheduling and marketing AI agent tests via WhatsApp could not be performed. Overall, the AI sub-agents show correct interpretation and error handling in the tested scenarios, but full end-to-end WhatsApp integration testing remains incomplete due to technical constraints.
 Browser Console Logs:
-[ERROR] Failed to load resource: the server responded with a status of 400 () (at https://teexqwlnfdlcruqbmwuz.supabase.co/auth/v1/token?grant_type=password:0:0)
-[ERROR] Login error: AuthApiError: Invalid login credentials
-    at handleError2 (http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=7a5a965f:5104:9)
-    at async _handleRequest2 (http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=7a5a965f:5145:5)
-    at async _request (http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=7a5a965f:5129:16)
-    at async SupabaseAuthClient.signInWithPassword (http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=7a5a965f:5998:15)
-    at async login (http://localhost:8080/src/contexts/AuthContext.tsx:195:31)
-    at async handleSubmit (http://localhost:8080/src/pages/auth/Login.tsx:58:13) (at http://localhost:8080/src/contexts/AuthContext.tsx:209:18)
-[ERROR] Login error: Error: Telefone ou senha incorretos
-    at login (http://localhost:8080/src/contexts/AuthContext.tsx:212:15)
-    at async handleSubmit (http://localhost:8080/src/pages/auth/Login.tsx:58:13) (at http://localhost:8080/src/contexts/AuthContext.tsx:222:16)
-[ERROR] Failed to load resource: the server responded with a status of 400 () (at https://teexqwlnfdlcruqbmwuz.supabase.co/auth/v1/token?grant_type=password:0:0)
-[ERROR] Login error: AuthApiError: Invalid login credentials
-    at handleError2 (http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=7a5a965f:5104:9)
-    at async _handleRequest2 (http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=7a5a965f:5145:5)
-    at async _request (http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=7a5a965f:5129:16)
-    at async SupabaseAuthClient.signInWithPassword (http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=7a5a965f:5998:15)
-    at async login (http://localhost:8080/src/contexts/AuthContext.tsx:195:31)
-    at async handleSubmit (http://localhost:8080/src/pages/auth/Login.tsx:58:13) (at http://localhost:8080/src/contexts/AuthContext.tsx:209:18)
-[ERROR] Login error: Error: Telefone ou senha incorretos
-    at login (http://localhost:8080/src/contexts/AuthContext.tsx:212:15)
-    at async handleSubmit (http://localhost:8080/src/pages/auth/Login.tsx:58:13) (at http://localhost:8080/src/contexts/AuthContext.tsx:222:16)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/4b37813a-72aa-4a01-b428-7c216fbc2158
+[ERROR] X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>. (at http://localhost:8080/:15:0)
+[WARNING] Error with Permissions-Policy header: Unrecognized feature: 'bluetooth'. (at :0:0)
+[ERROR] X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>. (at http://localhost:8080/dashboard:15:0)
+[WARNING] Error with Permissions-Policy header: Unrecognized feature: 'bluetooth'. (at :0:0)
+[ERROR] X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>. (at http://localhost:8080/dashboard:15:0)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/d72145bf-b6e2-4c6e-afd9-b52f73a4b5d2
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC005
-- **Test Name:** Row Level Security (RLS) Enforcement
-- **Test Code:** [TC005_Row_Level_Security_RLS_Enforcement.py](./TC005_Row_Level_Security_RLS_Enforcement.py)
-- **Test Error:** Testing stopped due to inability to log in as User B. User A login and logout were successful, but User B login failed with no error message. Cannot validate Row Level Security policies without User B access. Issue reported for resolution.
+- **Test Name:** Financial Records Management and Export
+- **Test Code:** [TC005_Financial_Records_Management_and_Export.py](./TC005_Financial_Records_Management_and_Export.py)
+- **Test Error:** The task to verify financial entries creation, editing, categorization, filtering, and export for paid users was partially completed. Login, record creation, filtering, and verification of filtered records were successful. However, the export functionality could not be tested because clicking the export button opened the 'Adicionar Registro' modal instead, indicating a UI issue preventing export testing. Therefore, the task is not fully finished.
 Browser Console Logs:
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisições por 5 segundos (at http://localhost:8080/src/hooks/useAgendaData.ts:84:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/9615d02f-179f-4324-bfce-9eea75c4bff3
+[ERROR] X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>. (at http://localhost:8080/:15:0)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/c69d3e88-933f-4f53-94e4-77bdf5abbcc9
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC006
-- **Test Name:** Financial Management Workflow
-- **Test Code:** [TC006_Financial_Management_Workflow.py](./TC006_Financial_Management_Workflow.py)
-- **Test Error:** Testing stopped due to critical issue: unexpected navigation away from the financial dashboard to an unrelated external landing page when attempting to edit a financial entry. All previous steps for adding and categorizing financial entries were successful. Further testing of editing, deleting, exporting, and plan permission restrictions cannot proceed until this issue is resolved.
+- **Test Name:** Calendar Integration and Notification via Google Workspace
+- **Test Code:** [TC006_Calendar_Integration_and_Notification_via_Google_Workspace.py](./TC006_Calendar_Integration_and_Notification_via_Google_Workspace.py)
+- **Test Error:** Test stopped due to inability to open event for editing. Event creation verified but update, delete, and notification tests could not be completed. Issue reported for resolution.
 Browser Console Logs:
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisições por 5 segundos (at http://localhost:8080/src/hooks/useAgendaData.ts:84:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/a9a15cdd-bebc-4f67-a911-38bbac86224b
+[ERROR] X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>. (at http://localhost:8080/:15:0)
+[WARNING] Select is changing from uncontrolled to controlled. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component. (at http://localhost:8080/node_modules/.vite/deps/chunk-24BRHPTI.js?v=441089e8:41:16)
+[WARNING] Select is changing from uncontrolled to controlled. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component. (at http://localhost:8080/node_modules/.vite/deps/chunk-24BRHPTI.js?v=441089e8:41:16)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/832299ee-38f9-4dac-a286-1f83da1dc782
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC007
-- **Test Name:** Tasks Management with Drag-and-Drop
-- **Test Code:** [TC007_Tasks_Management_with_Drag_and_Drop.py](./TC007_Tasks_Management_with_Drag_and_Drop.py)
-- **Test Error:** Task creation verified successfully. However, updating the task status to 'Concluída' failed due to UI interaction issues. Reporting this as a website issue and stopping further testing as the next steps depend on status update functionality.
-Browser Console Logs:
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:30:59 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisições por 5 segundos (at http://localhost:8080/src/hooks/useAgendaData.ts:84:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/1c3f5776-2f0d-4f77-b210-0273ce38271d
-- **Status:** ❌ Failed
+- **Test Name:** Data Privacy, Security Features, and CSRF Protection
+- **Test Code:** [TC007_Data_Privacy_Security_Features_and_CSRF_Protection.py](./TC007_Data_Privacy_Security_Features_and_CSRF_Protection.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/edce1c3a-50c4-476f-b371-56ce6c9b09a3
+- **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC008
-- **Test Name:** Calendar and Event Scheduling Features
-- **Test Code:** [null](./null)
-- **Test Error:** Test execution timed out after 15 minutes
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/1879a47f-ade9-4dfa-bae5-88fa6578b140
-- **Status:** ❌ Failed
+- **Test Name:** Backup and Data Restoration in Premium Plan
+- **Test Code:** [TC008_Backup_and_Data_Restoration_in_Premium_Plan.py](./TC008_Backup_and_Data_Restoration_in_Premium_Plan.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/d9798838-2705-48e8-b8c6-fc494f8d1004
+- **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC009
-- **Test Name:** Interactions with IA Agents on WhatsApp
-- **Test Code:** [TC009_Interactions_with_IA_Agents_on_WhatsApp.py](./TC009_Interactions_with_IA_Agents_on_WhatsApp.py)
-- **Test Error:** The task to verify AI sub-agent responses to typical WhatsApp Business interactions including financial entries, lead qualification, marketing automation, video creation, and premium features was partially completed. Successful login and dashboard navigation were achieved for the initial test user on the Free plan. However, attempts to log in with Business and Premium plan test users failed due to incorrect credentials, preventing testing of premium and WhatsApp AI sub-agent features. Additionally, no direct UI interface was found within the app to send WhatsApp messages to AI sub-agents, indicating possible missing integration or need for backend/API simulation. Further testing requires valid credentials for eligible plans and/or backend simulation of WhatsApp messages to AI sub-agents.
+- **Test Name:** Support Ticket Submission and Response Based on Subscription Level
+- **Test Code:** [TC009_Support_Ticket_Submission_and_Response_Based_on_Subscription_Level.py](./TC009_Support_Ticket_Submission_and_Response_Based_on_Subscription_Level.py)
+- **Test Error:** Testing stopped due to backend security policy error preventing support ticket creation. Cannot verify ticket submission, acknowledgement, or SLA for Business plan users. Recommend fixing this issue before continuing tests.
 Browser Console Logs:
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:02 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisições por 5 segundos (at http://localhost:8080/src/hooks/useAgendaData.ts:84:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/80b6bbbf-b1b7-432d-a2eb-ddd844d56d54
+[ERROR] X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>. (at http://localhost:8080/:15:0)
+[ERROR] Failed to load resource: the server responded with a status of 403 () (at https://teexqwlnfdlcruqbmwuz.supabase.co/rest/v1/support_tickets?select=*:0:0)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/3405a6ad-7217-4c8b-9adf-6bddade876ae
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC010
-- **Test Name:** Dashboard Metrics, Reports and Exports
-- **Test Code:** [TC010_Dashboard_Metrics_Reports_and_Exports.py](./TC010_Dashboard_Metrics_Reports_and_Exports.py)
-- **Test Error:** Test completed with partial success. Dashboard metrics and PDF report export verified successfully. However, CSV export functionality is broken, triggering PDF export and navigating away from reports page. This issue should be fixed before further testing. Stopping now as per instructions.
-Browser Console Logs:
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisições por 5 segundos (at http://localhost:8080/src/hooks/useAgendaData.ts:84:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/b68026d2-340c-44a6-87f2-20c2c7aed1d6
-- **Status:** ❌ Failed
+- **Test Name:** UI Responsiveness and Accessibility Across Devices
+- **Test Code:** [TC010_UI_Responsiveness_and_Accessibility_Across_Devices.py](./TC010_UI_Responsiveness_and_Accessibility_Across_Devices.py)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/f2f63bb5-fb14-490f-bdd2-35068f6b484b
+- **Status:** ✅ Passed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC011
-- **Test Name:** Notifications System Functionality
-- **Test Code:** [null](./null)
-- **Test Error:** Test execution timed out after 15 minutes
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/6315251b-8c0a-494b-95c9-380920066727
+- **Test Name:** Performance and Caching Benchmark
+- **Test Code:** [TC011_Performance_and_Caching_Benchmark.py](./TC011_Performance_and_Caching_Benchmark.py)
+- **Test Error:** Performance testing could not be completed because automated access to API endpoint information was blocked by Google reCAPTCHA. No direct UI options for performance testing or logs were found in the application. Recommend manual intervention to obtain API documentation or backend access for load and caching tests.
+Browser Console Logs:
+[ERROR] X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>. (at http://localhost:8080/:15:0)
+[ERROR] X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>. (at http://localhost:8080/api/performance-test:15:0)
+[ERROR] 404 Error: User attempted to access non-existent route: /api/performance-test (at http://localhost:8080/src/pages/NotFound.tsx:27:16)
+[ERROR] X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>. (at http://localhost:8080/:15:0)
+[ERROR] Failed to load resource: the server responded with a status of 429 () (at https://www.google.com/sorry/index?continue=https://www.google.com/search%3Fq%3DMeu%2520Agente%2520Financeiro%2520API%2520endpoints%2520for%2520load%2520testing%2520and%2520caching%2520verification%26udm%3D14%26sei%3DVjnvaI1l69bk5Q-jv8z4Ag&q=EhAoBAFNeKGCPECsnneB-fm6GNbyvMcGIjD9l5c8T45w2yCkn_nvqjcCnTdjqbMhZURIr8xWA9JDvAlSJML5PpBAbUx3dE6Hab8yAVJaAUM:0:0)
+[WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. (at https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdLLIMbAAAAAIl-KLj9p1ePhM-4LCCDbjtJLqRO&co=aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbTo0NDM.&hl=en&v=bGi-DxR800F5_ueMVcTwXc6q&size=normal&s=Kr7RYyY8Gnnh4PafJj9vpFw6IM7QEupNJLODXpitJQjRdipyXF_OYIcDjmepUn2bghkrsF_id_uu-4zaVsFvVstC8iortQ5PVMkjcA2hcsfbR4tmAxFqGKmIRAC0ye8Yis1Ld2IzJQViGE1EQJKQgSZ2tzxwS2o86-0-NVY726DDq7wpInXzaIpzllK_T3iw1rKLOJXE2Zh___EXng6ejot-XSl98d_foiIbENS9b-HBpnhCE8L8HcCb0A-h9wkINzeR_7jCakNOR-14Li8FVJghF5V6Esg&anchor-ms=20000&execute-ms=15000&cb=6h9uy0j6aqch:0:0)
+[WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. (at https://www.google.com/recaptcha/enterprise/bframe?hl=en&v=bGi-DxR800F5_ueMVcTwXc6q&k=6LdLLIMbAAAAAIl-KLj9p1ePhM-4LCCDbjtJLqRO&bft=0dAFcWeA45GYDyjTrYn_YrxsjcvRLG_Y1pgGLjk1pzVV8ooL9aR_RT5oZOgWZz7vnc2jDDaqB8awjPo4fL9wbwqIVC4AdTOWJzNQ:0:0)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/c96e8737-7aed-4dae-9268-c51c3c77b64e
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC012
-- **Test Name:** User Profile Management and Theme Switching
-- **Test Code:** [TC012_User_Profile_Management_and_Theme_Switching.py](./TC012_User_Profile_Management_and_Theme_Switching.py)
-- **Test Error:** Avatar upload functionality is not accessible as clicking 'Alterar foto' does not trigger file upload dialog or input. Profile details update was successful. Theme toggle testing cannot proceed due to avatar upload blocking. Stopping test here.
+- **Test Name:** Multi-tier Financial Record Operations Edge Cases
+- **Test Code:** [TC012_Multi_tier_Financial_Record_Operations_Edge_Cases.py](./TC012_Multi_tier_Financial_Record_Operations_Edge_Cases.py)
+- **Test Error:** Testing of financial record creation with edge data is partially complete. Zero and extremely large amount validations worked as expected. However, the system failed to provide any validation or warning for duplicate entries, accepting them silently. This is a critical issue that needs to be addressed. Testing stopped due to this failure.
 Browser Console Logs:
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisições por 5 segundos (at http://localhost:8080/src/hooks/useAgendaData.ts:84:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/715857b7-da92-4a33-bae2-5805b7a48e6b
+[ERROR] X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>. (at http://localhost:8080/:15:0)
+[ERROR] Failed to load resource: the server responded with a status of 400 () (at https://teexqwlnfdlcruqbmwuz.supabase.co/rest/v1/financeiro_registros?select=*:0:0)
+[ERROR] Erro na inserção: {code: 22003, details: A field with precision 12, scale 2 must round to an absolute value less than 10^10., hint: null, message: numeric field overflow} (at http://localhost:8080/src/components/FinanceRecordForm.tsx?t=1760502110936:157:28)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/ca33f9f6-a218-4588-8edf-2e506ac9c9b1
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC013
-- **Test Name:** Backups and Data Restoration for Premium Plan
-- **Test Code:** [TC013_Backups_and_Data_Restoration_for_Premium_Plan.py](./TC013_Backups_and_Data_Restoration_for_Premium_Plan.py)
-- **Test Error:** Stopped testing due to inability to log in with Premium user account. Login failure prevents verification of daily off-site backups and data restoration. Issue reported.
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/8985e705-88a4-46e5-9320-d562bfdbad23
+- **Test Name:** Task Management Drag-and-Drop and Filtering
+- **Test Code:** [TC013_Task_Management_Drag_and_Drop_and_Filtering.py](./TC013_Task_Management_Drag_and_Drop_and_Filtering.py)
+- **Test Error:** Drag-and-drop reorder functionality on the tasks page is not working as expected. Attempts to reorder tasks result in tasks being removed, causing task count to decrease unexpectedly. Due to this critical issue, further testing is stopped to avoid data inconsistency. Please investigate and fix the drag-and-drop reorder bug before continuing testing.
+Browser Console Logs:
+[ERROR] X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>. (at http://localhost:8080/:15:0)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/8d39a5ea-a7cc-4022-b862-6e9c20541e46
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
 
 #### Test TC014
-- **Test Name:** Security, Privacy and LGPD Compliance
-- **Test Code:** [TC014_Security_Privacy_and_LGPD_Compliance.py](./TC014_Security_Privacy_and_LGPD_Compliance.py)
-- **Test Error:** Privacy policies and LGPD compliance features were tested. User consent toggling works and settings are saved. However, critical enforcement is missing: the system does not restrict access to data processing features when user consent is disabled, nor does it inform the user. This is a significant compliance issue that must be addressed. Testing is stopped here.
+- **Test Name:** Notification System History and Alert Management
+- **Test Code:** [TC014_Notification_System_History_and_Alert_Management.py](./TC014_Notification_System_History_and_Alert_Management.py)
+- **Test Error:** Tested notification generation, display, persistence, and alert management. Notifications are generated, displayed in dropdown, and persisted in history correctly. However, alert management options to mark notifications as read/unread and clear alerts do not function properly. Clicking notifications does not update status or alert counts. Reporting this issue and stopping further testing.
 Browser Console Logs:
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:00 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisições por 5 segundos (at http://localhost:8080/src/hooks/useAgendaData.ts:84:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/9e1c4360-43be-45e5-942e-f8745acbe949
-- **Status:** ❌ Failed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC015
-- **Test Name:** Responsive Layout and UI Components Validation
-- **Test Code:** [TC015_Responsive_Layout_and_UI_Components_Validation.py](./TC015_Responsive_Layout_and_UI_Components_Validation.py)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/dc641b44-7b9a-41b4-ace9-85519bf13d10
-- **Status:** ✅ Passed
-- **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
----
-
-#### Test TC016
-- **Test Name:** Automated Playwright Tests Coverage Verification
-- **Test Code:** [TC016_Automated_Playwright_Tests_Coverage_Verification.py](./TC016_Automated_Playwright_Tests_Coverage_Verification.py)
-- **Test Error:** Automated navigation and verification of critical flows and deep navigation completed. However, no accessible interface or URL was found to run the Playwright test suites as required. Reporting this issue and stopping further actions until the test environment is fixed or clarified.
-Browser Console Logs:
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[WARNING] useAgendaData: Datas inválidas ou iguais: {startDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time), endDate: Tue Oct 14 2025 22:31:01 GMT+0000 (Coordinated Universal Time)} (at http://localhost:8080/src/hooks/useAgendaData.ts:97:24)
-[ERROR] 🚨 LOOP INFINITO DETECTADO! Bloqueando requisições por 5 segundos (at http://localhost:8080/src/hooks/useAgendaData.ts:84:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-[WARNING] useAgendaData: Requisição bloqueada temporariamente (at http://localhost:8080/src/hooks/useAgendaData.ts:77:28)
-- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/3a46062f-cc42-4890-a7c5-255c6488d4e4/516e6c22-e811-4ff7-ba99-23fb9a368a76
+[ERROR] X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>. (at http://localhost:8080/:15:0)
+- **Test Visualization and Result:** https://www.testsprite.com/dashboard/mcp/tests/69086fee-daa2-4d35-8455-42e600335e1c/5b053522-72c0-40c1-b0ab-b3131f6957b0
 - **Status:** ❌ Failed
 - **Analysis / Findings:** {{TODO:AI_ANALYSIS}}.
 ---
@@ -352,7 +169,7 @@ Browser Console Logs:
 
 ## 3️⃣ Coverage & Matching Metrics
 
-- **18.75** of tests passed
+- **35.71** of tests passed
 
 | Requirement        | Total Tests | ✅ Passed | ❌ Failed  |
 |--------------------|-------------|-----------|------------|

@@ -50,7 +50,12 @@ import { SegmentedControl } from '@/components/ui/segmented-control';
 const formSchema = z.object({
   tipo: z.enum(['entrada', 'saida']),
   categoria: z.string().min(1, 'Categoria é obrigatória'),
-  valor: z.string().min(1, 'Valor é obrigatório'),
+  valor: z.string()
+    .min(1, 'Valor é obrigatório')
+    .refine((val) => {
+      const numericValue = parseFloat(val.replace(/\./g, '').replace(',', '.'));
+      return !isNaN(numericValue) && numericValue > 0 && numericValue <= 9999999999.99;
+    }, 'Valor deve estar entre R$ 0,01 e R$ 9.999.999.999,99'),
   descricao: z.string().optional(),
   data: z.date(),
   agendar: z.boolean().default(false), // This field now means "isPaid"
@@ -88,6 +93,36 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
     // Isso inclui usuários free, basic, business e premium
     // Conforme solicitado: "usuários free, terão acesso ao app, poderão criar registros como parte do plano free"
     return cliente.subscription_active === true;
+  };
+
+  // CORREÇÃO CRÍTICA: Função para verificar duplicatas financeiras
+  const checkForDuplicates = async (payload: any) => {
+    try {
+      const { data: existingRecords, error } = await supabase
+        .from('financeiro_registros')
+        .select('id, valor, categoria, data_hora, descricao')
+        .eq('phone', userPhone)
+        .eq('tipo', payload.tipo)
+        .eq('categoria', payload.categoria)
+        .eq('valor', payload.valor)
+        .gte('data_hora', new Date(payload.data_hora).toISOString().split('T')[0])
+        .lt('data_hora', new Date(payload.data_hora).toISOString().split('T')[0] + 'T23:59:59');
+
+      if (error) throw error;
+
+      // Verificar duplicatas baseadas em critérios específicos
+      const isDuplicate = existingRecords?.some(record => 
+        record.valor === payload.valor &&
+        record.categoria === payload.categoria &&
+        record.descricao === payload.descricao &&
+        Math.abs(new Date(record.data_hora).getTime() - new Date(payload.data_hora).getTime()) < 60000 // 1 minuto
+      );
+
+      return isDuplicate;
+    } catch (error) {
+      console.error('Erro ao verificar duplicatas:', error);
+      return false; // Em caso de erro, permitir inserção
+    }
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -161,6 +196,17 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
         data_vencimento: isPaid ? null : values.data.toISOString(),
         data_hora: isPaid ? values.data.toISOString() : new Date().toISOString(),
       };
+
+      // CORREÇÃO CRÍTICA: Verificar duplicatas apenas para novos registros
+      if (!recordToEdit) {
+        const isDuplicate = await checkForDuplicates(payload);
+        if (isDuplicate) {
+          toast.error('Registro duplicado detectado!', {
+            description: 'Já existe um registro similar. Verifique os dados ou aguarde alguns minutos.'
+          });
+          return;
+        }
+      }
 
       let error;
       

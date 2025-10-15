@@ -45,15 +45,15 @@ async def run_test():
                 pass
         
         # Interact with the page elements to simulate user flow
-        # Input invalid phone number and incorrect password.
+        # Input phone number and password for Free plan user and click login button.
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('5511999999999')
+        await page.wait_for_timeout(3000); await elem.fill('5511949746110')
         
 
         frame = context.pages[-1]
         elem = frame.locator('xpath=html/body/div/div[2]/main/div/div[2]/form/div/div[2]/div/input').nth(0)
-        await page.wait_for_timeout(3000); await elem.fill('wrongpassword')
+        await page.wait_for_timeout(3000); await elem.fill('12345678')
         
 
         frame = context.pages[-1]
@@ -61,9 +61,43 @@ async def run_test():
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
 
-        error_message_locator = frame.locator('text=Credenciais inválidas ou incorretas')
-        await error_message_locator.wait_for(state='visible', timeout=5000)
-        assert await error_message_locator.is_visible(), 'Error message for invalid credentials is not visible'
+        # Attempt to access paid features like Google Workspace integration, financial exports, and advanced AI agents to verify access restrictions.
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[6]').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Attempt to access paid features like Google Workspace integration, financial exports, and advanced AI agents to verify access restrictions for Free plan.
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div/div[2]/div/div/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Attempt to access a paid feature such as Google Workspace integration to verify access restriction for Free plan user.
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div[2]/div').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Attempt to access Google Workspace integration to verify access restriction for Free plan user.
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div/aside/nav/a[8]').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Click on Planos button to access subscription plan upgrade options and upgrade user subscription to Basic plan.
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div/div/button[5]').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        # Upgrade user subscription to Basic plan by clicking the corresponding upgrade button and verify feature unlocks.
+        frame = context.pages[-1]
+        elem = frame.locator('xpath=html/body/div/div[2]/div[2]/main/div/div/div/div[2]/div/div[2]/div/div/div[2]/div[2]/div/div[4]/div[4]/button').nth(0)
+        await page.wait_for_timeout(3000); await elem.click(timeout=5000)
+        
+
+        assert False, 'Test plan execution failed: generic failure assertion.'
         await asyncio.sleep(5)
     
     finally:
