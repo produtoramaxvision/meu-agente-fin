@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { CATEGORIAS_DESPESAS, CATEGORIAS_RECEITAS } from '@/constants/categories';
+import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -80,6 +81,9 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [isRecurrenceDatePickerOpen, setIsRecurrenceDatePickerOpen] = useState(false);
   const { cliente } = useAuth();
+  
+  // ✅ CORREÇÃO: Hook customizado para detecção de duplicatas
+  const { checkDuplicate, isChecking } = useDuplicateDetection();
 
   const isControlled = controlledOpen !== undefined && onOpenChange !== undefined;
   const open = isControlled ? controlledOpen! : internalOpen;
@@ -95,34 +99,18 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
     return cliente.subscription_active === true;
   };
 
-  // CORREÇÃO CRÍTICA: Função para verificar duplicatas financeiras
+  // ✅ CORREÇÃO: Função para verificar duplicatas financeiras usando hook customizado
   const checkForDuplicates = async (payload: any) => {
-    try {
-      const { data: existingRecords, error } = await supabase
-        .from('financeiro_registros')
-        .select('id, valor, categoria, data_hora, descricao')
-        .eq('phone', userPhone)
-        .eq('tipo', payload.tipo)
-        .eq('categoria', payload.categoria)
-        .eq('valor', payload.valor)
-        .gte('data_hora', new Date(payload.data_hora).toISOString().split('T')[0])
-        .lt('data_hora', new Date(payload.data_hora).toISOString().split('T')[0] + 'T23:59:59');
-
-      if (error) throw error;
-
-      // Verificar duplicatas baseadas em critérios específicos
-      const isDuplicate = existingRecords?.some(record => 
-        record.valor === payload.valor &&
-        record.categoria === payload.categoria &&
-        record.descricao === payload.descricao &&
-        Math.abs(new Date(record.data_hora).getTime() - new Date(payload.data_hora).getTime()) < 60000 // 1 minuto
-      );
-
-      return isDuplicate;
-    } catch (error) {
-      console.error('Erro ao verificar duplicatas:', error);
-      return false; // Em caso de erro, permitir inserção
-    }
+    const duplicateResult = await checkDuplicate({
+      phone: userPhone,
+      tipo: payload.tipo,
+      categoria: payload.categoria,
+      valor: payload.valor,
+      descricao: payload.descricao,
+      data_hora: payload.data_hora
+    });
+    
+    return duplicateResult.isDuplicate;
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
