@@ -142,25 +142,26 @@ function TicketCard({ ticket }: { ticket: SupportTicket }) {
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className={cn('p-2 rounded-lg', typeInfo.bgColor)}>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className={cn('p-2 rounded-lg flex-shrink-0', typeInfo.bgColor)}>
               <typeInfo.icon className={cn('h-4 w-4', typeInfo.color)} />
             </div>
-            <div>
-              <CardTitle className="text-base">{ticket.subject}</CardTitle>
+            <div className="min-w-0 flex-1">
+              <CardTitle className="text-base truncate">{ticket.subject}</CardTitle>
               <CardDescription className="text-sm">
                 #{ticket.ticket_number}
               </CardDescription>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Badge 
               variant="outline" 
               className={cn('text-xs', statusInfo.color, statusInfo.bgColor)}
             >
               <statusInfo.icon className="h-3 w-3 mr-1" />
-              {statusInfo.label}
+              <span className="hidden sm:inline">{statusInfo.label}</span>
+              <span className="sm:hidden">{statusInfo.label.split(' ')[0]}</span>
             </Badge>
           </div>
         </div>
@@ -169,7 +170,7 @@ function TicketCard({ ticket }: { ticket: SupportTicket }) {
       <CardContent className="pt-0">
         <div className="space-y-3">
           {/* Meta informações */}
-          <div className="flex items-center gap-4 text-xs text-text-muted">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs text-text-muted">
             <div className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
               {formatDate(ticket.created_at)}
@@ -340,11 +341,11 @@ export function SupportFormTab({ onSuccess }: { onSuccess: (ticketNumber: string
   }
 
   return (
-    <div className="w-full h-full flex flex-col min-h-[400px] sm:min-h-[500px] space-y-4 sm:space-y-6">
+    <div className="w-full space-y-6 sm:space-y-8">
       {/* Ticket Limit Info */}
       {!isLoadingLimit && ticketLimit && (
         <div className="bg-surface border rounded-lg p-3">
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
             <span className="text-text-muted">Tickets disponíveis este mês:</span>
             <div className="flex items-center gap-2">
               {ticketLimit.isUnlimited ? (
@@ -370,7 +371,7 @@ export function SupportFormTab({ onSuccess }: { onSuccess: (ticketNumber: string
       )}
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
           {/* Tipo de Solicitação */}
           <FormField
             control={form.control}
@@ -432,12 +433,12 @@ export function SupportFormTab({ onSuccess }: { onSuccess: (ticketNumber: string
                 <FormControl>
                   <Textarea
                     placeholder="Forneça detalhes sobre sua solicitação, incluindo passos para reproduzir o problema (se aplicável)"
-                    className="min-h-[120px] resize-none border border-input pb-2"
+                    className="min-h-[100px] sm:min-h-[120px] resize-none"
                     data-testid="ticket-description-textarea"
                     {...field}
                   />
                 </FormControl>
-                <div className="flex justify-between text-xs text-text-muted">
+                <div className="flex justify-between text-xs text-text-muted mt-1">
                   <span>Mínimo 10 caracteres</span>
                   <span>{field.value?.length || 0}/1000</span>
                 </div>
@@ -496,11 +497,11 @@ export function SupportFormTab({ onSuccess }: { onSuccess: (ticketNumber: string
           )}
 
           {/* Botão de Envio */}
-          <div className="flex justify-end pt-4">
+          <div className="flex flex-col sm:flex-row justify-end gap-2 pt-6 pb-2">
             <Button 
               type="submit" 
               disabled={isCreatingTicket}
-              className="min-w-[120px]"
+              className="w-full sm:w-auto sm:min-w-[120px]"
               data-testid="submit-ticket-button"
             >
               {isCreatingTicket ? (
@@ -580,11 +581,11 @@ export function SupportTicketsTab() {
   }
 
   return (
-    <div className="w-full h-full flex flex-col min-h-[400px] sm:min-h-[500px]">
+    <div className="w-full space-y-6 sm:space-y-8">
       {/* Resumo */}
       {ticketLimit && (
-        <div className="bg-surface border rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+        <div className="bg-surface border rounded-lg p-3 sm:p-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
               <h3 className="font-medium text-text text-sm sm:text-base">Resumo do Suporte</h3>
               <p className="text-xs sm:text-sm text-text-muted">
@@ -605,9 +606,9 @@ export function SupportTicketsTab() {
       )}
 
       {/* Lista de Tickets */}
-      <div className="flex-1 flex flex-col overflow-y-auto">
+      <div>
         {tickets.length === 0 ? (
-          <div className="flex-1 flex items-center justify-center px-4 py-6 sm:py-12">
+          <div className="flex items-center justify-center px-4 py-6 sm:py-12">
             <div className="text-center w-full max-w-md mx-auto">
               <MessageSquare className="h-12 w-12 sm:h-16 sm:w-16 text-text-muted mx-auto mb-4 sm:mb-6" />
               <h3 className="font-medium text-text mb-2 sm:mb-3 text-base sm:text-lg">Nenhum ticket encontrado</h3>
@@ -623,7 +624,7 @@ export function SupportTicketsTab() {
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 sm:space-y-6">
             {tickets.map((ticket) => (
               <TicketCard key={ticket.id} ticket={ticket} />
             ))}

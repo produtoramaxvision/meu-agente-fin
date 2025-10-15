@@ -49,10 +49,11 @@ export function SupportDialog({ open, onOpenChange }: SupportDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="sm:max-w-4xl max-h-[85vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
+        className="w-[95vw] max-w-4xl h-[95vh] max-h-[95vh] sm:h-[90vh] sm:max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <DialogHeader className="flex-shrink-0">
+        {/* Header fixo */}
+        <DialogHeader className="flex-shrink-0 pb-4 border-b">
           <DialogTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
             Suporte
@@ -63,12 +64,12 @@ export function SupportDialog({ open, onOpenChange }: SupportDialogProps) {
           
           {/* Informações de SLA */}
           <div className="bg-surface border rounded-lg p-3 mt-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
                 <h3 className="font-medium text-text text-sm">Seu Plano de Suporte</h3>
                 <p className="text-xs text-text-muted">{currentSLA.description}</p>
               </div>
-              <div className="text-right">
+              <div className="text-left sm:text-right">
                 <p className="text-xs text-text-muted">Tempo de resposta:</p>
                 <Badge 
                   variant={currentSLA.priority === 'critical' ? 'destructive' : 
@@ -84,54 +85,53 @@ export function SupportDialog({ open, onOpenChange }: SupportDialogProps) {
           </div>
         </DialogHeader>
 
-        <div className="flex-1 overflow-hidden">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-full flex flex-col">
-            <TabsList className="grid w-full grid-cols-3 flex-shrink-0" data-testid="support-tabs-list">
+        {/* Conteúdo principal */}
+        <div className="space-y-4">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            {/* Tabs fixas */}
+            <TabsList className="grid w-full grid-cols-3 mt-4" data-testid="support-tabs-list">
               <TabsTrigger 
                 value="form" 
-                className="flex items-center gap-2" 
+                className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm" 
                 data-testid="new-ticket-tab"
                 onClick={(e) => e.stopPropagation()}
               >
-                <FileText className="h-4 w-4" />
-                Novo Ticket
+                <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Novo Ticket</span>
+                <span className="sm:hidden">Novo</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="tickets" 
-                className="flex items-center gap-2" 
+                className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm" 
                 data-testid="my-tickets-tab"
                 onClick={(e) => e.stopPropagation()}
               >
-                <List className="h-4 w-4" />
-                Meus Tickets
+                <List className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Meus Tickets</span>
+                <span className="sm:hidden">Tickets</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="faq" 
-                className="flex items-center gap-2" 
+                className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm" 
                 data-testid="faq-tab"
                 onClick={(e) => e.stopPropagation()}
               >
-                <HelpCircle className="h-4 w-4" />
+                <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                 FAQ
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="form" className="flex-1 overflow-hidden mt-4">
-              <div className="h-full overflow-y-auto pr-2">
-                <SupportFormTab onSuccess={handleFormSuccess} />
-              </div>
+            {/* Conteúdo das tabs */}
+            <TabsContent value="form" className="space-y-4 mt-6">
+              <SupportFormTab onSuccess={handleFormSuccess} />
             </TabsContent>
             
-            <TabsContent value="tickets" className="flex-1 overflow-hidden mt-4">
-              <div className="h-full overflow-y-auto pr-2">
-                <SupportTicketsTab />
-              </div>
+            <TabsContent value="tickets" className="space-y-4 mt-6">
+              <SupportTicketsTab />
             </TabsContent>
             
-            <TabsContent value="faq" className="flex-1 overflow-hidden mt-4">
-              <div className="h-full overflow-y-auto pr-2">
-                <SupportFAQ onSelectQuestion={handleFAQSelect} />
-              </div>
+            <TabsContent value="faq" className="space-y-4 mt-6">
+              <SupportFAQ onSelectQuestion={handleFAQSelect} />
             </TabsContent>
           </Tabs>
         </div>
