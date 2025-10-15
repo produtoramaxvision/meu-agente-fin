@@ -7,6 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Clock, Calendar, Tag, Repeat, Check, Edit, Trash2, Copy, AlertCircle, MoreVertical } from 'lucide-react';
 import { useState } from 'react';
 import { ActionMenu } from '@/components/ui/ActionMenu';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import { EditRecordDialog } from './EditRecordDialog';
 import { DeleteRecordDialog } from './DeleteRecordDialog';
 import { cn } from '@/lib/utils';
@@ -174,95 +181,118 @@ export function ContaItem({ conta, onStatusChange }: ContaItemProps) {
 
   return (
     <>
-      <div
-        className={cn(
-          'group relative overflow-hidden rounded-lg bg-surface border border-l-4 transition-all duration-200 hover:shadow-md hover:border-primary/20 p-4',
-          borderColorClass,
-          conta.status === 'pago' && 'opacity-70'
-        )}
-      >
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
+      <ContextMenu>
+        <ContextMenuTrigger asChild>
+          <div className={cn(
+            'group relative overflow-hidden rounded-lg bg-surface border border-l-4 transition-all duration-200 hover:shadow-md hover:border-primary/20 p-4',
+            borderColorClass,
+            conta.status === 'pago' && 'opacity-70'
+          )}>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
 
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center md:gap-4">
-            {/* Main Content */}
-            <div className="flex-1 space-y-2 mb-4 md:mb-0">
-              <div className="flex items-start justify-between">
-                <h3 className={cn("font-bold text-base leading-tight flex-1", conta.status === 'pago' && 'line-through text-text-muted')}>
-                  {conta.descricao || conta.categoria}
-                </h3>
-                {/* Action Menu Button */}
-                <div className="ml-2 flex-shrink-0">
-                  <ActionMenu items={actionMenuItems}>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-surface-hover">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </ActionMenu>
+              {/* Action Menu Button - Positioned absolutely in top right corner */}
+              <div className="absolute top-4 right-4 z-30">
+                <ActionMenu items={actionMenuItems}>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-surface-hover">
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </ActionMenu>
+              </div>
+
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center md:gap-4">
+                {/* Main Content */}
+                <div className="flex-1 space-y-2 mb-4 md:mb-0 pr-12">
+                  <div className="flex items-start justify-between">
+                    <h3 className={cn("font-bold text-base leading-tight flex-1", conta.status === 'pago' && 'line-through text-text-muted')}>
+                      {conta.descricao || conta.categoria}
+                    </h3>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs">
+                    <Badge variant="outline" className={statusProps.className}>
+                      <statusProps.icon className="h-3 w-3 mr-1.5" />
+                      {statusProps.text}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      <Calendar className="h-3 w-3 mr-1.5" />
+                      {format(dueDate, 'dd/MM/yyyy')}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      <Tag className="h-3 w-3 mr-1.5" />
+                      {conta.categoria}
+                    </Badge>
+                    {conta.recorrente && (
+                      <Badge variant="outline" className="text-xs">
+                        <Repeat className="h-3 w-3 mr-1.5" />
+                        Recorrente
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+
+                {/* Value and Actions */}
+                <div className="flex items-center justify-between md:justify-end gap-4">
+                  <div className={`text-lg font-bold tabular-nums ${conta.tipo === 'saida' ? 'text-destructive' : 'text-green-600 dark:text-green-500'}`}>
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(conta.valor)}
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    {conta.status !== 'pago' && (
+                      <Button 
+                        onClick={handleMarkAsPaid} 
+                        disabled={isPaying} 
+                        size="sm" 
+                        className="w-28 hidden md:flex group/btn relative overflow-hidden bg-gradient-to-r from-[hsl(var(--brand-900))] to-[hsl(var(--brand-700))] text-white hover:from-[hsl(var(--brand-900))] hover:to-[hsl(var(--brand-700))] hover:scale-105 hover:shadow-lg transition-all duration-200"
+                      >
+                        <span className="relative z-10 flex items-center">
+                          <Check className="mr-2 h-4 w-4" />
+                          {getButtonShortText()}
+                        </span>
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs">
-                <Badge variant="outline" className={statusProps.className}>
-                  <statusProps.icon className="h-3 w-3 mr-1.5" />
-                  {statusProps.text}
-                </Badge>
-                <Badge variant="outline" className="text-xs">
-                  <Calendar className="h-3 w-3 mr-1.5" />
-                  {format(dueDate, 'dd/MM/yyyy')}
-                </Badge>
-                <Badge variant="outline" className="text-xs">
-                  <Tag className="h-3 w-3 mr-1.5" />
-                  {conta.categoria}
-                </Badge>
-                {conta.recorrente && (
-                  <Badge variant="outline" className="text-xs">
-                    <Repeat className="h-3 w-3 mr-1.5" />
-                    Recorrente
-                  </Badge>
-                )}
-              </div>
-            </div>
 
-            {/* Value and Actions */}
-            <div className="flex items-center justify-between md:justify-end gap-4">
-              <div className={`text-lg font-bold tabular-nums ${conta.tipo === 'saida' ? 'text-destructive' : 'text-green-600 dark:text-green-500'}`}>
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(conta.valor)}
-              </div>
-              
-              <div className="flex items-center gap-2">
-                {conta.status !== 'pago' && (
+              {/* Mobile Action Button */}
+              {conta.status !== 'pago' && (
+                <div className="md:hidden pt-4 mt-4 border-t border-border/50">
                   <Button 
                     onClick={handleMarkAsPaid} 
                     disabled={isPaying} 
-                    size="sm" 
-                    className="w-28 hidden md:flex group/btn relative overflow-hidden bg-gradient-to-r from-[hsl(var(--brand-900))] to-[hsl(var(--brand-700))] text-white hover:from-[hsl(var(--brand-900))] hover:to-[hsl(var(--brand-700))] hover:scale-105 hover:shadow-lg transition-all duration-200"
+                    className="w-full group/btn relative overflow-hidden bg-gradient-to-r from-[hsl(var(--brand-900))] to-[hsl(var(--brand-700))] text-white hover:from-[hsl(var(--brand-900))] hover:to-[hsl(var(--brand-700))] hover:scale-105 hover:shadow-lg transition-all duration-200"
                   >
-                    <span className="relative z-10 flex items-center">
-                      <Check className="mr-2 h-4 w-4" />
-                      {getButtonShortText()}
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      <Check className="h-4 w-4" />
+                      <span>{getButtonText()}</span>
                     </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700" />
                   </Button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
-          </div>
+        </ContextMenuTrigger>
+        <ContextMenuContent className="w-48">
+          {actionMenuItems.map((item, index) => {
+            const isLast = index === actionMenuItems.length - 1;
+            const isDestructive = item.className?.includes('text-red') || item.className?.includes('text-destructive');
 
-          {/* Mobile Action Button */}
-          {conta.status !== 'pago' && (
-            <div className="md:hidden pt-4 mt-4 border-t border-border/50">
-              <Button 
-                onClick={handleMarkAsPaid} 
-                disabled={isPaying} 
-                className="w-full group/btn relative overflow-hidden bg-gradient-to-r from-[hsl(var(--brand-900))] to-[hsl(var(--brand-700))] text-white hover:from-[hsl(var(--brand-900))] hover:to-[hsl(var(--brand-700))] hover:scale-105 hover:shadow-lg transition-all duration-200"
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  <Check className="h-4 w-4" />
-                  <span>{getButtonText()}</span>
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700" />
-              </Button>
-            </div>
-          )}
-        </div>
+            return (
+              <div key={index}>
+                <ContextMenuItem
+                  onClick={item.onClick}
+                  className={`cursor-pointer ${item.className || ''}`}
+                  disabled={item.disabled}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </ContextMenuItem>
+                {!isLast && isDestructive && <ContextMenuSeparator />}
+              </div>
+            );
+          })}
+        </ContextMenuContent>
+      </ContextMenu>
 
       <EditRecordDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} record={conta} onSuccess={() => { onStatusChange(); setEditDialogOpen(false); }} />
       <DeleteRecordDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} record={conta} onConfirm={handleDeleteRecord} />

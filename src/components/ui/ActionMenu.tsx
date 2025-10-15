@@ -1,13 +1,13 @@
 import { ReactNode } from 'react';
 import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuSeparator,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-interface ActionMenuItem {
+export interface ActionMenuItem {
   label: string;
   icon: ReactNode;
   onClick: () => void;
@@ -21,38 +21,40 @@ interface ActionMenuProps {
   className?: string;
 }
 
-export function ActionMenu({ children, items, className }: ActionMenuProps) {
-  const contextMenuItems = (
-    <>
-      {items.map((item, index) => {
-        const isLast = index === items.length - 1;
-        const isDestructive = item.className?.includes('text-red') || item.className?.includes('text-destructive');
-        
-        return (
-          <div key={index}>
-            <ContextMenuItem 
-              onClick={item.onClick} 
-              className={`cursor-pointer ${item.className || ''}`}
-              disabled={item.disabled}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </ContextMenuItem>
-            {!isLast && isDestructive && <ContextMenuSeparator />}
-          </div>
-        );
-      })}
-    </>
-  );
+// Helper function to render menu items
+const renderMenuItems = (items: ActionMenuItem[], ItemComponent: any, SeparatorComponent: any) => (
+  <>
+    {items.map((item, index) => {
+      const isLast = index === items.length - 1;
+      const isDestructive = item.className?.includes('text-red') || item.className?.includes('text-destructive');
+      
+      return (
+        <div key={index}>
+          <ItemComponent 
+            onClick={item.onClick} 
+            className={`cursor-pointer ${item.className || ''}`}
+            disabled={item.disabled}
+          >
+            {item.icon}
+            <span>{item.label}</span>
+          </ItemComponent>
+          {!isLast && isDestructive && <SeparatorComponent />}
+        </div>
+      );
+    })}
+  </>
+);
 
+// DropdownMenu for button click
+export function ActionMenu({ children, items, className }: ActionMenuProps) {
   return (
-    <ContextMenu>
-      <ContextMenuTrigger className={className}>
+    <DropdownMenu>
+      <DropdownMenuTrigger className={className} asChild>
         {children}
-      </ContextMenuTrigger>
-      <ContextMenuContent className="w-48">
-        {contextMenuItems}
-      </ContextMenuContent>
-    </ContextMenu>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-48" align="end">
+        {renderMenuItems(items, DropdownMenuItem, DropdownMenuSeparator)}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
