@@ -15,9 +15,18 @@ export default defineConfig(({ mode }) => {
     strictPort: true,
     cors: true,
     headers: {
+      // Headers CORS existentes (mantidos)
       'Cross-Origin-Embedder-Policy': 'unsafe-none',
       'Cross-Origin-Opener-Policy': 'unsafe-none',
-      'Cross-Origin-Resource-Policy': 'cross-origin'
+      'Cross-Origin-Resource-Policy': 'cross-origin',
+      
+      // Headers de Segurança HTTP (adicionados)
+      'X-Frame-Options': 'DENY',
+      'X-Content-Type-Options': 'nosniff',
+      'X-XSS-Protection': '0',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload'
     }
   };
 
@@ -68,7 +77,16 @@ export default defineConfig(({ mode }) => {
     preview: {
       host: "0.0.0.0",
       port: 8080,
-      cors: true
+      cors: true,
+      headers: {
+        // Headers de Segurança HTTP para produção
+        'X-Frame-Options': 'DENY',
+        'X-Content-Type-Options': 'nosniff',
+        'X-XSS-Protection': '0',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload'
+      }
     }
   };
 });

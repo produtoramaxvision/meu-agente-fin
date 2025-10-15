@@ -77,49 +77,67 @@ export default function Agenda() {
     sessionStorage.setItem('agendaView', newView);
   }, []);
 
+  // ✅ CORREÇÃO CRÍTICA: Estabilizar datas usando timestamps para evitar loops infinitos
   const { startDate, endDate } = useMemo(() => {
     // If range is selected, use it for filtering
     if (dateRange?.from && dateRange?.to) {
-      return { startDate: startOfDay(dateRange.from), endDate: endOfDay(dateRange.to) };
+      return { 
+        startDate: startOfDay(dateRange.from), 
+        endDate: endOfDay(dateRange.to) 
+      };
     }
     
     switch (view) {
       case 'day':
-        return { startDate: startOfDay(selectedDate), endDate: endOfDay(selectedDate) };
+        return { 
+          startDate: startOfDay(selectedDate), 
+          endDate: endOfDay(selectedDate) 
+        };
       case 'week':
-        return { startDate: startOfWeek(selectedDate, { locale: ptBR }), endDate: endOfWeek(selectedDate, { locale: ptBR }) };
+        return { 
+          startDate: startOfWeek(selectedDate, { locale: ptBR }), 
+          endDate: endOfWeek(selectedDate, { locale: ptBR }) 
+        };
       case 'month':
       case 'year':
       case 'timeline':
       case 'agenda':
       default:
-        return { startDate: startOfMonth(selectedDate), endDate: endOfMonth(selectedDate) };
+        return { 
+          startDate: startOfMonth(selectedDate), 
+          endDate: endOfMonth(selectedDate) 
+        };
     }
-  }, [view, selectedDate.getTime(), dateRange?.from?.getTime(), dateRange?.to?.getTime()]);
+  }, [
+    view, 
+    selectedDate.getTime(), 
+    dateRange?.from?.getTime(), 
+    dateRange?.to?.getTime()
+  ]);
 
   // Removido: useEffect problemático que causava invalidação desnecessária
   // A invalidação de queries deve ser feita apenas quando necessário
   // e não a cada renderização do componente
 
-  // Estabilizar arrays de opções para evitar re-renderizações desnecessárias
+  // ✅ CORREÇÃO: Estabilizar arrays de opções com debounce para evitar re-renderizações desnecessárias
   const stableCalendarIds = useMemo(() => 
     selectedCalendars.length ? selectedCalendars : undefined,
-    [selectedCalendars]
+    [selectedCalendars.join(',')] // Usar join para estabilizar referência
   );
 
   const stableCategories = useMemo(() => 
     selectedCategories.length ? selectedCategories : undefined,
-    [selectedCategories]
+    [selectedCategories.join(',')] // Usar join para estabilizar referência
   );
 
   const stablePriorities = useMemo(() => 
     selectedPriorities.length ? selectedPriorities : undefined,
-    [selectedPriorities]
+    [selectedPriorities.join(',')] // Usar join para estabilizar referência
   );
 
   const stableStatuses = useMemo(() => 
     selectedStatuses.length ? selectedStatuses : undefined,
-    [selectedStatuses]
+    [selectedStatuses.join(',')] // Usar join para estabilizar referência
   );
 
   const stableSearchQuery = useMemo(() => 

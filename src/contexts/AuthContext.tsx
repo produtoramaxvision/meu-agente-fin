@@ -269,12 +269,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      // Converter telefone para email sintético
-      const syntheticEmail = phoneToEmail(phone);
+      // Usar função SQL para buscar email por telefone (bypassa RLS)
+      const { data: clienteData, error: clienteError } = await supabase
+        .rpc('get_user_email_by_phone', { phone_number: phone });
+
+      let loginEmail: string;
+      
+      if (clienteData && clienteData.length > 0 && clienteData[0].email && clienteData[0].auth_user_id) {
+        // Usuário tem email real e auth_user_id - usar email real
+        loginEmail = clienteData[0].email;
+      } else {
+        // Usuário antigo ou sem email real - usar email sintético
+        loginEmail = phoneToEmail(phone);
+      }
       
       // Usar Supabase Auth nativo
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: syntheticEmail,
+        email: loginEmail,
         password: password,
       });
 
@@ -348,19 +359,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error('Senha deve ter no mínimo 8 caracteres');
       }
 
-      // Converter telefone para email sintético
-      const syntheticEmail = phoneToEmail(phone);
+      // Usar email real fornecido pelo usuário
+      const userEmail = email.trim();
+      
+      // Validar formato do email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(userEmail)) {
+        throw new Error('Formato de email inválido');
+      }
       
       // Criar usuário no Supabase Auth
       const { data, error } = await supabase.auth.signUp({
-        email: syntheticEmail,
+        email: userEmail,
         password: password,
         options: {
           data: {
             phone: phone,
             name: name,
             cpf: cpf,
-            email: email, // Email real do usuário (opcional)
+            email: userEmail, // Email real do usuário
           }
         }
       });

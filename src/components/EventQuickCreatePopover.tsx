@@ -108,7 +108,7 @@ export function EventQuickCreatePopover({
           </div>
 
           <div className="flex items-center gap-2">
-            <Select value={calendarId} onValueChange={setCalendarId}>
+            <Select value={calendarId || undefined} onValueChange={setCalendarId}>
               <SelectTrigger className="flex-1" aria-label="Selecionar agenda">
                 <SelectValue placeholder="Selecionar agenda" />
               </SelectTrigger>

@@ -17,6 +17,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { DashboardGoalCard } from '@/components/DashboardGoalCard';
 import { DashboardUpcomingBills } from '@/components/DashboardUpcomingBills';
+import { sanitizeText } from '@/lib/sanitize';
 
 const EXPENSE_COLORS = [
   { start: '#FF6B6B', end: '#fa5252' }, // Red
@@ -473,7 +474,7 @@ export default function Dashboard() {
                             )}
                           </div>
                           {transaction.descricao && (
-                            <p className="text-sm text-text-muted">{transaction.descricao}</p>
+                            <p className="text-sm text-text-muted">{sanitizeText(transaction.descricao)}</p>
                           )}
                           <p className="text-xs text-text-muted mt-1">
                             {new Date(transaction.data_hora).toLocaleDateString('pt-BR')}

@@ -9,6 +9,7 @@ import { SearchProvider } from "./contexts/SearchContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthLayout } from "./components/layout/AuthLayout";
 import { AppLayout } from "./components/layout/AppLayout";
+import { initPerformanceMonitoring } from "./lib/performance-monitor";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import Dashboard from "./pages/Dashboard";
@@ -22,6 +23,9 @@ import Tasks from "./pages/Tasks";
 import Agenda from "./pages/Agenda";
 
 const queryClient = new QueryClient();
+
+// Inicializar monitoramento de performance
+initPerformanceMonitoring();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

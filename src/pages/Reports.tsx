@@ -24,6 +24,7 @@ import { StatusTimelineChart } from '@/components/StatusTimelineChart';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger, ContextMenuSeparator } from '@/components/ui/context-menu';
 import { toast } from 'sonner';
+import { sanitizeText } from '@/lib/sanitize';
 
 const EXPENSE_COLORS = [
   { start: '#FF6B6B', end: '#fa5252' }, // Red
@@ -631,7 +632,7 @@ export default function Reports() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <label className="text-sm font-medium mb-2 block">Período</label>
-              <Select value={periodFilter} onValueChange={setPeriodFilter}>
+              <Select value={periodFilter || undefined} onValueChange={setPeriodFilter}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -646,7 +647,7 @@ export default function Reports() {
 
             <div>
               <label className="text-sm font-medium mb-2 block">Categoria</label>
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <Select value={categoryFilter || undefined} onValueChange={setCategoryFilter}>
                 <SelectTrigger>
                   <SelectValue placeholder="Todas" />
                 </SelectTrigger>
@@ -1094,7 +1095,7 @@ export default function Reports() {
                                 {record.status === 'pago' ? (<><CheckCircle className="h-4 w-4 text-green-500" /><span className="text-green-500">Pago</span></>) : (<><Clock className="h-4 w-4 text-yellow-500" /><span className="text-yellow-500">Pendente</span></>)}
                               </div>
                               <div className="text-sm">{record.categoria}</div>
-                              <div className="text-sm text-muted-foreground truncate">{record.descricao || '-'}</div>
+                              <div className="text-sm text-muted-foreground truncate">{sanitizeText(record.descricao) || '-'}</div>
                               <div className={`text-right font-semibold ${record.tipo === 'entrada' ? 'text-[#39a85b]' : 'text-[#a93838]'}`}>
                                 {record.tipo === 'entrada' ? '+' : '-'}
                                 {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(Number(record.valor))}

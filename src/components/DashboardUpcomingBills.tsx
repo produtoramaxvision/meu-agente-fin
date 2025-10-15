@@ -5,6 +5,7 @@ import { AlertTriangle, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { differenceInDays, isToday } from 'date-fns';
 import { Button } from './ui/button';
+import { sanitizeText } from '@/lib/sanitize';
 
 export function DashboardUpcomingBills() {
   const { upcomingBills, loading } = useAlertsData();
@@ -43,7 +44,9 @@ export function DashboardUpcomingBills() {
               return (
                 <div key={bill.id} className="flex items-center justify-between text-sm">
                   <div>
-                    <p className="font-semibold truncate max-w-[120px]">{bill.descricao || bill.categoria}</p>
+                    <p className="font-semibold truncate max-w-[120px]">
+                      {sanitizeText(bill.descricao) || sanitizeText(bill.categoria)}
+                    </p>
                     <p className={`text-xs ${color}`}>{text}</p>
                   </div>
                   <p className="font-bold text-red-500">

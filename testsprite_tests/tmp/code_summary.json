@@ -1,0 +1,220 @@
+{
+  "tech_stack": [
+    "TypeScript",
+    "React",
+    "Vite",
+    "Supabase",
+    "PostgreSQL",
+    "Tailwind CSS",
+    "ShadcnUI",
+    "React Router",
+    "React Hook Form",
+    "Zod",
+    "Playwright",
+    "ESLint"
+  ],
+  "features": [
+    {
+      "name": "Authentication System",
+      "description": "Sistema de autenticação completo com Supabase Auth, rate limiting, validações e persistência de sessão",
+      "files": [
+        "src/contexts/AuthContext.tsx",
+        "src/components/ProtectedRoute.tsx",
+        "src/pages/auth/Login.tsx",
+        "src/pages/auth/Signup.tsx"
+      ]
+    },
+    {
+      "name": "Row Level Security (RLS)",
+      "description": "Políticas RLS implementadas para isolamento de dados por usuário usando auth.uid()",
+      "files": [
+        "supabase/migrations/20250116000003_update_all_rls_policies.sql",
+        "supabase/migrations/fix_financial_rls_policies_with_plan_validation.sql"
+      ]
+    },
+    {
+      "name": "Permission System",
+      "description": "Sistema de permissões baseado em planos (Free, Basic, Business, Premium)",
+      "files": [
+        "src/hooks/usePermissions.ts",
+        "src/components/ProtectedFeature.tsx"
+      ]
+    },
+    {
+      "name": "Financial Management",
+      "description": "Gestão financeira completa com registros de entrada/saída, categorias e exportação",
+      "files": [
+        "src/pages/Contas.tsx",
+        "src/components/FinanceRecordForm.tsx",
+        "src/components/ContaItem.tsx",
+        "src/hooks/useFinancialData.ts"
+      ]
+    },
+    {
+      "name": "Task Management",
+      "description": "Sistema de gerenciamento de tarefas com drag-and-drop, prioridades e status",
+      "files": [
+        "src/pages/Tasks.tsx",
+        "src/components/TaskForm.tsx",
+        "src/components/TaskItem.tsx",
+        "src/components/TaskFilters.tsx",
+        "src/hooks/useTasksData.ts"
+      ]
+    },
+    {
+      "name": "Calendar & Events",
+      "description": "Sistema de calendário completo com eventos, lembretes e participantes",
+      "files": [
+        "src/pages/Agenda.tsx",
+        "src/components/EventForm.tsx",
+        "src/components/EventCard.tsx",
+        "src/components/AgendaGridDay.tsx",
+        "src/components/AgendaGridWeek.tsx",
+        "src/components/AgendaGridMonth.tsx",
+        "src/hooks/useAgendaData.ts"
+      ]
+    },
+    {
+      "name": "Goals Management",
+      "description": "Sistema de metas financeiras com progresso e ícones",
+      "files": [
+        "src/pages/Goals.tsx",
+        "src/components/GoalForm.tsx",
+        "src/components/GoalListItem.tsx",
+        "src/components/GoalIcons.tsx",
+        "src/hooks/useGoalsData.ts"
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "description": "Dashboard principal com métricas, gráficos e resumos",
+      "files": [
+        "src/pages/Dashboard.tsx",
+        "src/components/DashboardGoalCard.tsx",
+        "src/components/DashboardUpcomingBills.tsx",
+        "src/components/DespesasPorCategoriaChart.tsx",
+        "src/components/StatusTimelineChart.tsx"
+      ]
+    },
+    {
+      "name": "Notifications System",
+      "description": "Sistema de notificações em tempo real",
+      "files": [
+        "src/pages/Notifications.tsx",
+        "src/components/NotificationBell.tsx",
+        "src/components/NotificationItem.tsx",
+        "src/components/NotificationsDropdown.tsx",
+        "src/contexts/NotificationContext.tsx",
+        "src/hooks/useNotificationsData.ts"
+      ]
+    },
+    {
+      "name": "Support System",
+      "description": "Sistema de suporte com tickets e FAQ",
+      "files": [
+        "src/components/SupportDialog.tsx",
+        "src/components/SupportFAQ.tsx",
+        "src/components/SupportTabs.tsx",
+        "src/components/SupportTicketForm.tsx",
+        "src/components/SupportTicketList.tsx",
+        "src/hooks/useSupportTickets.ts"
+      ]
+    },
+    {
+      "name": "Reports & Analytics",
+      "description": "Sistema de relatórios e análises com exportação",
+      "files": [
+        "src/pages/Relatorios.tsx",
+        "src/pages/Reports.tsx",
+        "src/components/InsightsCard.tsx"
+      ]
+    },
+    {
+      "name": "User Profile",
+      "description": "Gerenciamento de perfil do usuário com upload de avatar",
+      "files": [
+        "src/pages/Profile.tsx",
+        "src/components/AvatarUpload.tsx"
+      ]
+    },
+    {
+      "name": "UI Components",
+      "description": "Biblioteca de componentes UI baseada em ShadcnUI",
+      "files": [
+        "src/components/ui/button.tsx",
+        "src/components/ui/input.tsx",
+        "src/components/ui/card.tsx",
+        "src/components/ui/dialog.tsx",
+        "src/components/ui/form.tsx",
+        "src/components/ui/table.tsx",
+        "src/components/ui/calendar.tsx",
+        "src/components/ui/select.tsx",
+        "src/components/ui/toast.tsx",
+        "src/components/ui/segmented-control.tsx"
+      ]
+    },
+    {
+      "name": "Layout System",
+      "description": "Sistema de layout responsivo com sidebar e header",
+      "files": [
+        "src/components/layout/AppLayout.tsx",
+        "src/components/layout/AppHeader.tsx",
+        "src/components/layout/AppSidebar.tsx",
+        "src/components/layout/AppFooter.tsx",
+        "src/components/layout/AuthLayout.tsx"
+      ]
+    },
+    {
+      "name": "Theme System",
+      "description": "Sistema de temas claro/escuro",
+      "files": [
+        "src/contexts/ThemeContext.tsx",
+        "src/components/ds/ThemeSwitch.tsx"
+      ]
+    },
+    {
+      "name": "Search System",
+      "description": "Sistema de busca global com debounce",
+      "files": [
+        "src/contexts/SearchContext.tsx",
+        "src/hooks/useDebounce.ts"
+      ]
+    },
+    {
+      "name": "Data Hooks",
+      "description": "Hooks customizados para gerenciamento de dados",
+      "files": [
+        "src/hooks/use-mobile.tsx",
+        "src/hooks/use-toast.ts",
+        "src/hooks/useAlertsData.ts",
+        "src/hooks/usePlanInfo.ts"
+      ]
+    },
+    {
+      "name": "Database Integration",
+      "description": "Integração com Supabase incluindo tipos TypeScript",
+      "files": [
+        "src/integrations/supabase/client.ts",
+        "src/integrations/supabase/types.ts"
+      ]
+    },
+    {
+      "name": "Security Features",
+      "description": "Recursos de segurança incluindo LGPD e privacidade",
+      "files": [
+        "src/components/PrivacySection.tsx",
+        "src/components/BackupSection.tsx"
+      ]
+    },
+    {
+      "name": "Testing Infrastructure",
+      "description": "Infraestrutura de testes com Playwright",
+      "files": [
+        "playwright.config.ts",
+        "tests/critical-functionality.spec.ts",
+        "tests/deep-navigation-analysis.spec.ts",
+        "tests/finance-record-standardization.spec.ts"
+      ]
+    }
+  ]
+}

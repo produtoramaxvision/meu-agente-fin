@@ -26,6 +26,7 @@ import {
   Eye
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { sanitizeText } from '@/lib/sanitize';
 
 interface SupportTicketListProps {
   open: boolean;
@@ -162,7 +163,7 @@ function TicketCard({ ticket }: { ticket: SupportTicket }) {
 
           {/* Descrição (truncada) */}
           <p className="text-sm text-text-muted line-clamp-2">
-            {ticket.description}
+            {sanitizeText(ticket.description)}
           </p>
 
           {/* Botão para ver detalhes */}
@@ -184,7 +185,7 @@ function TicketCard({ ticket }: { ticket: SupportTicket }) {
               <div>
                 <h4 className="text-sm font-medium text-text mb-1">Descrição Completa:</h4>
                 <p className="text-sm text-text-muted whitespace-pre-wrap">
-                  {ticket.description}
+                  {sanitizeText(ticket.description)}
                 </p>
               </div>
               
@@ -193,7 +194,7 @@ function TicketCard({ ticket }: { ticket: SupportTicket }) {
                   <h4 className="text-sm font-medium text-text mb-1">Resposta da Equipe:</h4>
                   <div className="bg-surface border rounded-lg p-3">
                     <p className="text-sm text-text-muted whitespace-pre-wrap">
-                      {ticket.admin_notes}
+                      {sanitizeText(ticket.admin_notes)}
                     </p>
                   </div>
                 </div>

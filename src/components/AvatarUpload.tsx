@@ -35,7 +35,14 @@ export function AvatarUpload({
   const triggerFileSelect = () => {
     // Previne o acionamento se já estiver em processo de upload
     if (uploading) return;
-    fileInputRef.current?.click();
+    
+    // Fallback: usar document.getElementById se useRef não funcionar
+    const fileInput = document.getElementById('avatar-upload') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    } else if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
   // Drag and Drop handlers
@@ -77,6 +84,12 @@ export function AvatarUpload({
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('🎯 handleFileUpload chamado!', {
+      eventType: event.type,
+      target: event.target,
+      files: event.target.files
+    });
+    
     try {
       setUploading(true);
 
@@ -85,6 +98,13 @@ export function AvatarUpload({
       }
 
       const file = event.target.files[0];
+
+      console.log('🚀 Iniciando upload de avatar...', {
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+        userPhone
+      });
 
       // Validation
       const allowedTypes = ['image/jpeg', 'image/png'];
@@ -102,6 +122,11 @@ export function AvatarUpload({
       const fileExt = file.name.split('.').pop();
       const fileName = `${userPhone}/avatar.${fileExt}`;
 
+      console.log('📤 Enviando arquivo para Supabase Storage...', {
+        fileName,
+        bucket: 'avatars'
+      });
+
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(fileName, file, { 
@@ -110,23 +135,32 @@ export function AvatarUpload({
         });
 
       if (uploadError) {
-        console.error("Supabase upload error:", uploadError);
+        console.error("❌ Supabase upload error:", uploadError);
         throw uploadError;
       }
+
+      console.log('✅ Upload para Storage concluído com sucesso!');
 
       const { data: { publicUrl: baseUrl } } = supabase.storage
         .from('avatars')
         .getPublicUrl(fileName);
       
+      console.log('🔄 Atualizando URL do avatar no banco de dados...', {
+        phone: userPhone,
+        avatarUrl: baseUrl
+      });
+
       const { error: updateError } = await supabase
         .from('clientes')
         .update({ avatar_url: baseUrl })
         .eq('phone', userPhone);
 
       if (updateError) {
-        console.error("Supabase DB update error:", updateError);
+        console.error("❌ Supabase DB update error:", updateError);
         throw updateError;
       }
+
+      console.log('✅ Avatar atualizado no banco de dados com sucesso!');
 
       const timestamp = new Date().getTime();
       const publicUrlWithTimestamp = `${baseUrl}?t=${timestamp}`;
@@ -149,7 +183,7 @@ export function AvatarUpload({
     <TooltipProvider>
       <div className="flex flex-col items-center gap-4">
         <Tooltip>
-          <TooltipTrigger asChild>
+          <TooltipTrigger onClick={triggerFileSelect}>
             <div 
               className={`
                 relative cursor-pointer rounded-full transition-all duration-300 ease-in-out
@@ -157,7 +191,6 @@ export function AvatarUpload({
                 ${isDragging ? 'scale-110 shadow-xl ring-2 ring-primary ring-offset-2' : ''}
                 ${uploading ? 'opacity-50 cursor-not-allowed' : ''}
               `}
-              onClick={triggerFileSelect}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               onDragEnter={handleDragEnter}

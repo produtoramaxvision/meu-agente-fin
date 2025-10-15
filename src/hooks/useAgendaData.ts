@@ -116,6 +116,7 @@ export function useAgendaData(options: UseAgendaDataOptions) {
   const requestCountRef = useRef(0);
   const lastRequestTimeRef = useRef(0);
   const isBlockedRef = useRef(false);
+  const lastQueryKeyRef = useRef<string>('');
 
   // Fetch calendars com cache otimizado - usando configurações globais
   const { data: calendars = [], isLoading: calendarsLoading } = useQuery({
@@ -140,24 +141,45 @@ export function useAgendaData(options: UseAgendaDataOptions) {
       return (data as Calendar[]) || [];
     },
     enabled: !!cliente?.phone,
-    // ✅ Usando configurações globais - não sobrescrever aqui
-    // staleTime, refetchOnWindowFocus, refetchOnMount já configurados globalmente
+    // ✅ CORREÇÃO CRÍTICA: Configurações para evitar loops infinitos
     refetchInterval: false, // ❌ CRÍTICO: Removido refetch automático que causava loop
+    refetchOnWindowFocus: false, // Evitar refetch ao focar na janela
+    refetchOnMount: false, // Evitar refetch ao montar o componente
+    staleTime: 5 * 60 * 1000, // 5 minutos - dados considerados frescos
+    gcTime: 10 * 60 * 1000, // 10 minutos - manter no cache
+    retry: 1, // Apenas 1 tentativa em caso de erro
+    retryDelay: 1000, // 1 segundo entre tentativas
   });
 
-  // Estabilizar query key usando useMemo para evitar loop infinito
-  const queryKey = useMemo(() => [
-    'events', 
+  // ✅ CORREÇÃO CRÍTICA: Estabilizar query key usando valores primitivos
+  const queryKey = useMemo(() => {
+    // Converter datas para timestamps para estabilidade
+    const startTime = options.startDate.getTime();
+    const endTime = options.endDate.getTime();
+    
+    return [
+      'events', 
+      cliente?.phone, 
+      options.view, 
+      startTime, 
+      endTime, 
+      options.calendarIds?.join(',') || '', 
+      options.categories?.join(',') || '', 
+      options.priorities?.join(',') || '', 
+      options.statuses?.join(',') || '', 
+      options.searchQuery || ''
+    ];
+  }, [
     cliente?.phone, 
     options.view, 
-    options.startDate.toISOString(), 
-    options.endDate.toISOString(), 
+    options.startDate.getTime(), 
+    options.endDate.getTime(), 
     options.calendarIds?.join(','), 
     options.categories?.join(','), 
     options.priorities?.join(','), 
     options.statuses?.join(','), 
     options.searchQuery
-  ], [cliente?.phone, options.view, options.startDate, options.endDate, options.calendarIds, options.categories, options.priorities, options.statuses, options.searchQuery]);
+  ]);
 
   // Fetch events with expansion of recurring events - usando configurações globais
   const { data: events = [], isLoading: eventsLoading, refetch } = useQuery({
@@ -165,30 +187,34 @@ export function useAgendaData(options: UseAgendaDataOptions) {
     queryFn: async () => {
       if (!cliente?.phone) return [];
 
-      // ✅ PROTEÇÃO: Detectar e prevenir loops infinitos
+      // ✅ PROTEÇÃO ROBUSTA: Detectar e prevenir loops infinitos
       const now = Date.now();
       const timeSinceLastRequest = now - lastRequestTimeRef.current;
+      const currentQueryKey = JSON.stringify(queryKey);
       
       // Se está bloqueado, aguardar um tempo antes de tentar novamente
       if (isBlockedRef.current) {
         if (timeSinceLastRequest > 5000) { // 5 segundos
           isBlockedRef.current = false;
           requestCountRef.current = 0;
+          lastQueryKeyRef.current = '';
         } else {
           console.warn('useAgendaData: Requisição bloqueada temporariamente');
           return []; // Retornar array vazio em vez de erro
         }
       }
       
-      if (timeSinceLastRequest < 100) { // Menos de 100ms desde a última requisição
+      // Detectar se a mesma query está sendo executada repetidamente
+      if (currentQueryKey === lastQueryKeyRef.current && timeSinceLastRequest < 100) {
         requestCountRef.current++;
-        if (requestCountRef.current > 15) { // Mais de 15 requisições em sequência rápida
+        if (requestCountRef.current > 10) { // Mais de 10 requisições da mesma query em sequência rápida
           console.error('🚨 LOOP INFINITO DETECTADO! Bloqueando requisições por 5 segundos');
           isBlockedRef.current = true;
           return []; // Retornar array vazio em vez de erro
         }
       } else {
-        requestCountRef.current = 0; // Reset contador se passou tempo suficiente
+        requestCountRef.current = 0; // Reset contador se query mudou ou passou tempo suficiente
+        lastQueryKeyRef.current = currentQueryKey;
       }
       
       lastRequestTimeRef.current = now;
@@ -198,17 +224,20 @@ export function useAgendaData(options: UseAgendaDataOptions) {
       const endDate = options.endDate;
       
       // Validar se as datas são válidas e diferentes
-      if (!startDate || !endDate || startDate >= endDate) {
+      if (!startDate || !endDate || startDate > endDate) {
         console.warn('useAgendaData: Datas inválidas ou iguais:', { startDate, endDate });
         return [];
       }
       
       // ✅ CORREÇÃO: Query otimizada com lógica de datas correta
+      const startISO = startDate.toISOString();
+      const endISO = endDate.toISOString();
+      
       let query = supabase
         .from('events')
         .select('*')
         .eq('phone', cliente.phone)
-        .or(`and(start_ts.gte.${startDate.toISOString()},start_ts.lte.${endDate.toISOString()}),and(end_ts.gte.${startDate.toISOString()},end_ts.lte.${endDate.toISOString()}),and(start_ts.lte.${startDate.toISOString()},end_ts.gte.${endDate.toISOString()}),rrule.not.is.null`);
+        .or(`and(start_ts.gte.${startISO},start_ts.lte.${endISO}),and(end_ts.gte.${startISO},end_ts.lte.${endISO}),and(start_ts.lte.${startISO},end_ts.gte.${endISO}),rrule.not.is.null`);
 
       if (options.calendarIds && options.calendarIds.length > 0) {
         query = query.in('calendar_id', options.calendarIds);
@@ -296,9 +325,14 @@ export function useAgendaData(options: UseAgendaDataOptions) {
       return expandedEvents;
     },
     enabled: !!cliente?.phone,
-    // ✅ Usando configurações globais - não sobrescrever aqui
-    // staleTime, refetchOnWindowFocus, refetchOnMount já configurados globalmente
+    // ✅ CORREÇÃO CRÍTICA: Configurações para evitar loops infinitos
     refetchInterval: false, // ❌ CRÍTICO: Removido refetch automático que causava loop
+    refetchOnWindowFocus: false, // Evitar refetch ao focar na janela
+    refetchOnMount: false, // Evitar refetch ao montar o componente
+    staleTime: 5 * 60 * 1000, // 5 minutos - dados considerados frescos
+    gcTime: 10 * 60 * 1000, // 10 minutos - manter no cache
+    retry: 1, // Apenas 1 tentativa em caso de erro
+    retryDelay: 1000, // 1 segundo entre tentativas
     // Usar placeholderData para melhor UX
     placeholderData: (previousData) => previousData,
   });
@@ -320,9 +354,14 @@ export function useAgendaData(options: UseAgendaDataOptions) {
       return (data as Resource[]) || [];
     },
     enabled: !!cliente?.phone,
-    // ✅ Usando configurações globais - não sobrescrever aqui
-    // staleTime, refetchOnWindowFocus, refetchOnMount já configurados globalmente
+    // ✅ CORREÇÃO CRÍTICA: Configurações para evitar loops infinitos
     refetchInterval: false, // ❌ CRÍTICO: Removido refetch automático que causava loop
+    refetchOnWindowFocus: false, // Evitar refetch ao focar na janela
+    refetchOnMount: false, // Evitar refetch ao montar o componente
+    staleTime: 5 * 60 * 1000, // 5 minutos - dados considerados frescos
+    gcTime: 10 * 60 * 1000, // 10 minutos - manter no cache
+    retry: 1, // Apenas 1 tentativa em caso de erro
+    retryDelay: 1000, // 1 segundo entre tentativas
     placeholderData: (previousData) => previousData,
   });
 
@@ -419,7 +458,7 @@ export function useAgendaData(options: UseAgendaDataOptions) {
         .from('events')
         .insert({
           phone: cliente.phone,
-          calendar_id: eventFields.calendar_id || calendars.find(c => c.is_primary)?.id,
+          calendar_id: eventFields.calendar_id || (calendars as Calendar[]).find(c => c.is_primary)?.id,
           title: eventFields.title,
           description: eventFields.description || null,
           start_ts: eventFields.start_ts.toISOString(),

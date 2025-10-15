@@ -180,7 +180,7 @@ export default function Relatorios() {
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <DateRangePicker date={dateRange} onDateChange={setDateRange} />
-          <Select value={typeFilter} onValueChange={(value) => setTypeFilter(value as any)}>
+          <Select value={typeFilter || undefined} onValueChange={(value) => setTypeFilter(value as any)}>
             <SelectTrigger>
               <SelectValue placeholder="Tipo" />
             </SelectTrigger>
@@ -190,7 +190,7 @@ export default function Relatorios() {
               <SelectItem value="saida">Saída</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as any)}>
+          <Select value={statusFilter || undefined} onValueChange={(value) => setStatusFilter(value as any)}>
             <SelectTrigger>
               <SelectValue placeholder="Status" />
             </SelectTrigger>
