@@ -25,6 +25,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger, ContextMenuSeparator } from '@/components/ui/context-menu';
 import { toast } from 'sonner';
 import { sanitizeText } from '@/lib/sanitize';
+import { supabase } from '@/integrations/supabase/client';
 
 const EXPENSE_COLORS = [
   { start: '#FF6B6B', end: '#fa5252' }, // Red
@@ -164,8 +165,7 @@ export default function Reports() {
 
       if (error) throw error;
 
-      toast({
-        title: "Registros excluídos",
+      toast.success("Registros excluídos", {
         description: `${selectedRecords.size} ${selectedRecords.size === 1 ? 'registro foi excluído' : 'registros foram excluídos'} com sucesso.`,
       });
 
@@ -680,28 +680,6 @@ export default function Reports() {
               />
             </div>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">Ações</label>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  /**
-                   * BUG FIX - TestSprite TC011
-                   * Problema: Filtro 'Tipo' não podia ser alterado de 'Todas' para outras opções
-                   * Solução: Adicionar botão para limpar filtros e facilitar teste
-                   * Data: 2025-01-06
-                   * Validado: sim
-                   */
-                  setPeriodFilter('month');
-                  setCategoryFilter('all');
-                  setTypeFilter('all');
-                  setSearchQuery('');
-                }}
-                className="w-full"
-              >
-                Limpar Filtros
-              </Button>
-            </div>
           </div>
 
           {/* Custom Date Range */}
