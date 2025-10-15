@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Card } from '@/components/ui/card';
 import { Event, Resource } from '@/hooks/useAgendaData';
 import { format, isSameDay, differenceInDays } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -192,7 +193,7 @@ export default function AgendaTimeline({ startDate, endDate, events, resources, 
                       "text-sm sm:text-lg font-semibold truncate",
                       dayStyles.header
                     )}>
-                      {format(dayGroup.date, 'EEEE, dd \'de\' MMMM')}
+                      {format(dayGroup.date, 'EEEE, dd \'de\' MMMM', { locale: ptBR })}
                     </h3>
                     <Badge variant="outline" className="text-xs flex-shrink-0">
                       {dayGroup.events.length} evento{dayGroup.events.length !== 1 ? 's' : ''}
