@@ -96,7 +96,9 @@ export default function AgendaGridWeek({ weekDate, events, calendars, isLoading,
   const eventsByDay = useMemo(() => {
     return days.map((d) => ({
       date: d,
-      items: events.filter(e => isSameDay(new Date(e.start_ts), d) || isSameDay(new Date(e.end_ts), d)),
+      items: events
+        .filter(e => isSameDay(new Date(e.start_ts), d) || isSameDay(new Date(e.end_ts), d))
+        .sort((a, b) => new Date(a.start_ts).getTime() - new Date(b.start_ts).getTime()),
     }));
   }, [days, events]);
 

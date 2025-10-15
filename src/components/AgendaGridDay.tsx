@@ -78,6 +78,7 @@ interface DraggableEventProps {
   setPopoverState: (state: any) => void;
   lastClickedEvent: string | null;
   setLastClickedEvent: (id: string | null) => void;
+  selectedDate: Date;
 }
 
 function DraggableEvent({
@@ -91,6 +92,7 @@ function DraggableEvent({
   setPopoverState,
   lastClickedEvent,
   setLastClickedEvent,
+  selectedDate,
 }: DraggableEventProps) {
   const {
     attributes,
@@ -109,7 +111,7 @@ function DraggableEvent({
   const position = useMemo(() => {
     const start = new Date(event.start_ts);
     const end = new Date(event.end_ts);
-    const dayStart = startOfDay(new Date());
+    const dayStart = startOfDay(selectedDate);
     const top = Math.max(0, differenceInMinutes(start, dayStart) * PX_PER_MINUTE);
     const height = Math.max(60, differenceInMinutes(end, start) * PX_PER_MINUTE);
     
@@ -132,7 +134,7 @@ function DraggableEvent({
       left: `${leftOffset}px`,
       width: width
     };
-  }, [event.start_ts, event.end_ts, event.id, allEvents]);
+  }, [event.start_ts, event.end_ts, event.id, allEvents, selectedDate]);
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -606,6 +608,7 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
                           setPopoverState={setPopoverState}
                           lastClickedEvent={lastClickedEvent}
                           setLastClickedEvent={setLastClickedEvent}
+                          selectedDate={date}
                         />
                       </motion.div>
                     );

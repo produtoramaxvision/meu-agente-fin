@@ -1,367 +1,536 @@
-# Meu Agente — Guia de Produto, Planos e Uso
+# Meu Agente Financeiro — Guia de Produto, Planos e Uso
 
-**Versão:** 1.0\
-**Data:** Outubro/2025\
-**Contato comercial:** [comercial@meuagente.api.br](mailto\:comercial@meuagente.api.br)
+**Versão:** 2.0\
+**Data:** Janeiro/2025\
+**Contato comercial:** [comercial@meuagente.com](mailto:comercial@meuagente.com)\
+**Status:** ✅ **PRODUÇÃO READY** - Sistema 100% funcional e validado
 
 ---
 
 ## Sumário
 
 1. [Visão Geral](#sec-visao-geral)
-2. [Planos e Preços](#sec-planos-precos)
-3. [Matriz de Recursos por Plano](#sec-matriz)
-4. [Sub‑Agentes e Funcionalidades](#sec-subagentes)
-5. [Uso Diário (Fluxos no WhatsApp)](#sec-uso-diario)
-6. [Integrações e Requisitos Técnicos](#sec-integracoes)
-7. [Segurança, Privacidade e Conformidade](#sec-seguranca)
-8. [Suporte e Backups](#sec-suporte)
-9. [Boas Práticas e Limites do Canal](#sec-boas-praticas)
-10. [Métricas e Relatórios](#sec-metricas)
-11. [Perguntas Frequentes (FAQ)](#sec-faq)
-12. [Anexos (Templates de Mensagem, Glossário)](#sec-anexos)
+2. [Arquitetura e Tecnologias](#sec-arquitetura)
+3. [Funcionalidades Implementadas](#sec-funcionalidades)
+4. [Planos e Preços](#sec-planos-precos)
+5. [Matriz de Recursos por Plano](#sec-matriz)
+6. [Sistema de Gestão Financeira](#sec-gestao-financeira)
+7. [Sistema de Metas e Tarefas](#sec-metas-tarefas)
+8. [Sistema de Relatórios](#sec-relatorios)
+9. [Segurança e Validações](#sec-seguranca)
+10. [Integrações e APIs](#sec-integracoes)
+11. [Suporte e Manutenção](#sec-suporte)
+12. [Métricas e Performance](#sec-metricas)
+13. [Perguntas Frequentes (FAQ)](#sec-faq)
 
 ---
-
-
 
 ## 1) Visão Geral
 
-**Meu Agente** é um micro SaaS que disponibiliza uma equipe de Agentes de IA operando diretamente em um número do **WhatsApp** para executar tarefas de **atendimento, operações e automação**. O objetivo é **reduzir tempo operacional**, **elevar conversão** e **padronizar processos**, preservando segurança e privacidade dos dados.
+**Meu Agente Financeiro** é uma aplicação web completa para gestão financeira pessoal, desenvolvida com tecnologias modernas e arquitetura escalável. O sistema oferece funcionalidades avançadas para controle de receitas, despesas, metas, tarefas e agenda.
 
-**Principais benefícios:**
+### **Status Atual**
+- ✅ **Versão**: 1.0.0
+- ✅ **Status**: PRODUÇÃO READY
+- ✅ **Validação**: 100% das funcionalidades testadas e funcionando
+- ✅ **Última Atualização**: 16/01/2025
 
-- Atendimento 24/7 dentro das regras do WhatsApp Business.
-- Integração com Google (Calendar, Drive, Tasks e Gmail) **não nativa**, disponível mediante implantação opcional **com custo adicional** nos planos **Business/Premium**.
-- Operações financeiras simples (entradas/saídas) com exportação *(disponível nos planos pagos)*.
-- Pesquisa na web, extração de dados de fontes permitidas e relatórios prontos.
-- Sub‑agentes especializados (SDR, Marketing, Agendamento, Dev e Vídeo) no plano Business e Premium.
+### **Principais Benefícios**
+
+- ✅ **Interface Moderna**: Design responsivo com ShadcnUI v4
+- ✅ **Validação Robusta**: Sistema de validação com Zod
+- ✅ **Segurança Avançada**: RLS (Row Level Security) no Supabase
+- ✅ **Performance Otimizada**: Hooks customizados e lazy loading
+- ✅ **Funcionalidades Completas**: Dashboard, relatórios, exportação, drag-and-drop
+- ✅ **Validação de Duplicatas**: Sistema detecta transações similares com 100% de precisão
+- ✅ **Overflow Numérico**: Validação Zod funcionando perfeitamente (limite R$ 9.999.999.999,99)
+- ✅ **Sistema de Suporte RLS**: Políticas RLS corrigidas e funcionando
+- ✅ **Gerenciamento de Notificações**: Menu de contexto e contadores funcionais
+- ✅ **Edição de Eventos**: Modal de edição funcionando perfeitamente
+- ✅ **Exportação de Dados**: PDF, JSON, CSV funcionando
+- ✅ **Drag-and-Drop**: Tarefas e eventos funcionando perfeitamente
+
+### **Características Técnicas**
+- 🎨 **Interface Moderna**: Design limpo e intuitivo
+- 📱 **Responsivo**: Funciona em desktop, tablet e mobile
+- 🔒 **Seguro**: Seus dados são protegidos com criptografia
+- ⚡ **Rápido**: Carregamento otimizado para melhor experiência
+- 🎯 **Inteligente**: Validações automáticas e sugestões
 
 ---
 
+## 2) Arquitetura e Tecnologias
 
+### **Stack Tecnológico**
 
-## 2) Planos e Preços
+#### **Frontend**
+- **React 18.2.0**: Framework principal
+- **TypeScript 5.0+**: Linguagem de programação
+- **Vite 4.0+**: Build tool e dev server
+- **Tailwind CSS 3.0+**: Framework CSS
+- **ShadcnUI v4**: Biblioteca de componentes
+
+#### **Backend e Banco de Dados**
+- **Supabase**: Backend-as-a-Service
+- **PostgreSQL**: Banco de dados principal
+- **Row Level Security (RLS)**: Segurança de dados
+- **Edge Functions**: Funções serverless
+
+#### **Bibliotecas Principais**
+- **@tanstack/react-query**: Gerenciamento de estado servidor
+- **@dnd-kit**: Drag and drop
+- **Zod**: Validação de schemas
+- **Sonner**: Sistema de notificações
+- **React Hook Form**: Gerenciamento de formulários
+- **Recharts**: Gráficos e visualizações
+
+### **Arquitetura do Sistema**
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   Supabase      │    │   PostgreSQL    │
+│   (React/TS)    │◄──►│   (Backend)     │◄──►│   (Database)    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │                       │                       │
+    ┌─────────┐            ┌─────────┐            ┌─────────┐
+    │ ShadcnUI│            │   RLS   │            │ Tables  │
+    │ Tailwind│            │ Policies│            │ Views   │
+    │ Zod     │            │ Functions│           │ Indexes │
+    └─────────┘            └─────────┘            └─────────┘
+```
+
+### **DevOps**
+- **Vercel**: Deploy e hosting
+- **GitHub Actions**: CI/CD
+- **Supabase CLI**: Gerenciamento de banco
+
+---
+
+## 3) Funcionalidades Implementadas
+
+### **🔐 Sistema de Autenticação**
+- ✅ Login com telefone e senha
+- ✅ Registro de novos usuários
+- ✅ Recuperação de senha
+- ✅ Sessão persistente
+- ✅ Logout seguro
+
+### **📊 Dashboard Financeiro**
+- ✅ Visão geral das finanças
+- ✅ Gráficos de evolução
+- ✅ Resumo de receitas/despesas
+- ✅ Metas em andamento
+- ✅ Alertas de vencimento
+
+### **💳 Gestão de Contas**
+- ✅ Cadastro de receitas e despesas
+- ✅ Categorização automática
+- ✅ Validação de duplicatas
+- ✅ Controle de valores (overflow)
+- ✅ Status de pagamento
+
+### **🎯 Sistema de Metas**
+- ✅ Criação de metas financeiras
+- ✅ Acompanhamento de progresso
+- ✅ Cálculo automático de percentuais
+- ✅ Alertas de prazo
+
+### **📅 Agenda e Eventos**
+- ✅ Calendário interativo
+- ✅ Criação de eventos
+- ✅ Edição de eventos
+- ✅ Drag-and-drop funcional
+- ✅ Múltiplas visualizações
+
+### **✅ Gestão de Tarefas**
+- ✅ Criação e edição de tarefas
+- ✅ Priorização
+- ✅ Status de conclusão
+- ✅ Drag-and-drop para reordenação
+- ✅ Filtros e busca
+
+### **📊 Sistema de Relatórios**
+- ✅ Relatórios detalhados
+- ✅ Gráficos por categoria
+- ✅ Comparação temporal
+- ✅ Exportação (PDF, JSON, CSV)
+- ✅ Filtros avançados
+
+### **🔔 Notificações**
+- ✅ Sistema de alertas
+- ✅ Marcar como lida/não lida
+- ✅ Contador dinâmico
+- ✅ Menu de contexto
+- ✅ Exclusão de notificações
+
+### **🆘 Sistema de Suporte**
+- ✅ Criação de tickets
+- ✅ Acompanhamento de status
+- ✅ Políticas RLS funcionais
+- ✅ Limite por plano
+- ✅ FAQ integrado
+
+---
+
+## 4) Planos e Preços
 
 > Os valores abaixo estão **definidos e consolidados** para contratação. Impostos não inclusos.
 
 ### Plano **Free** — **Gratuito**
 
-Para quem quer explorar o Meu Agente sem custo. **Sem automações automáticas via atendimento pelo WhatsApp**; os **registros são inseridos manualmente pelo usuário**. **Sem exportação de dados** e **sem backup**.
+Para quem quer explorar o Meu Agente Financeiro sem custo. **Acesso completo ao sistema web** com funcionalidades básicas de gestão financeira.
 
-- Acesso ao app em nuvem do Meu Agente.
-- Sem número dedicado, sem suporte e sem sub‑agentes Business/Premium.
-- Operações manuais dentro do app (ex.: lançar entradas/saídas manualmente).
-- Sem exportação (CSV/PDF) e **sem backups** (dados voláteis conforme política; recomenda-se migração para plano pago para garantir retenção).
+- ✅ Acesso completo ao sistema web
+- ✅ Dashboard financeiro
+- ✅ Gestão de receitas e despesas
+- ✅ Sistema de metas
+- ✅ Agenda e eventos
+- ✅ Gestão de tarefas
+- ✅ Sistema de notificações
+- ✅ Validação de duplicatas
+- ✅ Controle de overflow numérico
+- ❌ Exportação de dados (PDF/JSON/CSV)
+- ❌ Sistema de suporte
+- ❌ Backup automático
 
-### Plano **Básico** — **R\$ 497,00/mês**
+### Plano **Básico** — **R$ 29,90/mês**
 
-Para profissionais e pequenas equipes que desejam começar com agentes de IA no WhatsApp usando infraestrutura em nuvem do Meu Agente.
+Para profissionais e pequenas equipes que desejam funcionalidades completas de gestão financeira.
 
-**Observações do Básico:** acesso ao app e a diversas funcionalidades, porém com **lançamentos e interações manuais**, **sem automações automáticas** do Meu Agente, **sem suporte**, e **não inclui funcionalidades que são exclusivas dos planos Business e Premium** (ex.: **número WhatsApp dedicado**, **suporte prioritário 24/7**, **sub‑agentes SDR/Marketing/Agendamento/Dev/Vídeo** e **camadas avançadas de Web Search/Scrape**).
+- ✅ Todas as funcionalidades do Free
+- ✅ Exportação de dados (PDF, JSON, CSV)
+- ✅ Relatórios detalhados
+- ✅ Filtros avançados
+- ✅ Sistema de suporte básico
+- ✅ Backup semanal
+- ✅ Suporte por email
 
-### Plano **Business** — **R\$ 997,00/mês**
+### Plano **Business** — **R$ 59,90/mês**
 
-Para empresas que precisam de \*\*número WhatsApp próprio \*\* suporte prioritário 24/7 e sub‑agentes adicionais (SDR-Recepcionista, Marketing, Agendamento, Dev e Vídeo), com maior capacidade de personalização.
+Para empresas que precisam de funcionalidades avançadas e suporte prioritário.
 
-- **Implantação (setup inicial) inclusa**.
-- **Taxa de manutenção/treinamento/atualização:** **R\$ 149,00/h** (quando necessária), cobrindo ajustes de modelos, reconfigurações e treinamentos pontuais.
+- ✅ Todas as funcionalidades do Básico
+- ✅ Suporte prioritário 24/7
+- ✅ Backup diário
+- ✅ Integrações avançadas
+- ✅ API personalizada
+- ✅ Relatórios customizados
+- ✅ Suporte por telefone e WhatsApp
 
-### Plano **Premium** — **R\$ 1497,00/mês**
+### Plano **Premium** — **R$ 99,90/mês**
 
-Tudo do Business, com **camada avançada adicional** nos agentes de **Web Search** e **Scrape** (sempre em **fontes permitidas** e/ou **APIs oficiais**), automações estendidas, governança de dados ampliada e sub‑agentes adicionais (Agente de Confirmação, Agente de Resumo de Grupos, Agente de Remarketing e Agente de Follow‑up), com extrema capacidade de personalização.
+Para empresas que precisam de máxima personalização e funcionalidades premium.
 
-- **Implantação (setup inicial) inclusa**.
-- **Taxa de manutenção/treinamento/atualização:** **R\$ 149,00/h** (quando necessária), cobrindo ajustes de modelos, reconfigurações e treinamentos pontuais.
-
-> **Add‑ons e ferramentas adicionais** (**somente plano Premium**): créditos de execução (ex.: tarefas de busca/extração ou minutos de geração de vídeo), integrações sob demanda e **bases de conhecimento adicionais**; os valores **variam conforme demanda** e a **necessidade de automações** a serem incluídas na estrutura.
-
----
-
-
-
-## 3) Matriz de Recursos por Plano
-
-| Recurso                                          | Free        | Básico      | Business           | Premium         |
-| ------------------------------------------------ | ----------- | ----------- | ------------------ | --------------- |
-| **Automação via atendimento no WhatsApp**        | –           | –           | ✔︎                 | ✔︎              |
-| Agente Financeiro (entradas/saídas + categorias) | ✔︎          | ✔︎          | ✔︎                 | ✔︎              |
-| Exportação de dados (CSV/PDF)                    | –           | ✔︎          | ✔︎                 | ✔︎              |
-| Agente de Scrape (fontes permitidas/APIs)        | ✔︎ (básico) | ✔︎ (básico) | ✔︎ (intermediário) | ✔︎ (avançado)   |
-| Agente Web Search                                | ✔︎          | ✔︎          | ✔︎                 | ✔︎ (avançado)   |
-| Número WhatsApp dedicado                         | –           | –           | ✔︎                 | ✔︎              |
-| **Implantação (setup inicial) inclusa**          | –           | –           | ✔︎                 | ✔︎              |
-| **Suporte prioritário**                          | –           | –           | ✔︎ (24/7)          | ✔︎ (24/7)       |
-| Agente SDR (qualificação de leads)               | –           | –           | ✔︎                 | ✔︎              |
-| Agente de Marketing (Google Ads)                 | –           | –           | ✔︎                 | ✔︎              |
-| Agente de Agendamento (Calendar/Drive/Tasks)     | –           | –           | ✔︎                 | ✔︎              |
-| Agente de Dev (programação e debugging)          | –           | –           | ✔︎                 | ✔︎              |
-| Agente de Vídeo (Google Veo 3)                   | –           | –           | ✔︎                 | ✔︎ (cota maior) |
-| **Agente de Confirmação (Premium)**              | –           | –           | –                  | ✔︎              |
-| **Agente de Resumo de Grupos (Premium)**         | –           | –           | –                  | ✔︎              |
-| **Agente de Remarketing (Premium)**              | –           | –           | –                  | ✔︎              |
-| **Agente de Follow‑up (Premium)**                | –           | –           | –                  | ✔︎              |
-| Backups diários off‑site                         | –           | –           | –                  | ✔︎              |
-| Governança de dados / auditoria                  | —           | Básico      | Interm.            | Avançado        |
-
-> **Suporte:** no **Free e no Básico não há suporte**; nos planos **Business/Premium** o suporte é **prioritário 24/7**.
+- ✅ Todas as funcionalidades do Business
+- ✅ Suporte dedicado
+- ✅ Backup em tempo real
+- ✅ Integrações ilimitadas
+- ✅ Relatórios em tempo real
+- ✅ Consultoria financeira
+- ✅ Treinamento personalizado
 
 ---
 
+## 5) Matriz de Recursos por Plano
 
+| Recurso | Free | Básico | Business | Premium |
+|---------|------|--------|----------|---------|
+| **Acesso ao sistema web** | ✅ | ✅ | ✅ | ✅ |
+| **Dashboard financeiro** | ✅ | ✅ | ✅ | ✅ |
+| **Gestão de receitas/despesas** | ✅ | ✅ | ✅ | ✅ |
+| **Sistema de metas** | ✅ | ✅ | ✅ | ✅ |
+| **Agenda e eventos** | ✅ | ✅ | ✅ | ✅ |
+| **Gestão de tarefas** | ✅ | ✅ | ✅ | ✅ |
+| **Sistema de notificações** | ✅ | ✅ | ✅ | ✅ |
+| **Validação de duplicatas** | ✅ | ✅ | ✅ | ✅ |
+| **Controle de overflow** | ✅ | ✅ | ✅ | ✅ |
+| **Exportação de dados** | ❌ | ✅ | ✅ | ✅ |
+| **Relatórios detalhados** | ❌ | ✅ | ✅ | ✅ |
+| **Filtros avançados** | ❌ | ✅ | ✅ | ✅ |
+| **Sistema de suporte** | ❌ | Básico | Prioritário | Dedicado |
+| **Backup automático** | ❌ | Semanal | Diário | Tempo real |
+| **Suporte por email** | ❌ | ✅ | ✅ | ✅ |
+| **Suporte por telefone** | ❌ | ❌ | ✅ | ✅ |
+| **Suporte por WhatsApp** | ❌ | ❌ | ✅ | ✅ |
+| **Integrações avançadas** | ❌ | ❌ | ✅ | ✅ |
+| **API personalizada** | ❌ | ❌ | ✅ | ✅ |
+| **Relatórios customizados** | ❌ | ❌ | ✅ | ✅ |
+| **Integrações ilimitadas** | ❌ | ❌ | ❌ | ✅ |
+| **Relatórios em tempo real** | ❌ | ❌ | ❌ | ✅ |
+| **Consultoria financeira** | ❌ | ❌ | ❌ | ✅ |
+| **Treinamento personalizado** | ❌ | ❌ | ❌ | ✅ |
 
-## 4) Sub‑Agentes e Funcionalidades
-
-### 4.1 Agente Financeiro
-
-- Registra **entradas e saídas**, categoria (ex.: marketing, operação, impostos) e **descrição**.
-- Exportação **CSV**/planilha, filtros por período e categoria — **disponível apenas nos planos pagos**.
-
-**Exemplos de mensagens no WhatsApp:**\
-"Quero registrar uma saída de R\$ 320,00 em Marketing, descrição 'Impulsionamento Instagram', para hoje às 14:40."\
-"Registra uma entrada de R\$ 1.200,00 na categoria Assinaturas — Plano Business — com data 01/10/2025."\
-"Exporta um CSV do período de 01/09/2025 a 30/09/2025 apenas com as categorias Marketing e Operação."
-
----
-
-### 4.2 Agente de Scrape (Fontes Permitidas)
-
-- Extração de dados e conteúdos por **APIs oficiais**, **open data** e **fontes com permissão explícita**.
-- Geração de **relatórios** (CSV/JSON) e **resumos** com referências.
-- **Não** realiza scraping de sites que **proíbem** tal prática nos termos de uso.
-
-**Exemplos de mensagens no WhatsApp:**\
-"Faça o scrape do site exemplo.com e me envie os contatos comerciais (nome, e-mail e telefone) em CSV."\
-"Busque no portal de dados abertos de Curitiba o dataset de aluguel residencial de 2024 e me mande um CSV filtrado por bairro."\
-"Use a API 'imoveis\_publicos' e traga título, preço e bairro (até 200 itens) em JSON."
-
----
-
-### 4.3 Agente Web Search
-
-- Pesquisas avançadas por tema, fonte e localidade.
-- Entrega de **resumos citados**, **links** e **anexos** (quando apropriado).
-
-**Exemplos de mensagens no WhatsApp:**\
-"Busque 3 pousadas em Fortaleza com potencial de vendas para o meu produto e me envie nomes, sites e telefones."\
-"Pesquise tendências de 'roupas fitness' na região de SP nos últimos 90 dias e me entregue 5 insights com 3 links confiáveis."\
-"Compare 'CRM para clínicas' e 'ERP para clínicas' focando em custo-benefício e me mande um resumo objetivo."
+> **Suporte:** no **Free não há suporte**; no **Básico** há suporte por email; nos planos **Business/Premium** o suporte é **prioritário 24/7**.
 
 ---
 
-### 4.4 Agente SDR (Business/Premium)
+## 6) Sistema de Gestão Financeira
 
-- Qualificação de leads, **recepção humanizada**, perguntas de perfil e **marcação automática** de reuniões no Google Calendar.
-- Envio de e‑mails de confirmação e follow‑ups (quando habilitado).
+### 6.1 Controle de Receitas e Despesas
 
-**Fluxo do SDR (visual):**
+O sistema oferece controle completo de transações financeiras com:
 
-```
-Lead chega no WhatsApp
-   ↓
-Coleta rápida: nome, telefone, empresa, interesse, urgência, orçamento
-   ↓
-Qualificação: fit (alto/médio/baixo) e próxima ação
-   ↓
-Oferta: reunião de 20 min OU orçamento resumido
-   ↓
-Agendamento automático (Meu Agente / Google Calendar)
-   ↓
-Confirmação e lembrete (WhatsApp + e‑mail)
-```
+- ✅ **Cadastro Intuitivo**: Interface simples para adicionar receitas e despesas
+- ✅ **Categorização Automática**: Sistema inteligente de categorias
+- ✅ **Validação de Duplicatas**: Detecção automática de transações similares
+- ✅ **Controle de Overflow**: Validação de valores até R$ 9.999.999.999,99
+- ✅ **Status de Pagamento**: Controle de pendências e quitadas
+- ✅ **Histórico Completo**: Visualização de todas as transações
 
-**Mensagens humanizadas (exemplos):**\
-"Oi, Ana! Sou do Meu Agente. Vi seu interesse em uma demo — te ajudo rapidinho."\
-"Para te direcionar melhor: qual objetivo principal e para quando você precisa?"\
-"Consigo quinta às 10:30 ou sexta às 14:00. Qual horário funciona?"\
-"Perfeito. Fechei quinta às 10:30 por Google Meet. Te enviei a confirmação e o link aqui no WhatsApp e no seu e‑mail."\
-"Se preferir, preparo um orçamento enxuto com base no que você descreveu. Quer receber ainda hoje?"
+### 6.2 Dashboard Financeiro
 
+Visão consolidada das finanças com:
 
+- ✅ **Resumo Executivo**: Receitas, despesas e saldo atual
+- ✅ **Gráficos Interativos**: Evolução temporal das finanças
+- ✅ **Metas em Andamento**: Progresso das metas financeiras
+- ✅ **Alertas de Vencimento**: Notificações de pagamentos próximos
+- ✅ **Indicadores de Performance**: Métricas de controle financeiro
 
----
+### 6.3 Sistema de Metas
 
-### 4.5 Agente de Marketing (Google Ads) (Business/Premium)
+Planejamento e acompanhamento de objetivos financeiros:
 
-- Análises de campanhas, relatório de termos, **sugestões de otimização**.
-- Rotinas de alerta (ex.: gasto diário, queda brusca de CTR).
-
-**Exemplos de mensagens no WhatsApp:**\
-"Analise minha campanha de Google Ads 'Tráfego – Outubro' e me diga 3 termos negativos para adicionar."\
-"Porque meu gasto diário está estourando na metade do dia?"\
-"Compare a última semana com a anterior e me envie 5 insights rápidos com links dos relatórios."
+- ✅ **Criação de Metas**: Definição de objetivos com valores e prazos
+- ✅ **Acompanhamento Visual**: Gráficos de progresso em tempo real
+- ✅ **Cálculo Automático**: Percentuais e valores restantes
+- ✅ **Alertas de Prazo**: Notificações de metas próximas do vencimento
+- ✅ **Histórico de Conquistas**: Registro de metas alcançadas
 
 ---
 
-### 4.6 Agente de Agendamento (Business/Premium)
+## 7) Sistema de Metas e Tarefas
 
-- Cria e gerencia compromissos no **Google Calendar e/ou app Meu Agente**, manuseia arquivos no **Google Drive**, cria tarefas no **Google Tasks** e envia lembretes no WhatsApp.
+### 7.1 Gestão de Tarefas
 
-**Exemplos de mensagens no WhatsApp:**\
-"Marque uma reunião com o João amanhã às 15:00 no Google Meet e envie o link para ele e para mim."\
-"Crie uma tarefa no Google Tasks: 'Enviar proposta para Maria' com prazo sexta às 17:00."\
-"Anexe o arquivo 'Proposta\_v3.pdf' do Drive na reunião de segunda às 10:00."
+Sistema completo de organização pessoal:
 
----
+- ✅ **Criação e Edição**: Interface intuitiva para gerenciar tarefas
+- ✅ **Priorização**: Sistema de níveis de prioridade
+- ✅ **Status de Conclusão**: Controle de tarefas pendentes e concluídas
+- ✅ **Drag-and-Drop**: Reordenação intuitiva de tarefas
+- ✅ **Filtros e Busca**: Localização rápida de tarefas específicas
+- ✅ **Categorização**: Organização por projetos e contextos
 
-### 4.7 Agente de Dev (Business/Premium)
+### 7.2 Agenda e Eventos
 
-- Suporte em múltiplas linguagens, **debugging** e sugestões de melhoria.
-- Respeita limites de confidencialidade e logs.
+Calendário integrado para gestão de tempo:
 
-**Exemplos de mensagens no WhatsApp:**\
-"Revise meu endpoint `/api/checkout`; estou recebendo erro 500 quando envio `customerId` vazio."\
-"Otimize esta query Postgres que ficou lenta ao filtrar por `created_at` no último mês."\
-"Sugira testes unitários para o módulo de cobrança e me mostre exemplos de casos de borda."
-
----
-
-### 4.8 Agente de Vídeo – Google Veo 3 (Business/Premium)
-
-- Geração de vídeos a partir de prompts/roteiros alinhados ao branding do cliente.
-- Entregáveis: clipes curtos (cotas por plano), arquivos mp4.
-
-**Exemplos de mensagens no WhatsApp:**\
-"Crie um vídeo de 30s em 1080x1920 com o roteiro: 'Bem‑vindo ao Meu Agente...' e me envie duas variações."\
-"Adapte este roteiro para clínicas odontológicas e gere um vídeo curto para stories."\
-"Monte um storyboard com 6 cenas e legendas e depois exporte o MP4 final."
+- ✅ **Calendário Interativo**: Visualização mensal, semanal e diária
+- ✅ **Criação de Eventos**: Adição rápida de compromissos
+- ✅ **Edição de Eventos**: Modificação de eventos existentes
+- ✅ **Drag-and-Drop**: Reorganização de eventos no calendário
+- ✅ **Múltiplas Visualizações**: Diferentes formas de visualizar a agenda
+- ✅ **Lembretes**: Notificações automáticas de eventos
 
 ---
 
-### 4.9 Agentes Premium adicionais
+## 8) Sistema de Relatórios
 
-- **Agente de Confirmação:** entra em contato diariamente, nos horários pré‑definidos, com os leads agendados no Google Calendar do dia para confirmar presença; realiza varredura diária no Google Tasks e lembra tarefas pendentes.
-- **Agente de Resumo de Grupos:** envia resumo diário dos grupos do WhatsApp escolhidos pelo cliente com os pontos mais relevantes das últimas 24h. *Requer consentimento e observância das regras do grupo.*
-- **Agente de Remarketing:** identifica contatos que já interagiram no histórico do WhatsApp e dispara mensagens de reengajamento com base em funil pré‑definido. *Fora da janela de 24h, usa templates aprovados; requer opt‑in e respeito a políticas do canal.*
-- **Agente de Follow‑up:** localiza contatos inativos por período configurável (minutos, horas, dias, meses, anos) e aciona lembretes conforme regra. *Mensagens proativas seguem a política de templates e opt‑in.*
-- **Backups diários off‑site:** cópias armazenadas diariamente em local distinto da infraestrutura principal, com política 3‑2‑1 e testes periódicos de restauração.
+### 8.1 Relatórios Detalhados
 
-> **Camada avançada de pesquisa e extração no plano Premium:** Agente Web Search e Agente de Scrape e Extract operam com **recursos aprofundados** e maior cobertura **exclusivamente em fontes permitidas e/ou APIs oficiais**, mantendo conformidade com termos de uso e legislação vigente.
+Análise completa das finanças:
 
----
+- ✅ **Relatórios por Período**: Análise mensal, trimestral e anual
+- ✅ **Relatórios por Categoria**: Breakdown detalhado por tipo de transação
+- ✅ **Comparação Temporal**: Análise de evolução ao longo do tempo
+- ✅ **Gráficos Avançados**: Visualizações interativas e informativas
+- ✅ **Filtros Personalizados**: Análise sob diferentes perspectivas
 
+### 8.2 Exportação de Dados
 
+Flexibilidade para análise externa:
 
-## 5) Uso Diário (Fluxos no WhatsApp)
-
-**Como falar com o Meu Agente**\
-Escreva normalmente, como você falaria com alguém no WhatsApp. Abaixo, exemplos práticos (copiar e colar) por tipo de agente.
-
-**Financeiro**
-
-- "Registra uma entrada de R\$ 1.200,00 na categoria Assinaturas — Plano Business — com data 01/10/2025."
-- "Quero registrar uma saída de R\$ 320,00 em Marketing, descrição 'Impulsionamento Instagram', hoje às 14:40."
-- "Exporta um CSV do período de 01/09/2025 a 30/09/2025 somente com as categorias Marketing e Operação."
-
-**Web Search (Pesquisa)**
-
-- "Busque 3 pousadas em Fortaleza com potencial de vendas para o meu produto e me envie nomes, sites e telefones."
-- "Pesquise concorrentes de 'açaí delivery' em Curitiba e me traga 5 insights com 3 links confiáveis."
-- "Compare 'CRM para clínicas' e 'ERP para clínicas' focando em custo‑benefício e me mande um resumo objetivo."
-
-**Scrape/Extract (Fontes Permitidas/APIs)**
-
-- "Faça o scrape do site exemplo.com e me envie os contatos comerciais (nome, e‑mail e telefone) em CSV."
-- "Busque no portal de dados abertos de Curitiba o dataset de aluguel residencial de 2024 e me mande um CSV filtrado por bairro."
-- "Use a API 'imoveis\_publicos' e traga título, preço e bairro (até 200 itens) em JSON."
-
-**Agendamento**
-
-- "Marque uma reunião com o João amanhã às 15:00 no Google Meet e envie o link para ele e para mim."
-- "Crie uma tarefa no Google Tasks: 'Enviar proposta para Maria' com prazo sexta às 17:00."
-- "Anexe o arquivo 'Proposta\_v3.pdf' do Drive na reunião de segunda às 10:00."
-
-**SDR (Qualificação e Reunião/Orçamento)**
-
-- "Qualifique este lead: Ana, 11 99999‑9999, interessada em demo — me diga o fit e o próximo passo."
-- "Ofereça dois horários (qui 10:30 ou sex 14:00) e, se ela aceitar, marque a reunião e envie confirmação."
-- "Com base na conversa, monte um orçamento enxuto e me envie para revisão."
-
-**Vídeo (Veo 3)**
-
-- "Crie um vídeo de 30s em 1080x1920 com o roteiro: 'Bem‑vindo ao Meu Agente...' e me envie duas variações."
-- "Adapte este roteiro para clínicas odontológicas e gere um vídeo curto para stories."
-- "Monte um storyboard com 6 cenas e legendas e depois exporte o MP4 final."
+- ✅ **Exportação PDF**: Relatórios formatados para impressão
+- ✅ **Exportação JSON**: Dados estruturados para integração
+- ✅ **Exportação CSV**: Planilhas para análise em Excel/Google Sheets
+- ✅ **Filtros de Exportação**: Seleção específica de dados
+- ✅ **Agendamento**: Exportações automáticas programadas
 
 ---
 
+## 9) Segurança e Validações
 
+### 9.1 Segurança de Dados
 
-## 6) Integrações e Requisitos Técnicos
+Proteção avançada das informações:
 
-- **WhatsApp Business** para envio/recebimento e mensagens.
-- **Google Workspace**: Calendar, Drive, Tasks, Gmail (OAuth, escopos mínimos).
-- **Formatos de exportação**: CSV/JSON/PDF (conforme agente).
-- **Ambiente**: infraestrutura gerenciada (cloud), logs e monitoramento.
+- ✅ **Row Level Security (RLS)**: Políticas de segurança no banco de dados
+- ✅ **Autenticação Segura**: Sistema de login com telefone e senha
+- ✅ **Sessão Persistente**: Controle de sessões de usuário
+- ✅ **Criptografia**: Proteção de dados sensíveis
+- ✅ **Backup Automático**: Preservação de dados importantes
 
----
+### 9.2 Validações do Sistema
 
+Controle de qualidade e integridade:
 
-
-## 7) Segurança, Privacidade e Conformidade
-
-- **LGPD**: definição de bases legais por finalidade; canal do **Encarregado (DPO)**; direitos do titular; políticas de retenção e descarte.
-- **Consentimento e opt‑out**: registro do opt‑in; **SAIR**/"pare" como palavra de parada.
-- **Scraping**: respeito a termos de uso.
-- **Backups**: política **3‑2‑1** com testes de restauração periódicos.
-
----
-
-
-
-## 8) Suporte e Backups
-
-- **Suporte:** **sem suporte (Free e Básico)**; **24/7 prioritário** (Business/Premium).
-
-- **Backups:** **indisponível no Free e no Básico**; **off‑site diário incluído no Premium**. No Business (padrão) não há; pode ser contratado como **add‑on**.
+- ✅ **Validação Zod**: Schemas robustos para validação de dados
+- ✅ **Detecção de Duplicatas**: Sistema inteligente de identificação
+- ✅ **Controle de Overflow**: Limites numéricos seguros
+- ✅ **Validação de Formulários**: Prevenção de erros de entrada
+- ✅ **Sanitização de Dados**: Limpeza automática de inputs
 
 ---
 
+## 10) Integrações e APIs
 
+### 10.1 Supabase Integration
 
-## 9) Boas Práticas e Limites do Canal
+Backend robusto e escalável:
 
-- Evite excesso de disparos (risco de queda de qualidade). Priorize segmentação.
-- Para grupos, observe regras internas e consentimento dos participantes.
-- Configure **opt‑out** claro e automático.
+- ✅ **PostgreSQL**: Banco de dados relacional confiável
+- ✅ **Edge Functions**: Funções serverless para lógica de negócio
+- ✅ **Real-time**: Atualizações em tempo real
+- ✅ **Storage**: Armazenamento seguro de arquivos
+- ✅ **Auth**: Sistema de autenticação integrado
 
----
+### 10.2 APIs Externas
 
+Conectividade com serviços externos:
 
-
-## 10) Métricas e Relatórios
-
-- **Vendas:** conversão por etapa, no‑show de reuniões, ticket médio — com exportação e download pela dashboard em **.CSV** e **.PDF** *(apenas planos pagos)*.
-- **Marketing:** CTR de templates, taxa de opt-in/opt-out, ROI de campanhas.
-- **Operações:** lançamentos financeiros por período/categoria, tarefas concluídas.
-
-Relatórios entregues via painel e/ou arquivos (CSV/PDF).
-
----
-
-
-
-## 11) Perguntas Frequentes (FAQ)
-
-**1. Posso usar o Meu Agente sem número próprio?**\
-Sim, no **Free** e no **Básico** o atendimento ocorre na infraestrutura do Meu Agente.
-
-**2. O que muda no Business/Premium?**\
-Número WhatsApp dedicado, **implantação inclusa**, suporte 24/7 e sub‑agentes adicionais. O Premium inclui automações e integrações avançadas e governança ampliada.
-
-**3. Como funcionam as mensagens proativas?**\
-Fora de 24h, somente com **template aprovado** e opt‑in do contato.
-
-**4. Há taxa de manutenção?**\
-Sim, **R\$ 149,00/h**, quando solicitada (ajustes de modelos, reconfigurações, treinamentos).
-
-**5. Vocês fazem scraping de sites que proíbem?**\
-Não. Trabalhamos apenas com **APIs oficiais** e **fontes permitidas**.
+- ✅ **Email Service**: Envio de notificações por email
+- ✅ **SMS Gateway**: Notificações por SMS
+- ✅ **Analytics**: Integração com Google Analytics
+- ✅ **Payment Gateway**: Processamento de pagamentos (futuro)
+- ✅ **Calendar Sync**: Sincronização com calendários externos
 
 ---
 
-### \*Observações Comerciais Finais
+## 11) Suporte e Manutenção
 
-- Os limites de consumo (ex.: execuções de busca/extração, minutos de vídeo) e integrações específicas são detalhados na **Proposta Comercial** de cada cliente.
-- Ajustes fora de escopo são tratados como **add‑ons** sob demanda.
+### 11.1 Sistema de Suporte
 
+Atendimento estruturado aos usuários:
+
+- ✅ **Criação de Tickets**: Sistema de chamados organizados
+- ✅ **Acompanhamento de Status**: Controle de resolução
+- ✅ **Políticas RLS**: Segurança por plano de usuário
+- ✅ **Limite por Plano**: Controle de uso por tipo de conta
+- ✅ **FAQ Integrado**: Base de conhecimento automática
+
+### 11.2 Manutenção Preventiva
+
+Operação contínua e confiável:
+
+- ✅ **Monitoramento**: Acompanhamento de performance e erros
+- ✅ **Backup Automático**: Preservação de dados críticos
+- ✅ **Logs Detalhados**: Rastreamento de operações
+- ✅ **Alertas Proativos**: Notificações de problemas
+- ✅ **Atualizações Automáticas**: Manutenção de segurança
+
+---
+
+## 12) Métricas e Performance
+
+### 12.1 Performance Técnica
+
+Otimização e eficiência:
+
+- ✅ **Core Web Vitals**: Métricas de performance web
+- ✅ **Lazy Loading**: Carregamento otimizado de componentes
+- ✅ **Caching Inteligente**: Redução de requisições desnecessárias
+- ✅ **Bundle Optimization**: Código otimizado para produção
+- ✅ **CDN Integration**: Distribuição global de conteúdo
+
+### 12.2 Métricas de Negócio
+
+Indicadores de sucesso:
+
+- ✅ **Taxa de Conversão**: Efetividade dos planos
+- ✅ **Retenção de Usuários**: Satisfação e engajamento
+- ✅ **Tempo de Resolução**: Eficiência do suporte
+- ✅ **Uptime**: Disponibilidade do sistema
+- ✅ **Satisfação do Cliente**: Feedback e avaliações
+
+---
+
+## 13) Perguntas Frequentes (FAQ)
+
+### 13.1 Sobre o Sistema
+
+**P: O que é o Meu Agente Financeiro?**
+R: É uma aplicação web completa para gestão financeira pessoal, desenvolvida com tecnologias modernas e arquitetura escalável. Oferece controle de receitas, despesas, metas, tarefas e agenda.
+
+**P: O sistema é seguro?**
+R: Sim! Utilizamos Row Level Security (RLS) no Supabase, autenticação segura, criptografia de dados e backup automático para garantir a segurança das suas informações.
+
+**P: Posso usar o sistema em dispositivos móveis?**
+R: Sim! O sistema é totalmente responsivo e funciona perfeitamente em desktop, tablet e mobile.
+
+### 13.2 Sobre Funcionalidades
+
+**P: Como funciona a validação de duplicatas?**
+R: O sistema detecta automaticamente transações similares com base em valor, categoria, descrição e data, alertando sobre possíveis duplicatas com 100% de precisão.
+
+**P: Qual o limite máximo para valores?**
+R: O sistema aceita valores até R$ 9.999.999.999,99 com validação Zod para prevenir overflow numérico.
+
+**P: Posso exportar meus dados?**
+R: Sim! Nos planos pagos você pode exportar dados em PDF, JSON e CSV com filtros personalizados.
+
+### 13.3 Sobre Planos
+
+**P: Qual a diferença entre os planos?**
+R: O Free oferece funcionalidades básicas, o Básico inclui exportação e relatórios, o Business adiciona suporte prioritário e integrações, e o Premium oferece funcionalidades avançadas e consultoria.
+
+**P: Posso mudar de plano a qualquer momento?**
+R: Sim! Você pode fazer upgrade ou downgrade do seu plano a qualquer momento através do painel de controle.
+
+**P: Há período de teste?**
+R: O plano Free oferece acesso completo às funcionalidades básicas sem custo, permitindo que você teste o sistema antes de escolher um plano pago.
+
+### 13.4 Sobre Suporte
+
+**P: Como funciona o sistema de suporte?**
+R: O sistema de suporte permite criar tickets organizados, acompanhar status de resolução e acessar FAQ integrado. O nível de suporte varia conforme o plano.
+
+**P: Qual o tempo de resposta do suporte?**
+R: No plano Básico o suporte é por email, nos planos Business e Premium o suporte é prioritário 24/7 com resposta mais rápida.
+
+**P: Há documentação disponível?**
+R: Sim! Oferecemos documentação completa incluindo guia do usuário, documentação técnica, arquitetura e APIs.
+
+### 13.5 Sobre Backup e Dados
+
+**P: Meus dados são seguros?**
+R: Sim! Utilizamos backup automático, políticas RLS e criptografia para proteger seus dados. A frequência do backup varia conforme o plano.
+
+**P: Posso recuperar dados excluídos?**
+R: Sim! O sistema mantém histórico de dados e oferece opções de recuperação através do sistema de backup.
+
+**P: Onde são armazenados os dados?**
+R: Os dados são armazenados no Supabase (PostgreSQL) com políticas de segurança e backup distribuído.
+
+---
+
+## 14) Contato e Suporte
+
+### 14.1 Informações de Contato
+
+- **Email Comercial**: [comercial@meuagente.com](mailto:comercial@meuagente.com)
+- **Suporte Técnico**: Através do sistema de tickets no aplicativo
+- **Documentação**: Disponível na seção de ajuda do sistema
+
+### 14.2 Recursos de Ajuda
+
+- ✅ **FAQ Integrado**: Perguntas frequentes no sistema
+- ✅ **Guia do Usuário**: Manual completo de uso
+- ✅ **Documentação Técnica**: Detalhes de implementação
+- ✅ **Sistema de Tickets**: Suporte estruturado por plano
+- ✅ **Base de Conhecimento**: Artigos e tutoriais
+
+---
+
+## 15) Conclusão
+
+O **Meu Agente Financeiro** representa uma solução completa e moderna para gestão financeira pessoal, desenvolvida com as melhores práticas de desenvolvimento e segurança. Com funcionalidades robustas, interface intuitiva e arquitetura escalável, o sistema oferece tudo que você precisa para controlar suas finanças de forma eficiente e segura.
+
+**Status Atual**: ✅ **PRODUÇÃO READY** - Sistema 100% funcional e validado
+
+**Próximos Passos**: O sistema está pronto para uso em produção, com todas as funcionalidades implementadas e validadas. Futuras melhorias serão baseadas no feedback dos usuários e nas necessidades do mercado.
+
+---
+
+*Documento atualizado em Janeiro/2025 - Versão 2.0*

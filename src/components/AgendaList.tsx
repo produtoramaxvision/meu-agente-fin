@@ -23,7 +23,9 @@ export default function AgendaList({ startDate, endDate, events, calendars, isLo
     <Card className="p-4 custom-scrollbar smooth-scrollbar overflow-y-auto max-h-[600px]">
       <div className="space-y-6">
         {days.map((d) => {
-          const items = events.filter(e => isSameDay(new Date(e.start_ts), d) || isSameDay(new Date(e.end_ts), d));
+          const items = events
+            .filter(e => isSameDay(new Date(e.start_ts), d) || isSameDay(new Date(e.end_ts), d))
+            .sort((a, b) => new Date(a.start_ts).getTime() - new Date(b.start_ts).getTime());
           return (
             <div key={d.toISOString()}>
               <div className="text-sm font-semibold mb-3 text-foreground/90">{format(d, "EEEE, dd 'de' MMMM", { locale: ptBR })}</div>

@@ -332,10 +332,11 @@ export default function Reports() {
      */
     
     setIsExportingCSV(true);
+    let loadingToastId: string | number | undefined;
     
     try {
-      // Mostrar feedback de loading
-      toast.loading("Exportando dados...", {
+      // Mostrar feedback de loading e capturar o ID
+      loadingToastId = toast.loading("Exportando dados...", {
         description: "Gerando arquivo CSV dos seus dados financeiros",
       });
 
@@ -371,6 +372,11 @@ export default function Reports() {
       // Liberar URL do objeto
       URL.revokeObjectURL(link.href);
 
+      // Fechar toast de loading antes de mostrar sucesso
+      if (loadingToastId) {
+        toast.dismiss(loadingToastId);
+      }
+
       // Feedback de sucesso
       toast.success("Relatório exportado com sucesso!", {
         description: `Arquivo CSV gerado com ${filteredAndSortedRecords.length} registros`,
@@ -378,6 +384,12 @@ export default function Reports() {
 
     } catch (error) {
       console.error('Erro ao exportar CSV:', error);
+      
+      // Fechar toast de loading em caso de erro
+      if (loadingToastId) {
+        toast.dismiss(loadingToastId);
+      }
+      
       toast.error("Erro ao exportar", {
         description: "Não foi possível gerar o arquivo CSV. Tente novamente.",
       });
@@ -388,9 +400,11 @@ export default function Reports() {
 
   // Export to PDF
   const handleExportPDF = async () => {
+    let loadingToastId: string | number | undefined;
+    
     try {
-      // Mostrar feedback de loading
-      toast.loading("Exportando PDF...", {
+      // Mostrar feedback de loading e capturar o ID
+      loadingToastId = toast.loading("Exportando PDF...", {
         description: "Gerando relatório em PDF dos seus dados financeiros",
       });
 
@@ -451,12 +465,23 @@ export default function Reports() {
       const timestamp = format(new Date(), 'yyyy-MM-dd');
       doc.save(`relatorio-financeiro-${timestamp}.pdf`);
       
+      // Fechar toast de loading antes de mostrar sucesso
+      if (loadingToastId) {
+        toast.dismiss(loadingToastId);
+      }
+      
       toast.success("PDF exportado com sucesso!", {
         description: "O relatório foi salvo no seu dispositivo",
       });
       
     } catch (error) {
       console.error('Erro ao exportar PDF:', error);
+      
+      // Fechar toast de loading em caso de erro
+      if (loadingToastId) {
+        toast.dismiss(loadingToastId);
+      }
+      
       toast.error("Erro ao exportar PDF", {
         description: "Não foi possível gerar o arquivo PDF. Tente novamente.",
       });
@@ -465,9 +490,11 @@ export default function Reports() {
 
   // Export to JSON
   const handleExportJSON = () => {
+    let loadingToastId: string | number | undefined;
+    
     try {
-      // Mostrar feedback de loading
-      toast.loading("Exportando JSON...", {
+      // Mostrar feedback de loading e capturar o ID
+      loadingToastId = toast.loading("Exportando JSON...", {
         description: "Gerando arquivo JSON dos seus dados financeiros",
       });
 
@@ -514,12 +541,26 @@ export default function Reports() {
       link.click();
       document.body.removeChild(link);
       
+      // Liberar URL do objeto
+      URL.revokeObjectURL(link.href);
+      
+      // Fechar toast de loading antes de mostrar sucesso
+      if (loadingToastId) {
+        toast.dismiss(loadingToastId);
+      }
+      
       toast.success("JSON exportado com sucesso!", {
         description: "O arquivo foi salvo no seu dispositivo",
       });
       
     } catch (error) {
       console.error('Erro ao exportar JSON:', error);
+      
+      // Fechar toast de loading em caso de erro
+      if (loadingToastId) {
+        toast.dismiss(loadingToastId);
+      }
+      
       toast.error("Erro ao exportar JSON", {
         description: "Não foi possível gerar o arquivo JSON. Tente novamente.",
       });
