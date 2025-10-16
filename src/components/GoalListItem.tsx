@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { GoalIcon } from './GoalIcons';
 import { Badge } from './ui/badge';
-import { Edit, Trash2, Copy } from 'lucide-react';
+import { Edit, Trash2, Copy, MoreHorizontal } from 'lucide-react';
 import { GoalForm } from './GoalForm';
 import {
   AlertDialog,
@@ -17,6 +17,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { ActionMenu } from '@/components/ui/ActionMenu';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from '@/components/ui/context-menu';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -60,6 +66,19 @@ export function GoalListItem({ goal, onDelete, onUpdate }: GoalListItemProps) {
     }
   };
 
+  // Handlers para diferentes tipos de clique
+  const handleSingleClick = () => {
+    // Clique simples: destacar a meta ou mostrar informações adicionais
+    toast.info("Meta selecionada", {
+      description: `${goal.titulo} - ${progress.toFixed(0)}% concluída`,
+    });
+  };
+
+  const handleDoubleClick = () => {
+    // Clique duplo: abrir popover de edição
+    setEditDialogOpen(true);
+  };
+
   const actionMenuItems = [
     {
       label: 'Editar',
@@ -81,47 +100,75 @@ export function GoalListItem({ goal, onDelete, onUpdate }: GoalListItemProps) {
 
   return (
     <>
-      <ActionMenu items={actionMenuItems}>
-        <Card className="p-4 group relative overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/10 hover:ring-2 hover:ring-primary/20 hover:-translate-y-1">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none z-10" />
-          <div className="flex flex-col sm:flex-row gap-4 relative z-20">
-            <div className="flex-1 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  {goal.icone && <GoalIcon name={goal.icone} className="h-8 w-8 text-primary" />}
-                  <div>
-                    <h3 className="text-lg font-bold">{goal.titulo}</h3>
-                    {goal.prazo_meses && <p className="text-xs text-text-muted">{goal.prazo_meses} meses restantes</p>}
+      <ContextMenu>
+        <ContextMenuTrigger asChild>
+          <Card 
+            className="p-4 group relative overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/10 hover:ring-2 hover:ring-primary/20 hover:-translate-y-1 cursor-pointer"
+            onClick={handleSingleClick}
+            onDoubleClick={handleDoubleClick}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none z-10" />
+            <div className="flex flex-col sm:flex-row gap-4 relative z-20">
+              <div className="flex-1 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {goal.icone && <GoalIcon name={goal.icone} className="h-8 w-8 text-primary" />}
+                    <div>
+                      <h3 className="text-lg font-bold">{goal.titulo}</h3>
+                      {goal.prazo_meses && <p className="text-xs text-text-muted">{goal.prazo_meses} meses restantes</p>}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {goal.meta_principal && <Badge>Principal</Badge>}
+                    <ActionMenu items={actionMenuItems}>
+                      <button className="p-1 hover:bg-muted rounded-md transition-colors">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </button>
+                    </ActionMenu>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {goal.meta_principal && <Badge>Principal</Badge>}
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between items-center mb-1 text-sm">
-                  <span>Progresso</span>
-                  <span className="font-semibold">{progress.toFixed(0)}%</span>
-                </div>
-                <Progress value={progress} />
-              </div>
-              <div className="flex justify-between items-baseline text-sm">
                 <div>
-                  <p className="text-text-muted">Atual</p>
-                  <p className="font-semibold">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(goal.valor_atual)}</p>
+                  <div className="flex justify-between items-center mb-1 text-sm">
+                    <span>Progresso</span>
+                    <span className="font-semibold">{progress.toFixed(0)}%</span>
+                  </div>
+                  <Progress value={progress} />
                 </div>
-                <div className="text-right">
-                  <p className="text-text-muted">Meta</p>
-                  <p className="font-semibold">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(goal.valor_meta)}</p>
+                <div className="flex justify-between items-baseline text-sm">
+                  <div>
+                    <p className="text-text-muted">Atual</p>
+                    <p className="font-semibold">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(goal.valor_atual)}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-text-muted">Meta</p>
+                    <p className="font-semibold">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(goal.valor_meta)}</p>
+                  </div>
                 </div>
+                <p className="text-xs text-center text-text-muted border-t pt-2">
+                  Faltam {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(restante)}
+                </p>
               </div>
-              <p className="text-xs text-center text-text-muted border-t pt-2">
-                Faltam {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(restante)}
-              </p>
             </div>
-          </div>
-        </Card>
-      </ActionMenu>
+          </Card>
+        </ContextMenuTrigger>
+        <ContextMenuContent>
+          <ContextMenuItem onClick={() => setEditDialogOpen(true)}>
+            <Edit className="mr-2 h-4 w-4" />
+            Editar Meta
+          </ContextMenuItem>
+          <ContextMenuItem onClick={handleDuplicateGoal}>
+            <Copy className="mr-2 h-4 w-4" />
+            Duplicar Meta
+          </ContextMenuItem>
+          <ContextMenuItem 
+            onClick={() => setDeleteDialogOpen(true)}
+            className="text-red-600 focus:text-red-600"
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Excluir Meta
+          </ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
 
       <GoalForm 
         goalToEdit={goal} 

@@ -3,6 +3,7 @@ import { AppSidebar } from './AppSidebar';
 import { AppHeader } from './AppHeader';
 import { AppFooter } from './AppFooter';
 import { NotificationProvider } from '@/contexts/NotificationContext';
+import { useScrollToTop } from '@/hooks/useScrollToTop';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -12,6 +13,9 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+
+  // Hook para scroll automático para o topo em mudanças de rota
+  useScrollToTop();
 
   // Handle sidebar close with animation
   const handleSidebarClose = () => {
