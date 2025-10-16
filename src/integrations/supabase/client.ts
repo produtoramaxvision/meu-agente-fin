@@ -3,8 +3,13 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 import { getCSRFToken } from '@/lib/csrf';
 
-const SUPABASE_URL = "https://teexqwlnfdlcruqbmwuz.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlZXhxd2xuZmRsY3J1cWJtd3V6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MjU0NTksImV4cCI6MjA3MzEwMTQ1OX0.q9TO3T7SjEw81XSk5vmyAt4Ls77-BwrXxCHsA82B4i0";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// Validação para desenvolvimento
+if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+  throw new Error('Missing Supabase environment variables. Please check your .env file.');
+}
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";

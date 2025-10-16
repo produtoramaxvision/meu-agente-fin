@@ -135,9 +135,7 @@ export function PrivacySection() {
       });
 
       // Usar função do Supabase para exportação completa
-      const { data, error } = await supabase.rpc('export_user_data', {
-        user_phone: cliente?.phone
-      });
+      const { data, error } = await supabase.rpc('export_user_data');
 
       if (error) throw error;
 
@@ -178,9 +176,7 @@ export function PrivacySection() {
       setIsSaving(true);
       
       // Usar função do Supabase para exclusão completa e segura
-      const { data, error } = await supabase.rpc('delete_user_data', {
-        user_phone: cliente?.phone
-      });
+      const { data, error } = await supabase.rpc('delete_user_data');
 
       if (error) throw error;
 
