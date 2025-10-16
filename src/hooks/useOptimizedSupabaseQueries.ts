@@ -69,7 +69,7 @@ export const OPTIMIZED_CACHE_CONFIGS = {
 export interface BatchQueryDefinition {
   queryKey: QueryKey;
   queryFn: () => Promise<any>;
-  config?: CacheConfig;
+  config?: Partial<CacheConfig>;
   enabled?: boolean;
   dependencies?: string[];
 }
@@ -161,11 +161,12 @@ export function useOptimizedSupabaseQueries(queries: BatchQueryDefinition[]) {
   // ✅ OTIMIZAÇÃO 5: Batch update do cache
   const batchUpdateCache = useCallback(
     (updates: Array<{ queryKey: QueryKey; data: any }>) => {
-      queryClient.getQueryCache().batch(() => {
-        updates.forEach(({ queryKey, data }) => {
-          queryClient.setQueryData(queryKey, data);
-        });
-      });
+      // Usar Promise.all para atualizações em paralelo
+      Promise.all(
+        updates.map(({ queryKey, data }) => 
+          queryClient.setQueryData(queryKey, data)
+        )
+      );
     },
     [queryClient]
   );
@@ -224,9 +225,8 @@ export function useOptimizedFinancialQueries(filters: {
           if (filters.categories?.length) {
             query = query.in('categoria', filters.categories);
           }
-          if (filters.accounts?.length) {
-            query = query.in('conta', filters.accounts);
-          }
+          // Nota: A tabela financeiro_registros não possui coluna 'conta'
+          // Removido filtro por contas até que seja implementado
           
           const { data, error } = await query;
           if (error) throw error;
@@ -254,21 +254,14 @@ export function useOptimizedFinancialQueries(filters: {
         config: OPTIMIZED_CACHE_CONFIGS.STATIC,
       },
       
-      // Contas (dados semi-estáticos)
+      // Contas (dados semi-estáticos) - DESABILITADO
+      // A tabela financeiro_registros não possui coluna 'conta'
+      // TODO: Implementar sistema de contas quando necessário
       {
         queryKey: [...baseKey, 'accounts'],
         queryFn: async () => {
-          const { data, error } = await supabase
-            .from('financeiro_registros')
-            .select('conta')
-            .eq('phone', cliente.phone)
-            .not('conta', 'is', null);
-          
-          if (error) throw error;
-          
-          // Extrair contas únicas
-          const uniqueAccounts = [...new Set(data.map(item => item.conta))];
-          return uniqueAccounts.sort();
+          // Retornar array vazio até que seja implementado
+          return [];
         },
         config: OPTIMIZED_CACHE_CONFIGS.SEMI_STATIC,
       },
@@ -280,8 +273,8 @@ export function useOptimizedFinancialQueries(filters: {
 
 // ✅ OTIMIZAÇÃO 7: Hook para queries de tarefas
 export function useOptimizedTaskQueries(filters: {
-  status?: string[];
-  priority?: string[];
+  status?: ('pending' | 'done' | 'overdue')[];
+  priority?: ('low' | 'medium' | 'high')[];
   categories?: string[];
   searchQuery?: string;
 }) {
@@ -344,9 +337,9 @@ export function useOptimizedTaskQueries(filters: {
           // Calcular estatísticas
           const stats = {
             total: data.length,
-            completed: data.filter(t => t.status === 'completed').length,
+            done: data.filter(t => t.status === 'done').length,
             pending: data.filter(t => t.status === 'pending').length,
-            in_progress: data.filter(t => t.status === 'in_progress').length,
+            overdue: data.filter(t => t.status === 'overdue').length,
             high_priority: data.filter(t => t.priority === 'high').length,
             medium_priority: data.filter(t => t.priority === 'medium').length,
             low_priority: data.filter(t => t.priority === 'low').length,

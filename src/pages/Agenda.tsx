@@ -6,7 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Plus, CalendarDays, RefreshCw, X } from 'lucide-react';
-import { useOptimizedAgendaData, Event, EventFormData } from '@/hooks/useOptimizedAgendaData';
+import { useOptimizedAgendaData, Event, EventFormData, Resource as OptimizedResource } from '@/hooks/useOptimizedAgendaData';
+import { Resource as OriginalResource } from '@/hooks/useAgendaData';await page.locator('body').click();
+await page.locator('body').click();
+await page.locator('body').click();
+await page.locator('body').click();
+await page.locator('body').click();
 import { AgendaFilters } from '@/components/AgendaFilters';
 import { EventForm } from '@/components/EventForm';
 import { UpcomingTasksCard } from '@/components/UpcomingTasksCard';
@@ -32,6 +37,20 @@ export default function Agenda() {
   const { cliente } = useAuth();
   const { searchQuery, setSearchQuery } = useSearch();
   const queryClient = useQueryClient();
+
+  // Função para converter recursos do hook otimizado para o formato esperado pelos componentes
+  const convertResources = useCallback((optimizedResources: OptimizedResource[]): OriginalResource[] => {
+    return optimizedResources.map(resource => ({
+      id: resource.id,
+      phone: resource.phone,
+      type: resource.type,
+      name: resource.name,
+      capacity: resource.capacity,
+      metadata: resource.availability || {},
+      created_at: resource.created_at,
+      updated_at: resource.updated_at,
+    }));
+  }, []);
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
@@ -331,8 +350,8 @@ export default function Agenda() {
     updateEvent.mutate({
       id: eventId,
       updates: {
-        start_ts: newStartTime,
-        end_ts: newEndTime,
+        start_ts: newStartTime.toISOString(),
+        end_ts: newEndTime.toISOString(),
       }
     });
   }, [updateEvent]);
@@ -560,7 +579,12 @@ export default function Agenda() {
                     isLoading={isLoading}
                     onEventClick={onEventClick}
                     onCreateEvent={(date) => {
-                      setDefaultEventData({ start_ts: date, end_ts: date });
+                      setDefaultEventData({ 
+                        start_date: date, 
+                        end_date: date,
+                        start_time: format(date, 'HH:mm'),
+                        end_time: format(addDays(date, 1), 'HH:mm')
+                      });
                       setEventFormOpen(true);
                     }}
                   />
@@ -570,7 +594,7 @@ export default function Agenda() {
                     startDate={startDate}
                     endDate={endDate}
                     events={events}
-                    resources={resources}
+                    resources={convertResources(resources)}
                     isLoading={isLoading}
                     onEventClick={onEventClick}
                   />
