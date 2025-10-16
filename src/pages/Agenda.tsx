@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Plus, CalendarDays, RefreshCw, X } from 'lucide-react';
-import { useAgendaData, Event, EventFormData } from '@/hooks/useAgendaData';
+import { useOptimizedAgendaData, Event, EventFormData } from '@/hooks/useOptimizedAgendaData';
 import { AgendaFilters } from '@/components/AgendaFilters';
 import { EventForm } from '@/components/EventForm';
 import { UpcomingTasksCard } from '@/components/UpcomingTasksCard';
@@ -145,7 +145,7 @@ export default function Agenda() {
     [debouncedSearch, searchQuery]
   );
 
-  const { calendars, events, resources, isLoading, refetch, createEvent, updateEvent, createCalendar } = useAgendaData({
+  const { calendars, events, resources, isLoading, refetch, createEvent, updateEvent, createCalendar } = useOptimizedAgendaData({
     view,
     startDate,
     endDate,
