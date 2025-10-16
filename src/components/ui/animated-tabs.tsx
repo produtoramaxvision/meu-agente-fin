@@ -33,8 +33,7 @@ export function AnimatedTabs({ tabs, defaultTab, className }: AnimatedTabsProps)
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "relative flex-1 px-4 py-2 text-sm font-medium rounded-lg outline-none transition-colors flex items-center justify-center gap-2",
-                activeTab === tab.id ? "text-foreground" : "text-muted-foreground",
+                "relative flex-1 px-4 py-2 text-sm font-medium rounded-lg text-muted-foreground outline-none transition-colors flex items-center justify-center gap-2",
                 "hover:text-foreground hover:bg-background/50",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               )}
@@ -63,8 +62,7 @@ export function AnimatedTabs({ tabs, defaultTab, className }: AnimatedTabsProps)
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "relative flex-shrink-0 px-4 py-2 text-sm font-medium rounded-lg outline-none transition-colors flex items-center justify-center gap-2 min-w-fit",
-                    activeTab === tab.id ? "text-foreground" : "text-muted-foreground",
+                    "relative flex-shrink-0 px-4 py-2 text-sm font-medium rounded-lg text-muted-foreground outline-none transition-colors flex items-center justify-center gap-2 min-w-fit",
                     "hover:text-foreground hover:bg-background/50",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   )}
@@ -95,8 +93,7 @@ export function AnimatedTabs({ tabs, defaultTab, className }: AnimatedTabsProps)
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "relative flex-shrink-0 px-3 py-2 text-sm font-medium rounded-lg outline-none transition-colors flex items-center justify-center gap-2 min-w-fit",
-                    activeTab === tab.id ? "text-foreground" : "text-muted-foreground",
+                    "relative flex-shrink-0 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground outline-none transition-colors flex items-center justify-center gap-2 min-w-fit",
                     "hover:text-foreground hover:bg-background/50",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   )}

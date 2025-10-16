@@ -4,11 +4,17 @@ import { differenceInDays, format, isToday, parseISO } from 'date-fns';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, AlertCircle, CheckCircle2, ArrowRight } from 'lucide-react';
+import { 
+  ContextMenu, 
+  ContextMenuContent, 
+  ContextMenuItem, 
+  ContextMenuTrigger 
+} from '@/components/ui/context-menu';
+import { Clock, AlertCircle, CheckCircle2, ArrowRight, Edit, Trash2, Copy, Undo2 } from 'lucide-react';
 
 export function UpcomingTasksCard() {
   const navigate = useNavigate();
-  const { tasks, isLoading } = useTasksData('all');
+  const { tasks, isLoading, updateTask, deleteTask, duplicateTask, toggleTaskCompletion } = useTasksData('all');
 
   // Filter and sort upcoming tasks
   const upcomingTasks = tasks
@@ -65,6 +71,25 @@ export function UpcomingTasksCard() {
     }
   };
 
+  // Handlers para ações do menu de contexto
+  const handleEdit = (task: Task) => {
+    // Navegar para a página de tarefas com foco na edição
+    navigate('/tarefas');
+    // TODO: Implementar foco na tarefa específica para edição
+  };
+
+  const handleDelete = (task: Task) => {
+    deleteTask.mutate(task.id);
+  };
+
+  const handleDuplicate = (task: Task) => {
+    duplicateTask.mutate(task);
+  };
+
+  const handleToggleComplete = (task: Task) => {
+    toggleTaskCompletion.mutate(task);
+  };
+
   if (isLoading) {
     return (
       <Card className="animate-fade-in">
@@ -86,7 +111,7 @@ export function UpcomingTasksCard() {
   }
 
   return (
-    <Card className="animate-fade-in hover:shadow-lg transition-all duration-300 border-border/40 min-h-[480px] flex flex-col">
+    <Card className="animate-fade-in hover:shadow-lg transition-all duration-300 border-border/40 h-[515px] flex flex-col">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between leading-normal">
           <div className="flex items-center gap-2">
@@ -114,46 +139,71 @@ export function UpcomingTasksCard() {
             {upcomingTasks.map((task, index) => {
               const dueDateInfo = getDueDateInfo(task.due_date!);
               return (
-                <div
-                  key={task.id}
-                  className="group p-3 rounded-lg border border-border/50 hover:border-primary/30 hover:bg-accent/5 transition-all cursor-pointer animate-fade-in"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                  onClick={() => navigate('/tarefas')}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-medium text-sm truncate group-hover:text-primary transition-colors">
-                          {task.title}
-                        </h4>
-                      </div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <Badge
-                          variant="outline"
-                          className={`text-xs ${getPriorityColor(task.priority)}`}
-                        >
-                          {getPriorityLabel(task.priority)}
-                        </Badge>
-                        {task.category && (
-                          <span className="text-xs text-text-muted">{task.category}</span>
-                        )}
+                <ContextMenu key={task.id}>
+                  <ContextMenuTrigger asChild>
+                    <div
+                      className="group p-3 rounded-lg border border-border/50 hover:border-primary/30 hover:bg-accent/5 transition-all cursor-pointer animate-fade-in"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                      onClick={() => navigate('/tarefas')}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="font-medium text-sm truncate group-hover:text-primary transition-colors">
+                              {task.title}
+                            </h4>
+                          </div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Badge
+                              variant="outline"
+                              className={`text-xs ${getPriorityColor(task.priority)}`}
+                            >
+                              {getPriorityLabel(task.priority)}
+                            </Badge>
+                            {task.category && (
+                              <span className="text-xs text-text-muted">{task.category}</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end gap-1">
+                          <div
+                            className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${dueDateInfo.bgColor} ${dueDateInfo.color}`}
+                          >
+                            {dueDateInfo.text.includes('Atrasada') && (
+                              <AlertCircle className="h-3 w-3" />
+                            )}
+                            {dueDateInfo.text}
+                          </div>
+                          <span className="text-[10px] text-text-muted">
+                            {format(parseISO(task.due_date!), 'dd/MM')}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <div
-                        className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${dueDateInfo.bgColor} ${dueDateInfo.color}`}
-                      >
-                        {dueDateInfo.text.includes('Atrasada') && (
-                          <AlertCircle className="h-3 w-3" />
-                        )}
-                        {dueDateInfo.text}
-                      </div>
-                      <span className="text-[10px] text-text-muted">
-                        {format(parseISO(task.due_date!), 'dd/MM')}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                  </ContextMenuTrigger>
+
+                  <ContextMenuContent className="w-48">
+                    <ContextMenuItem onClick={() => handleEdit(task)}>
+                      <Edit className="mr-2 h-4 w-4" />
+                      Editar
+                    </ContextMenuItem>
+                    <ContextMenuItem onClick={() => handleDuplicate(task)}>
+                      <Copy className="mr-2 h-4 w-4" />
+                      Duplicar
+                    </ContextMenuItem>
+                    <ContextMenuItem onClick={() => handleToggleComplete(task)}>
+                      <CheckCircle2 className="mr-2 h-4 w-4" />
+                      Marcar como Concluída
+                    </ContextMenuItem>
+                    <ContextMenuItem 
+                      onClick={() => handleDelete(task)}
+                      className="text-red-600 focus:text-red-600"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Excluir
+                    </ContextMenuItem>
+                  </ContextMenuContent>
+                </ContextMenu>
               );
             })}
 

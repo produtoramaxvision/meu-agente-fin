@@ -17,6 +17,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { DashboardGoalCard } from '@/components/DashboardGoalCard';
 import { DashboardUpcomingBills } from '@/components/DashboardUpcomingBills';
+import { UpcomingTasksCard } from '@/components/UpcomingTasksCard';
 import { sanitizeText } from '@/lib/sanitize';
 
 const EXPENSE_COLORS = [
@@ -235,123 +236,120 @@ export default function Dashboard() {
 
       {/* Charts Row */}
       <div className="grid gap-6 lg:grid-cols-5">
-        {/* Daily Evolution Chart */}
-        <Card className="group relative overflow-hidden lg:col-span-3">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none z-10" />
-          <CardHeader>
-            <CardTitle>Evolução Diária (Últimos {selectedPeriod} dias)</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {dailyData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={350}>
-                <AreaChart 
-                  data={dailyData}
-                  margin={{ top: 10, right: 30, left: 10, bottom: 0 }}
-                >
-                  <defs>
-                    <linearGradient id="colorEntradas" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#39a85b" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#39a85b" stopOpacity={0.1}/>
-                    </linearGradient>
-                    <linearGradient id="colorSaidas" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#a93838" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#a93838" stopOpacity={0.1}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid 
-                    strokeDasharray="3 3" 
-                    stroke="hsl(var(--border))" 
-                    opacity={0.4}
-                    vertical={false}
-                  />
-                  <XAxis 
-                    dataKey="date" 
-                    stroke="hsl(var(--foreground))" 
-                    fontSize={11}
-                    fontWeight={400}
-                    tickLine={false}
-                    axisLine={false}
-                    opacity={0.7}
-                  />
-                  <YAxis 
-                    stroke="hsl(var(--foreground))" 
-                    fontSize={11}
-                    fontWeight={400}
-                    tickLine={false}
-                    axisLine={false}
-                    opacity={0.7}
-                    width={60}
-                    tickFormatter={(value) => 
-                      new Intl.NumberFormat('pt-BR', { 
-                        style: 'currency', 
-                        currency: 'BRL',
-                        notation: 'compact',
-                        compactDisplay: 'short'
-                      }).format(value)
-                    }
-                  />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'hsl(var(--surface))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '12px',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                    }}
-                    formatter={(value: number) => [
-                      new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value),
-                      ''
-                    ]}
-                    labelStyle={{ fontWeight: 600, marginBottom: '8px' }}
-                    cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 2 }}
-                  />
-                  <Legend 
-                    iconType="circle"
-                    wrapperStyle={{
-                      paddingTop: '20px',
-                      fontSize: '14px',
-                      fontWeight: 500
-                    }}
-                  />
-                  <Area 
-                    type="monotone" 
-                    dataKey="entradas" 
-                    stroke="#39a85b" 
-                    strokeWidth={3}
-                    fill="url(#colorEntradas)"
-                    name="Entradas"
-                    dot={{ r: 4, fill: "#39a85b", strokeWidth: 2, stroke: "#fff" }}
-                    activeDot={{ r: 6, fill: "#39a85b", strokeWidth: 2, stroke: "#fff" }}
-                    animationDuration={1000}
-                    animationEasing="ease-out"
-                  />
-                  <Area 
-                    type="monotone" 
-                    dataKey="saidas" 
-                    stroke="#a93838" 
-                    strokeWidth={3}
-                    fill="url(#colorSaidas)"
-                    name="Saídas"
-                    dot={{ r: 4, fill: "#a93838", strokeWidth: 2, stroke: "#fff" }}
-                    activeDot={{ r: 6, fill: "#a93838", strokeWidth: 2, stroke: "#fff" }}
-                    animationDuration={1000}
-                    animationEasing="ease-out"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-[350px] flex items-center justify-center text-text-muted">
-                Nenhum dado disponível
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {/* Left Side - Charts */}
+        <div className="lg:col-span-3 space-y-6">
+          {/* Daily Evolution Chart */}
+          <Card className="group relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none z-10" />
+            <CardHeader>
+              <CardTitle>Evolução Diária (Últimos {selectedPeriod} dias)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {dailyData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={350}>
+                  <AreaChart 
+                    data={dailyData}
+                    margin={{ top: 10, right: 30, left: 10, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient id="colorEntradas" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#39a85b" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#39a85b" stopOpacity={0.1}/>
+                      </linearGradient>
+                      <linearGradient id="colorSaidas" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#a93838" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#a93838" stopOpacity={0.1}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid 
+                      strokeDasharray="3 3" 
+                      stroke="hsl(var(--border))" 
+                      opacity={0.4}
+                      vertical={false}
+                    />
+                    <XAxis 
+                      dataKey="date" 
+                      stroke="hsl(var(--foreground))" 
+                      fontSize={11}
+                      fontWeight={400}
+                      tickLine={false}
+                      axisLine={false}
+                      opacity={0.7}
+                    />
+                    <YAxis 
+                      stroke="hsl(var(--foreground))" 
+                      fontSize={11}
+                      fontWeight={400}
+                      tickLine={false}
+                      axisLine={false}
+                      opacity={0.7}
+                      width={60}
+                      tickFormatter={(value) => 
+                        new Intl.NumberFormat('pt-BR', { 
+                          style: 'currency', 
+                          currency: 'BRL',
+                          notation: 'compact',
+                          compactDisplay: 'short'
+                        }).format(value)
+                      }
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--surface))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                      }}
+                      formatter={(value: number) => [
+                        new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value),
+                        ''
+                      ]}
+                      labelStyle={{ fontWeight: 600, marginBottom: '8px' }}
+                      cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 2 }}
+                    />
+                    <Legend 
+                      iconType="circle"
+                      wrapperStyle={{
+                        paddingTop: '20px',
+                        fontSize: '14px',
+                        fontWeight: 500
+                      }}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="entradas" 
+                      stroke="#39a85b" 
+                      strokeWidth={3}
+                      fill="url(#colorEntradas)"
+                      name="Entradas"
+                      dot={{ r: 4, fill: "#39a85b", strokeWidth: 2, stroke: "#fff" }}
+                      activeDot={{ r: 6, fill: "#39a85b", strokeWidth: 2, stroke: "#fff" }}
+                      animationDuration={1000}
+                      animationEasing="ease-out"
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="saidas" 
+                      stroke="#a93838" 
+                      strokeWidth={3}
+                      fill="url(#colorSaidas)"
+                      name="Saídas"
+                      dot={{ r: 4, fill: "#a93838", strokeWidth: 2, stroke: "#fff" }}
+                      activeDot={{ r: 6, fill: "#a93838", strokeWidth: 2, stroke: "#fff" }}
+                      animationDuration={1000}
+                      animationEasing="ease-out"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-[350px] flex items-center justify-center text-text-muted">
+                  Nenhum dado disponível
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
-        {/* Category Distribution & Goal */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <DashboardGoalCard goal={mainGoal} />
-            <DashboardUpcomingBills />
-          </div>
+          {/* Category Distribution Chart */}
           <Card className="group relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none z-10" />
             <CardHeader className="space-y-4">
@@ -420,6 +418,38 @@ export default function Dashboard() {
                         return null;
                       }}
                     />
+                    <Legend 
+                      content={({ payload }) => {
+                        if (!payload || payload.length === 0) return null;
+                        
+                        return (
+                          <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
+                            {payload.map((entry, index) => {
+                              // Usar as cores dos gradientes definidos
+                              const colorIndex = index % COLORS.length;
+                              const gradientColor = COLORS[colorIndex];
+                              
+                              return (
+                                <div key={entry.value} className="flex items-center gap-2">
+                                  <div
+                                    className="h-3 w-3 shrink-0 rounded-full"
+                                    style={{ 
+                                      background: `linear-gradient(135deg, ${gradientColor.start}, ${gradientColor.end})`
+                                    }}
+                                  />
+                                  <span className="text-sm text-text-muted">
+                                    {entry.value}
+                                  </span>
+                                  <span className="text-xs text-text-muted font-medium">
+                                    ({((entry.payload?.value / categoryData.reduce((sum, item) => sum + item.value, 0)) * 100).toFixed(1)}%)
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
@@ -431,6 +461,17 @@ export default function Dashboard() {
               )}
             </CardContent>
           </Card>
+        </div>
+
+        {/* Right Side - Goals & Tasks */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <DashboardGoalCard goal={mainGoal} />
+            <DashboardUpcomingBills />
+          </div>
+          <div className="animate-fade-in" style={{ animationDelay: '350ms' }}>
+            <UpcomingTasksCard />
+          </div>
         </div>
       </div>
 

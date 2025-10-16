@@ -76,6 +76,10 @@ export default function Tasks() {
     duplicateTask.mutate(task);
   };
 
+  const handleMarkIncomplete = (task: Task) => {
+    toggleTaskCompletion.mutate(task);
+  };
+
   const handleNewTask = () => {
     setTaskToEdit(null);
     setFormOpen(true);
@@ -159,6 +163,7 @@ export default function Tasks() {
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onDuplicate={handleDuplicate}
+                    onMarkIncomplete={handleMarkIncomplete}
                   />
                 </div>
               ))}
