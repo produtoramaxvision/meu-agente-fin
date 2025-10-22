@@ -29,6 +29,7 @@ interface AuthContextValue {
   logout: () => Promise<void>;
   updateAvatar: (avatarUrl: string | null) => void;
   updateCliente: (updatedData: Partial<Cliente>) => void;
+  checkPhoneExists: (phone: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -237,6 +238,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem(BLOCKED_UNTIL_KEY);
   };
 
+  const checkPhoneExists = async (phone: string): Promise<boolean> => {
+    try {
+      // Validar formato do telefone
+      const phoneRegex = /^\d{10,15}$/;
+      if (!phoneRegex.test(phone)) {
+        throw new Error('Formato de telefone inválido');
+      }
+
+      // Chamar função RPC
+      const { data, error } = await supabase.rpc('check_phone_exists', {
+        phone_number: phone
+      });
+
+      if (error) {
+        console.error('Error checking phone:', error);
+        return false;
+      }
+
+      return data === true;
+    } catch (err) {
+      console.error('Error in checkPhoneExists:', err);
+      return false;
+    }
+  };
+
   const login = async (phone: string, password: string) => {
     /**
      * MIGRAÇÃO PARA SUPABASE AUTH - FASE 3
@@ -297,7 +323,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (error.message.includes('Invalid login credentials')) {
           errorMessage = 'Telefone ou senha incorretos';
         } else if (error.message.includes('Email not confirmed')) {
-          errorMessage = 'Email não confirmado';
+          errorMessage = 'Por favor, confirme seu email antes de fazer login';
         } else if (error.message.includes('Too many requests')) {
           errorMessage = 'Muitas tentativas. Tente novamente mais tarde';
         }
@@ -313,6 +339,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!data.user) {
         incrementFailedAttempts();
         throw new Error('Erro na autenticação');
+      }
+
+      // Verificar se email foi confirmado
+      if (!data.user.email_confirmed_at) {
+        throw new Error('Por favor, confirme seu email antes de fazer login');
       }
 
       // Limpar tentativas falhadas apenas após login bem-sucedido
@@ -368,16 +399,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error('Formato de email inválido');
       }
       
-      // Criar usuário no Supabase Auth
+      // Criar usuário no Supabase Auth com confirmação de email
       const { data, error } = await supabase.auth.signUp({
         email: userEmail,
         password: password,
         options: {
+          emailRedirectTo: `${window.location.origin}/auth/login`,
           data: {
-            phone: phone,
+            phone: phone,        // CAMPO PHONE NO USER_METADATA
             name: name,
             cpf: cpf,
-            email: userEmail, // Email real do usuário
+            email: userEmail,    // Email real do usuário
           }
         }
       });
@@ -420,12 +452,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (clienteError) {
         console.error('Error creating cliente record:', clienteError);
         // Não falhar o signup por erro na tabela clientes
-        // O usuário foi criado no auth, então pode fazer login
+        // O usuário foi criado no auth, então pode fazer login após confirmar email
       }
 
-      // O cliente será carregado automaticamente pelo listener onAuthStateChange
-      toast.success('Conta criada com sucesso!');
-      navigate('/dashboard');
+      // NÃO FAZER LOGIN AUTOMÁTICO - Requerer confirmação de email
+      toast.success('Conta criada! Verifique seu email para confirmar.');
+      navigate('/auth/login');
     } catch (err: any) {
       console.error('Signup error:', err);
       throw new Error(err.message || 'Erro ao criar conta');
@@ -510,7 +542,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signup, 
       logout, 
       updateAvatar, 
-      updateCliente 
+      updateCliente,
+      checkPhoneExists
     }}>
       {children}
     </AuthContext.Provider>
