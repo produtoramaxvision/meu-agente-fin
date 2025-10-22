@@ -24,6 +24,12 @@
 
 ## 🔧 Configurações Necessárias no Supabase
 
+### ✅ Redirect URLs Já Configurados no Código
+
+O código já está configurado para usar URLs corretas:
+- **Produção**: `https://app.meuagente.api.br/auth/login`
+- **Desenvolvimento**: `http://localhost:8080/auth/login`
+
 ### Passo 1: Habilitar Confirmação de Email
 
 Acesse o painel do Supabase:
@@ -38,34 +44,30 @@ Acesse o painel do Supabase:
 2. Na seção **Redirect URLs**, adicione:
    ```
    http://localhost:8080/auth/login
-   https://seu-dominio.com/auth/login
+   https://app.meuagente.api.br/auth/login
    ```
 3. Clique em **Save**
 
-### Passo 3: Personalizar Email Template (Opcional)
+### Passo 3: Personalizar Email Template ✨
+
+**Template profissional criado com design do Meu Agente!**
 
 1. Vá em **Authentication > Email Templates**
 2. Selecione **Confirm signup**
-3. Personalize o template:
+3. **Copie o template completo** do arquivo `EMAIL_TEMPLATE_CONFIRMACAO.html`
+4. **Cole no editor** substituindo todo o conteúdo
+5. Clique em **Save**
 
-```html
-<h2>Confirme seu email</h2>
+**Características do Template:**
+- ✅ Totalmente em português
+- ✅ Design minimalista preto e branco (padrão do app)
+- ✅ Responsivo (mobile + desktop)
+- ✅ Call-to-action destacado
+- ✅ Link alternativo para copiar/colar
+- ✅ Informações de segurança
+- ✅ Lista de benefícios do app
 
-<p>Olá {{ .Data.name }},</p>
-
-<p>Obrigado por se cadastrar no Meu Agente Financeiro!</p>
-
-<p>Para completar seu cadastro, clique no link abaixo:</p>
-
-<p><a href="{{ .ConfirmationURL }}">Confirmar Email</a></p>
-
-<p>Ou copie e cole este link no seu navegador:</p>
-<p>{{ .ConfirmationURL }}</p>
-
-<p>Se você não se cadastrou, ignore este email.</p>
-
-<p>Atenciosamente,<br>Equipe Meu Agente Financeiro</p>
-```
+**Veja o guia completo:** `GUIA_CONFIGURACAO_EMAIL_SUPABASE.md`
 
 ### Passo 4: Testar Email Confirmation
 

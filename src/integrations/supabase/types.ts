@@ -875,6 +875,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_phone_exists: {
+        Args: { phone_number: string }
+        Returns: boolean
+      }
       get_api_key_llm: {
         Args: { p_phone: string; p_secret: string }
         Returns: string
@@ -882,6 +886,10 @@ export type Database = {
       get_service_api_key: {
         Args: { p_phone: string; p_secret: string; p_service: string }
         Returns: string
+      }
+      get_user_email_by_phone: {
+        Args: { phone_number: string }
+        Returns: Array<{ email: string; auth_user_id: string }>
       }
       set_api_key_llm: {
         Args: { p_phone: string; p_plainkey: string; p_secret: string }
