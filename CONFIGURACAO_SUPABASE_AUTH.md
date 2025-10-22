@@ -24,12 +24,6 @@
 
 ## 🔧 Configurações Necessárias no Supabase
 
-### ✅ Redirect URLs Já Configurados no Código
-
-O código já está configurado para usar URLs corretas:
-- **Produção**: `https://app.meuagente.api.br/auth/login`
-- **Desenvolvimento**: `http://localhost:8080/auth/login`
-
 ### Passo 1: Habilitar Confirmação de Email
 
 Acesse o painel do Supabase:
@@ -48,26 +42,26 @@ Acesse o painel do Supabase:
    ```
 3. Clique em **Save**
 
-### Passo 3: Personalizar Email Template ✨
+**Nota:** O código já detecta automaticamente o ambiente:
+- Desenvolvimento: `http://localhost:8080/auth/login`
+- Produção: `https://app.meuagente.api.br/auth/login`
 
-**Template profissional criado com design do Meu Agente!**
+### Passo 3: Personalizar Email Template
 
 1. Vá em **Authentication > Email Templates**
 2. Selecione **Confirm signup**
-3. **Copie o template completo** do arquivo `EMAIL_TEMPLATE_CONFIRMACAO.html`
-4. **Cole no editor** substituindo todo o conteúdo
-5. Clique em **Save**
+3. **Subject**: `Confirme seu email - Meu Agente`
+4. **Body**: Cole o conteúdo do arquivo `docs/email-templates/confirm-signup.html`
 
-**Características do Template:**
-- ✅ Totalmente em português
-- ✅ Design minimalista preto e branco (padrão do app)
-- ✅ Responsivo (mobile + desktop)
-- ✅ Call-to-action destacado
-- ✅ Link alternativo para copiar/colar
-- ✅ Informações de segurança
-- ✅ Lista de benefícios do app
+**Template Criado:**
+- ✅ Design elegante seguindo padrão do app
+- ✅ Paleta Black & Gray minimalista
+- ✅ Logo com destaque
+- ✅ Botão CTA estilizado
+- ✅ Totalmente responsivo
+- ✅ Tipografia Inter
 
-**Veja o guia completo:** `GUIA_CONFIGURACAO_EMAIL_SUPABASE.md`
+**Guia completo:** Veja `docs/GUIA_CONFIGURACAO_EMAIL_SUPABASE.md` para instruções detalhadas de personalização.
 
 ### Passo 4: Testar Email Confirmation
 
@@ -192,16 +186,17 @@ SELECT public.check_phone_exists('5511999999999');  -- Deve retornar false
 |------|--------|------------|
 | Função SQL check_phone_exists | ✅ Implementado | Testado e funcionando |
 | AuthContext.checkPhoneExists | ✅ Implementado | Integrado com RPC |
-| AuthContext.signup com email confirmation | ✅ Implementado | emailRedirectTo configurado |
+| AuthContext.signup com email confirmation | ✅ Implementado | Redirect automático prod/dev |
 | AuthContext.login com verificação | ✅ Implementado | Verifica email_confirmed_at |
-| Login.tsx multi-etapa | ✅ Implementado | 3 estados com transições |
-| Configuração Supabase | ⚠️ Pendente | Habilitar email confirmations |
-| Template de email | ⚠️ Opcional | Personalizar se necessário |
+| Login.tsx multi-etapa | ✅ Implementado | Layout grid 2 colunas desktop |
+| Redirect URLs configurado | ✅ Implementado | localhost + app.meuagente.api.br |
+| Template de email personalizado | ✅ Criado | Design elegante e responsivo |
+| Configuração Supabase | ⚠️ Pendente | Habilitar e aplicar template |
 | SMTP Produção | ⚠️ Futuro | Configurar provedor SMTP |
 
 ---
 
-**Data de Implementação**: 22/01/2025  
-**Versão**: 1.0.0  
-**Status**: ✅ Código implementado, aguardando configuração Supabase
+**Data de Implementação**: 22/10/2025  
+**Versão**: 1.0.1  
+**Status**: ✅ Código completo + Template criado, aguardando aplicação no Supabase
 

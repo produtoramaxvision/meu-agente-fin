@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Confirme seu Email - Meu Agente</title>
+    <style>
+        /* Reset básico */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        
+        /* Reset de margens */
+        body { margin: 0 !important; padding: 0 !important; width: 100% !important; height: 100% !important; }
+        
+        /* Fonte Inter do Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        /* Estilos gerais */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background-color: #fafafa;
+            color: #000000;
+            line-height: 1.6;
+        }
+        
+        /* Container principal */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            padding: 40px 32px;
+            text-align: center;
+        }
+        
+        .logo-container {
+            display: inline-block;
+            background-color: #ffffff;
+            border-radius: 50%;
+            padding: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: block;
+        }
+        
+        .brand-name {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 20px 0 0 0;
+            letter-spacing: -0.5px;
+        }
+        
+        .brand-tagline {
+            color: #a3a3a3;
+            font-size: 14px;
+            font-weight: 400;
+            margin: 4px 0 0 0;
+        }
+        
+        /* Conteúdo */
+        .content {
+            padding: 48px 32px;
+        }
+        
+        .greeting {
+            font-size: 24px;
+            font-weight: 600;
+            color: #000000;
+            margin: 0 0 16px 0;
+        }
+        
+        .message {
+            font-size: 16px;
+            color: #404040;
+            line-height: 1.7;
+            margin: 0 0 24px 0;
+        }
+        
+        /* Botão CTA */
+        .cta-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 16px 48px;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Link alternativo */
+        .alt-link {
+            background-color: #f5f5f5;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 32px 0;
+        }
+        
+        .alt-link-label {
+            font-size: 12px;
+            color: #737373;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 8px 0;
+        }
+        
+        .alt-link-url {
+            font-size: 13px;
+            color: #404040;
+            word-break: break-all;
+            line-height: 1.6;
+        }
+        
+        /* Informação adicional */
+        .info-box {
+            background-color: #f9f9f9;
+            border-left: 3px solid #000000;
+            padding: 16px 20px;
+            margin: 32px 0;
+            border-radius: 4px;
+        }
+        
+        .info-box p {
+            margin: 0;
+            font-size: 14px;
+            color: #525252;
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: #fafafa;
+            padding: 32px;
+            text-align: center;
+            border-top: 1px solid #e5e5e5;
+        }
+        
+        .footer-text {
+            font-size: 13px;
+            color: #737373;
+            line-height: 1.6;
+            margin: 0 0 12px 0;
+        }
+        
+        .footer-links {
+            margin: 16px 0 0 0;
+        }
+        
+        .footer-link {
+            color: #404040;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            margin: 0 12px;
+        }
+        
+        .footer-link:hover {
+            color: #000000;
+            text-decoration: underline;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: #e5e5e5;
+            margin: 24px 0;
+        }
+        
+        /* Responsividade */
+        @media screen and (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+            }
+            
+            .content {
+                padding: 32px 20px !important;
+            }
+            
+            .header {
+                padding: 32px 20px !important;
+            }
+            
+            .greeting {
+                font-size: 22px !important;
+            }
+            
+            .message {
+                font-size: 15px !important;
+            }
+            
+            .cta-button {
+                padding: 14px 32px !important;
+                font-size: 15px !important;
+            }
+            
+            .footer {
+                padding: 24px 20px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #fafafa;">
+        <tr>
+            <td style="padding: 40px 20px;">
+                <table role="presentation" class="email-container" cellspacing="0" cellpadding="0" border="0" width="600" style="margin: 0 auto;">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td class="header">
+                            <div class="logo-container">
+                                <!-- Substitua pela URL da logo hospedada -->
+                                <img src="https://app.meuagente.api.br/meuagente_logo.jpg" alt="Meu Agente Logo" class="logo">
+                            </div>
+                            <h1 class="brand-name">Meu Agente<sup style="font-size: 14px;">®</sup></h1>
+                            <p class="brand-tagline">Gestão Financeira Pessoal</p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Conteúdo Principal -->
+                    <tr>
+                        <td class="content">
+                            <h2 class="greeting">Olá, {{ .Data.name }}!</h2>
+                            
+                            <p class="message">
+                                Seja bem-vindo ao <strong>Meu Agente</strong>, sua plataforma completa para gestão financeira pessoal.
+                            </p>
+                            
+                            <p class="message">
+                                Estamos felizes em tê-lo conosco! Para começar a usar todos os recursos da plataforma, precisamos confirmar seu endereço de e-mail.
+                            </p>
+                            
+                            <!-- Botão CTA -->
+                            <div class="cta-container">
+                                <a href="{{ .ConfirmationURL }}" class="cta-button">
+                                    Confirmar Email
+                                </a>
+                            </div>
+                            
+                            <!-- Link alternativo -->
+                            <div class="alt-link">
+                                <p class="alt-link-label">Ou copie e cole este link no seu navegador:</p>
+                                <p class="alt-link-url">{{ .ConfirmationURL }}</p>
+                            </div>
+                            
+                            <!-- Info Box -->
+                            <div class="info-box">
+                                <p>
+                                    <strong>⏱️ Ação rápida necessária:</strong> Este link de confirmação expira em 24 horas por motivos de segurança.
+                                </p>
+                            </div>
+                            
+                            <div class="divider"></div>
+                            
+                            <p class="message" style="font-size: 14px; color: #737373;">
+                                Se você não criou uma conta no Meu Agente, pode ignorar este email com segurança.
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td class="footer">
+                            <p class="footer-text">
+                                Este é um email automático, por favor não responda.
+                            </p>
+                            
+                            <p class="footer-text">
+                                <strong>Meu Agente</strong> - Gestão Financeira Pessoal<br>
+                                © 2025 Todos os direitos reservados.
+                            </p>
+                            
+                            <div class="footer-links">
+                                <a href="https://app.meuagente.api.br" class="footer-link">Acessar Plataforma</a>
+                                <span style="color: #e5e5e5;">•</span>
+                                <a href="https://app.meuagente.api.br/suporte" class="footer-link">Suporte</a>
+                                <span style="color: #e5e5e5;">•</span>
+                                <a href="https://app.meuagente.api.br/privacidade" class="footer-link">Privacidade</a>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+

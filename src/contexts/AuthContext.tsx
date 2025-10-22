@@ -399,13 +399,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error('Formato de email inválido');
       }
       
-      // Determinar URL de redirect baseado no ambiente
-      const isProduction = window.location.hostname === 'app.meuagente.api.br';
-      const redirectUrl = isProduction 
-        ? 'https://app.meuagente.api.br/auth/login'
-        : 'http://localhost:8080/auth/login';
-
       // Criar usuário no Supabase Auth com confirmação de email
+      // Determinar URL de redirect baseado no ambiente
+      const redirectUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:8080/auth/login'
+        : 'https://app.meuagente.api.br/auth/login';
+
       const { data, error } = await supabase.auth.signUp({
         email: userEmail,
         password: password,
