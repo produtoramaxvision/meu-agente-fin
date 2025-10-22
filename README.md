@@ -87,13 +87,61 @@ O **Meu Agente Financeiro** é uma aplicação web completa para gestão finance
 
 ---
 
+## ⚙️ **CONFIGURAÇÃO DE AMBIENTE**
+
+### **Variáveis de Ambiente (.env)**
+
+O projeto utiliza variáveis de ambiente para configurar a conexão com o Supabase. Um arquivo `.env.example` está disponível como template.
+
+**Passos para configuração:**
+
+1. **Copie o arquivo template:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Obtenha suas credenciais do Supabase:**
+   - Acesse seu projeto no [Supabase Dashboard](https://app.supabase.com)
+   - Vá em **Settings > API**
+   - Copie as seguintes informações:
+     - **Project URL** → `VITE_SUPABASE_URL`
+     - **Project ID** → `VITE_SUPABASE_PROJECT_ID`
+     - **anon/public key** → `VITE_SUPABASE_ANON_KEY`
+
+3. **Edite o arquivo `.env`:**
+   ```env
+   VITE_SUPABASE_PROJECT_ID="seu-project-id"
+   VITE_SUPABASE_URL="https://seu-project-id.supabase.co"
+   VITE_SUPABASE_ANON_KEY="sua-anon-key"
+   ```
+
+**⚠️ IMPORTANTE:**
+- ❌ **NUNCA** faça commit do arquivo `.env` (ele já está no `.gitignore`)
+- ✅ Sempre use o arquivo `.env.example` como referência
+- ✅ Mantenha suas credenciais seguras e privadas
+- ✅ Em produção, configure as variáveis de ambiente no seu provedor de hosting
+
+---
+
 ## 🚀 **INÍCIO RÁPIDO**
 
 ### **Para Desenvolvedores**
 1. **Leia a [Documentação Técnica](docs/DOCUMENTACAO_TECNICA_COMPLETA.md)**
-2. **Configure o ambiente** seguindo as instruções de instalação
+2. **Configure o ambiente** seguindo as instruções abaixo:
+   ```bash
+   # Copie o arquivo .env.example para .env
+   cp .env.example .env
+   
+   # Edite o arquivo .env com suas credenciais do Supabase
+   # VITE_SUPABASE_PROJECT_ID=seu-project-id
+   # VITE_SUPABASE_URL=https://seu-project-id.supabase.co
+   # VITE_SUPABASE_ANON_KEY=sua-anon-key
+   ```
 3. **Execute as migrações** do banco de dados
-4. **Inicie o servidor** de desenvolvimento
+4. **Inicie o servidor** de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
 5. **Consulte a [Documentação de API](docs/DOCUMENTACAO_API_INTEGRACOES.md)** para integrações
 
 ### **Para Usuários**
