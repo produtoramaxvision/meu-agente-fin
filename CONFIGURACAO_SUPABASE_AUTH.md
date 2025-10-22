@@ -38,30 +38,47 @@ Acesse o painel do Supabase:
 2. Na seção **Redirect URLs**, adicione:
    ```
    http://localhost:8080/auth/login
-   https://app.meuagente.api.br/auth/login
+   https://seu-dominio.com/auth/login
    ```
 3. Clique em **Save**
 
-**Nota:** O código já detecta automaticamente o ambiente:
-- Desenvolvimento: `http://localhost:8080/auth/login`
-- Produção: `https://app.meuagente.api.br/auth/login`
+### Passo 3: Personalizar Email Templates
 
-### Passo 3: Personalizar Email Template
+✅ **Templates personalizados criados!** Localizados em `supabase/email-templates/`
 
 1. Vá em **Authentication > Email Templates**
-2. Selecione **Confirm signup**
-3. **Subject**: `Confirme seu email - Meu Agente`
-4. **Body**: Cole o conteúdo do arquivo `docs/email-templates/confirm-signup.html`
+2. Selecione cada template e cole o conteúdo correspondente:
 
-**Template Criado:**
-- ✅ Design elegante seguindo padrão do app
-- ✅ Paleta Black & Gray minimalista
-- ✅ Logo com destaque
-- ✅ Botão CTA estilizado
-- ✅ Totalmente responsivo
-- ✅ Tipografia Inter
+#### Confirm Signup Template
+Copie o conteúdo de `supabase/email-templates/confirm-signup.html`
 
-**Guia completo:** Veja `docs/GUIA_CONFIGURACAO_EMAIL_SUPABASE.md` para instruções detalhadas de personalização.
+#### Magic Link Template (Opcional)
+Copie o conteúdo de `supabase/email-templates/magic-link.html`
+
+#### Reset Password Template
+Copie o conteúdo de `supabase/email-templates/reset-password.html`
+
+**Design System:**
+- ✅ **Header**: Gradiente escuro (#0a0a0a → #1f1f1f) com logo branco
+- ✅ **Background**: Branco (#FFFFFF) e cinza claro (#fafafa)
+- ✅ **Botões**: Gradiente escuro (#0a0a0a → #1f1f1f) com hover elevado
+- ✅ **Bordas**: Arredondadas (8px-12px) com borda cinza (#e0e0e0)
+- ✅ **Logo**: PNG transparente branco hospedado no Supabase Storage (80px largura)
+- ✅ **Layout**: 100% responsivo e mobile-friendly
+- ✅ **Textos**: Tom profissional, direto e amigável
+- ✅ **Segurança**: Avisos claros sobre expiração e uso único
+
+**Logotipo Integrado:**
+Os templates usam o **logotipo oficial** do Meu Agente:
+```
+https://pzoodkjepcarxnawuxoa.supabase.co/storage/v1/object/public/meuagente-logo/meuagente_logo_transparente-branco.png
+```
+
+**Alinhamento com a Marca:**
+- Slogan: "Sua Agência IA de bolso!"
+- Tagline: "Transforme sua relação com o seu tempo"
+- Design minimalista e elegante
+- Consistência visual com a plataforma
 
 ### Passo 4: Testar Email Confirmation
 
@@ -186,17 +203,19 @@ SELECT public.check_phone_exists('5511999999999');  -- Deve retornar false
 |------|--------|------------|
 | Função SQL check_phone_exists | ✅ Implementado | Testado e funcionando |
 | AuthContext.checkPhoneExists | ✅ Implementado | Integrado com RPC |
-| AuthContext.signup com email confirmation | ✅ Implementado | Redirect automático prod/dev |
+| AuthContext.signup com email confirmation | ✅ Implementado | Redirect URLs: localhost + produção |
 | AuthContext.login com verificação | ✅ Implementado | Verifica email_confirmed_at |
-| Login.tsx multi-etapa | ✅ Implementado | Layout grid 2 colunas desktop |
-| Redirect URLs configurado | ✅ Implementado | localhost + app.meuagente.api.br |
-| Template de email personalizado | ✅ Criado | Design elegante e responsivo |
-| Configuração Supabase | ⚠️ Pendente | Habilitar e aplicar template |
-| SMTP Produção | ⚠️ Futuro | Configurar provedor SMTP |
+| Login.tsx multi-etapa | ✅ Implementado | 3 estados com transições + layout responsivo |
+| Templates de Email Personalizados | ✅ Criados | Design minimalista preto/branco |
+| - Confirm Signup | ✅ Pronto | supabase/email-templates/confirm-signup.html |
+| - Magic Link | ✅ Pronto | supabase/email-templates/magic-link.html |
+| - Reset Password | ✅ Pronto | supabase/email-templates/reset-password.html |
+| Configuração Supabase | ⚠️ Pendente | Habilitar email confirmations + colar templates |
+| SMTP Produção | ⚠️ Futuro | Configurar provedor SMTP personalizado |
 
 ---
 
-**Data de Implementação**: 22/10/2025  
-**Versão**: 1.0.1  
-**Status**: ✅ Código completo + Template criado, aguardando aplicação no Supabase
+**Data de Implementação**: 22/01/2025  
+**Versão**: 1.0.0  
+**Status**: ✅ Código implementado, aguardando configuração Supabase
 
