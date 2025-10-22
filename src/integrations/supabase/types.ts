@@ -129,6 +129,7 @@ export type Database = {
       }
       clientes: {
         Row: {
+          auth_user_id: string | null
           avatar_url: string | null
           billing_provider: string | null
           cpf: string | null
@@ -147,6 +148,7 @@ export type Database = {
           whatsapp_instance_url: string | null
         }
         Insert: {
+          auth_user_id?: string | null
           avatar_url?: string | null
           billing_provider?: string | null
           cpf?: string | null
@@ -165,6 +167,7 @@ export type Database = {
           whatsapp_instance_url?: string | null
         }
         Update: {
+          auth_user_id?: string | null
           avatar_url?: string | null
           billing_provider?: string | null
           cpf?: string | null

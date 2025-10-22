@@ -404,7 +404,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const redirectUrl = window.location.hostname === 'localhost' 
         ? 'http://localhost:8080/auth/login'
         : 'https://app.meuagente.api.br/auth/login';
-
+      
       const { data, error } = await supabase.auth.signUp({
         email: userEmail,
         password: password,
