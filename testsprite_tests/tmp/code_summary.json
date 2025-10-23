@@ -1,0 +1,93 @@
+{
+  "tech_stack": [
+    "typescript",
+    "react",
+    "vite",
+    "supabase",
+    "tailwindcss"
+  ],
+  "features": [
+    {
+      "name": "Authentication",
+      "description": "Manages user authentication, including login, sign-up, and session management using Supabase Auth.",
+      "files": [
+        "src/contexts/AuthContext.tsx",
+        "src/pages/auth/Login.tsx",
+        "src/pages/auth/Signup.tsx",
+        "src/hooks/usePermissions.ts",
+        "supabase/migrations/20250116000001_add_auth_integration.sql"
+      ]
+    },
+    {
+      "name": "Agenda/Calendar",
+      "description": "Feature for managing user schedules, events, and appointments with different calendar views (day, week, month).",
+      "files": [
+        "src/pages/Agenda.tsx",
+        "src/components/AgendaGridDay.tsx",
+        "src/components/AgendaGridMonth.tsx",
+        "src/components/AgendaGridWeek.tsx",
+        "src/components/EventForm.tsx",
+        "src/hooks/useAgendaData.ts"
+      ]
+    },
+    {
+      "name": "Financial Management",
+      "description": "Allows users to track income, expenses, view financial reports, and manage accounts.",
+      "files": [
+        "src/pages/Contas.tsx",
+        "src/pages/Relatorios.tsx",
+        "src/components/FinanceRecordForm.tsx",
+        "src/components/DespesasPorCategoriaChart.tsx",
+        "src/hooks/useFinancialData.ts"
+      ]
+    },
+    {
+      "name": "Task Management",
+      "description": "A to-do list feature for users to manage their tasks, including creation, updates, and status tracking.",
+      "files": [
+        "src/pages/Tasks.tsx",
+        "src/components/TaskForm.tsx",
+        "src/components/TaskItem.tsx",
+        "src/hooks/useTasksData.ts"
+      ]
+    },
+    {
+      "name": "Goal Setting",
+      "description": "Users can set and track personal or financial goals.",
+      "files": [
+        "src/pages/Goals.tsx",
+        "src/components/GoalForm.tsx",
+        "src/components/GoalListItem.tsx",
+        "src/hooks/useGoalsData.ts"
+      ]
+    },
+    {
+      "name": "Notifications",
+      "description": "System for displaying alerts and notifications to the user.",
+      "files": [
+        "src/pages/Notifications.tsx",
+        "src/components/NotificationBell.tsx",
+        "src/contexts/NotificationContext.tsx",
+        "src/hooks/useNotificationsData.ts"
+      ]
+    },
+    {
+      "name": "User Profile",
+      "description": "Users can view and edit their profile information, including avatar.",
+      "files": [
+        "src/pages/Profile.tsx",
+        "src/components/AvatarUpload.tsx"
+      ]
+    },
+    {
+      "name": "Support System",
+      "description": "A system for users to create, view, and manage support tickets.",
+      "files": [
+        "src/components/HelpAndSupport.tsx",
+        "src/components/SupportTicketForm.tsx",
+        "src/components/SupportTicketList.tsx",
+        "src/hooks/useSupportTickets.ts"
+      ]
+    }
+  ]
+}

@@ -4,18 +4,24 @@ import { AppHeader } from './AppHeader';
 import { AppFooter } from './AppFooter';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
+import { useRealtimeFinancialAlerts } from '@/hooks/useRealtimeFinancialAlerts';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
+  const { cliente } = useAuth();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
   // Hook para scroll automático para o topo em mudanças de rota
   useScrollToTop();
+
+  // Hook para alertas financeiros em tempo real
+  useRealtimeFinancialAlerts(cliente?.phone);
 
   // Handle sidebar close with animation
   const handleSidebarClose = () => {

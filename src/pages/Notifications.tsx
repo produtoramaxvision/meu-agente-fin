@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCheck, Inbox, Bell, AlertTriangle, Trash2, Eye } from 'lucide-react';
 import { useNotificationsData } from '@/hooks/useNotificationsData';
 import { NotificationItem } from '@/components/NotificationItem';
+import { SkeletonNotification } from '@/components/SkeletonNotification';
 import { AlertsSection } from '@/components/AlertsSection';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -101,9 +101,9 @@ export default function Notifications() {
               </CardHeader>
               <CardContent className="relative z-10">
                 {loading ? (
-                  <div className="space-y-4">
-                    {[...Array(3)].map((_, i) => (
-                      <Skeleton key={i} className="h-24 w-full" />
+                  <div className="divide-y">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <SkeletonNotification key={i} />
                     ))}
                   </div>
                 ) : filteredNotifications.length > 0 ? (

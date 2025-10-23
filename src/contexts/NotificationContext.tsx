@@ -107,6 +107,31 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
               });
             }
           )
+          .on('postgres_changes', {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'notifications',
+            filter: `phone=eq.${cliente.phone}`
+          }, (payload) => {
+            console.log('📝 Notificação atualizada:', payload);
+            const updatedNotification = payload.new as Notification;
+            
+            // Atualizar notificação local
+            setNotifications(current =>
+              current.map(n => 
+                n.id === updatedNotification.id 
+                  ? updatedNotification
+                  : n
+              )
+            );
+            
+            // Recalcular contagem de não lidas
+            setNotifications(prev => {
+              const unread = prev.filter(n => !n.lida).length;
+              setUnreadCount(unread);
+              return prev;
+            });
+          })
           .on('system', {}, (status) => {
             console.log('📡 Status Realtime:', status);
           })

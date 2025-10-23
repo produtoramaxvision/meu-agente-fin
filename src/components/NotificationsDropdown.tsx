@@ -1,5 +1,6 @@
 import { useNotificationsData } from '@/hooks/useNotificationsData';
 import { NotificationItem } from './NotificationItem';
+import { SkeletonNotification } from './SkeletonNotification';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { BellRing, CheckCheck, Settings, RefreshCw } from 'lucide-react';
@@ -54,9 +55,10 @@ export function NotificationsDropdown() {
       </div>
       <ScrollArea className="h-80 bg-popover">
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-full text-center p-8 text-text-muted">
-            <RefreshCw className="h-8 w-8 mb-4 animate-spin" />
-            <p className="font-medium">Carregando notificações...</p>
+          <div className="divide-y">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <SkeletonNotification key={i} />
+            ))}
           </div>
         ) : notifications.length > 0 ? (
           <div className="p-2">
