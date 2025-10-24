@@ -33,7 +33,7 @@ export default function Notifications() {
   );
 
   return (
-    <div className="py-4 sm:py-6 lg:py-8 space-y-8">
+    <main className="py-4 sm:py-6 lg:py-8 space-y-8">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         <div className="animate-fade-in">
@@ -161,6 +161,6 @@ export default function Notifications() {
           </Alert>
         </div>
       )}
-    </div>
+    </main>
   );
 }

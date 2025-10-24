@@ -381,7 +381,7 @@ export default function Profile() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center space-y-4 mb-12">
           <h1 className="text-3xl font-bold">Perfil</h1>
@@ -397,6 +397,6 @@ export default function Profile() {
           />
         </div>
       </div>
-    </div>
+    </main>
   );
 }
