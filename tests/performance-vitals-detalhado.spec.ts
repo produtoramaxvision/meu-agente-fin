@@ -1,5 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
 import { login, BASE_URL, TEST_USER } from './helpers/login';
+import { goToContas } from './helpers/navigation';
 
 /**
  * FASE 3: Testes de Web Vitals Detalhados
@@ -331,8 +332,8 @@ test.describe('Web Vitals Detalhados - FASE 3', () => {
       await login(page);
       
       const startTime = Date.now();
-      await page.click('a[href="/contas"]');
-      await page.waitForURL(`${BASE_URL}/contas`);
+      // ✅ Usar helper que funciona em mobile e desktop
+      await goToContas(page);
       const responseTime = Date.now() - startTime;
       
       console.log(`📊 INP Navigation: ${responseTime}ms`);

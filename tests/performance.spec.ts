@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { login, BASE_URL } from './helpers/login';
+import { goToContas } from './helpers/navigation';
 
 test.describe('Testes de Performance', () => {
   
@@ -120,9 +121,8 @@ test.describe('Testes de Performance', () => {
     
     const startTime = Date.now();
     
-    await page.click('a[href="/contas"]');
-    await page.waitForURL(`${BASE_URL}/contas`);
-    await page.waitForLoadState('networkidle', { timeout: 5000 });
+    // ✅ Usar helper que funciona em mobile e desktop
+    await goToContas(page);
     
     const loadTime = Date.now() - startTime;
     
