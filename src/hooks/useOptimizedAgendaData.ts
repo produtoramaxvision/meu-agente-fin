@@ -485,13 +485,14 @@ export function useOptimizedAgendaData(options: UseOptimizedAgendaDataOptions) {
       if (error) throw error;
       return data as Event;
     },
-    onSuccess: (newEvent) => {
+    onSuccess: () => {
       toast.success('Evento criado com sucesso!');
       
-      // ✅ ATUALIZAÇÃO OTIMÍSTICA DO CACHE
-      queryClient.setQueryData(stableQueryKeys.events, (oldData: Event[] | undefined) => {
-        if (!oldData) return [newEvent];
-        return [...oldData, newEvent].sort((a, b) => new Date(a.start_ts).getTime() - new Date(b.start_ts).getTime());
+      // ✅ INVALIDAR TODAS AS QUERIES DE EVENTS para garantir sincronização
+      // Isso garante que todos os componentes com diferentes query keys sejam atualizados
+      queryClient.invalidateQueries({ 
+        queryKey: ['agenda-data', cliente?.phone, 'events'],
+        exact: false // Invalida todas as queries que começam com esse prefixo
       });
     },
     onError: (error) => {
@@ -613,15 +614,14 @@ export function useOptimizedAgendaData(options: UseOptimizedAgendaDataOptions) {
       if (eventError) throw eventError;
       return newEvent as Event;
     },
-    onSuccess: (newEvent) => {
+    onSuccess: () => {
       toast.success('Evento duplicado com sucesso!');
       
-      // ✅ ATUALIZAÇÃO OTIMÍSTICA DO CACHE
-      queryClient.setQueryData(stableQueryKeys.events, (oldData: Event[] | undefined) => {
-        if (!oldData) return [newEvent];
-        return [...oldData, newEvent].sort((a, b) => 
-          new Date(a.start_ts).getTime() - new Date(b.start_ts).getTime()
-        );
+      // ✅ INVALIDAR TODAS AS QUERIES DE EVENTS para garantir sincronização
+      // Isso garante que todos os componentes com diferentes query keys sejam atualizados
+      queryClient.invalidateQueries({ 
+        queryKey: ['agenda-data', cliente?.phone, 'events'],
+        exact: false // Invalida todas as queries que começam com esse prefixo
       });
     },
     onError: (error) => {
