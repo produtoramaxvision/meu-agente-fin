@@ -62,10 +62,8 @@ export interface Resource {
   phone: string;
   name: string;
   type: string;
-  description: string | null;
   capacity: number | null;
-  location: string | null;
-  availability: any;
+  metadata: any; // JSONB field for flexible data storage
   created_at: string;
   updated_at: string;
 }

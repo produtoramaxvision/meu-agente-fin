@@ -42,7 +42,7 @@ export default function Agenda() {
       type: resource.type,
       name: resource.name,
       capacity: resource.capacity,
-      metadata: resource.availability || {},
+      metadata: resource.metadata || {},
       created_at: resource.created_at,
       updated_at: resource.updated_at,
     }));
