@@ -104,8 +104,9 @@ export const useRealtimeFinancialAlerts = (userPhone: string | undefined) => {
         if (status === 'SUBSCRIBED') {
           console.log('✅ Conectado ao canal de alertas financeiros em tempo real');
         } else if (status === 'CHANNEL_ERROR') {
-          console.error('❌ Erro no canal de alertas financeiros');
-          toast.error('Erro ao conectar alertas financeiros em tempo real');
+          // ❌ NÃO mostrar toast de erro ao usuário (pode ser erro transitório)
+          // Apenas logar para debug
+          console.error('❌ Erro no canal de alertas financeiros (não crítico)');
         } else if (status === 'TIMED_OUT') {
           console.warn('⏰ Timeout no canal de alertas financeiros');
         } else if (status === 'CLOSED') {
