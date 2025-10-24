@@ -63,8 +63,15 @@ export default defineConfig(({ mode }) => {
       target: 'esnext',
       minify: 'esbuild',
       sourcemap: isDevelopment,
+      // ✅ OTIMIZAÇÃO: Aumentar limite para reduzir warnings desnecessários
+      chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
+          // ✅ OTIMIZAÇÃO: Adicionar inlineDynamicImports para false (já é default)
+          // e configurar nomes de chunks para melhor cache
+          chunkFileNames: 'assets/[name]-[hash].js',
+          entryFileNames: 'assets/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash].[ext]',
           manualChunks: {
             // React core (react + react-dom + react-router)
             'react-vendor': ['react', 'react-dom', 'react-router-dom'],
