@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { login, BASE_URL, TEST_USER } from './helpers/login';
+import { navigateToPage } from './helpers/navigation';
 
 test.describe('Validação Simplificada - Meu Agente', () => {
   
@@ -46,9 +47,8 @@ test.describe('Validação Simplificada - Meu Agente', () => {
   test('✅ TC004: CRUD financeiro - Navegação e UI', async ({ page }) => {
     await login(page);
     
-    // Navegar para contas
-    await page.click('a[href="/contas"]');
-    await page.waitForURL(`${BASE_URL}/contas`);
+    // Navegar para contas (com suporte a mobile)
+    await navigateToPage(page, '/contas');
     
     // Verificar que página carregou
     await expect(page.locator('text=/A Pagar|Pago|Receitas/i').first()).toBeVisible();
@@ -214,9 +214,8 @@ test.describe('Validação Simplificada - Meu Agente', () => {
   test('✅ AVANÇADO: Dados carregam corretamente', async ({ page }) => {
     await login(page);
     
-    // Ir para contas
-    await page.click('a[href="/contas"]');
-    await page.waitForURL(`${BASE_URL}/contas`);
+    // Ir para contas (com suporte a mobile)
+    await navigateToPage(page, '/contas');
     
     // Aguardar carregamento
     await page.waitForLoadState('networkidle', { timeout: 10000 });

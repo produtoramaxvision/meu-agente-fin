@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { navigateToPage, openMobileMenu, isMobileViewport } from './helpers/navigation';
 
 // Credenciais de teste
 const TEST_USER = {
@@ -132,9 +133,8 @@ test.describe('Validação Completa - Meu Agente', () => {
   test('TC004: CRUD de registros financeiros', async ({ page }) => {
     await login(page);
     
-    // Navegar para página de contas
-    await page.click('a[href="/contas"]');
-    await page.waitForURL(`${BASE_URL}/contas`);
+    // Navegar para página de contas (com suporte a mobile)
+    await navigateToPage(page, '/contas');
     
     // Clicar em "Nova Transação"
     await page.click('button:has-text("Nova Transação")');
@@ -176,8 +176,7 @@ test.describe('Validação Completa - Meu Agente', () => {
   // ========================================
   test('TC005: Detecção de duplicatas', async ({ page }) => {
     await login(page);
-    await page.click('a[href="/contas"]');
-    await page.waitForURL(`${BASE_URL}/contas`);
+    await navigateToPage(page, '/contas');
     
     // Criar primeiro registro
     await page.click('button:has-text("Nova Transação")');
@@ -214,8 +213,7 @@ test.describe('Validação Completa - Meu Agente', () => {
   // ========================================
   test('TC006: Exportação de dados para planos pagos', async ({ page }) => {
     await login(page);
-    await page.click('a[href="/contas"]');
-    await page.waitForURL(`${BASE_URL}/contas`);
+    await navigateToPage(page, '/contas');
     
     // Procurar botão de exportação
     const exportButton = page.locator('button:has-text(/Exportar|Export/i)');
@@ -262,8 +260,8 @@ test.describe('Validação Completa - Meu Agente', () => {
   test('TC010: Sistema de tickets e logout funcional', async ({ page }) => {
     await login(page);
     
-    // Verificar se existe seção de suporte/tickets
-    const supportLink = page.locator('a:has-text(/Suporte|Tickets|Ajuda/i)');
+    // Verificar se existe seção de suporte/tickets (corrigido para usar getByRole)
+    const supportLink = page.getByRole('link', { name: /suporte|tickets|ajuda/i });
     const linkCount = await supportLink.count();
     
     // Sistema possui área de suporte
@@ -314,8 +312,7 @@ test.describe('Validação Completa - Meu Agente', () => {
   // ========================================
   test('TC015: Segurança - sanitização de entrada', async ({ page }) => {
     await login(page);
-    await page.click('a[href="/contas"]');
-    await page.waitForURL(`${BASE_URL}/contas`);
+    await navigateToPage(page, '/contas');
     
     // Tentar injetar script XSS
     await page.click('button:has-text("Nova Transação")');
@@ -361,8 +358,8 @@ test.describe('Validação Completa - Meu Agente', () => {
     // Fazer login
     await login(page);
     
-    // Verificar elementos do dashboard
-    await expect(page.locator('text=/Dashboard/i')).toBeVisible();
+    // Verificar elementos do dashboard (corrigido para usar seletor específico)
+    await expect(page.getByRole('heading', { name: /dashboard/i })).toBeVisible();
     
     console.log('✅ TC016: PASSOU - UI responsiva em desktop');
   });
@@ -427,11 +424,12 @@ test.describe('Validação Completa - Meu Agente', () => {
   test('TC018: Notificações em tempo real', async ({ page }) => {
     await login(page);
     
-    // Procurar sino de notificações
-    const notificationBell = page.locator('button:has-text(/notificação|notification/i), button[aria-label*="notif" i]').first();
+    // Procurar sino de notificações (corrigido para usar getByRole ou seletor simples)
+    const notificationBell = page.getByRole('button', { name: /notificação|notification|notif/i }).first();
     
     // Verificar que sino existe
-    if (await notificationBell.isVisible()) {
+    const isVisible = await notificationBell.isVisible({ timeout: 3000 }).catch(() => false);
+    if (isVisible) {
       await notificationBell.click();
       
       // Verificar dropdown de notificações
