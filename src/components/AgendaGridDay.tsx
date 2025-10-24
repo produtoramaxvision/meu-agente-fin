@@ -2,7 +2,7 @@ import { useMemo, useState, useRef, useEffect, useCallback, memo } from 'react';
 import { startOfDay, isSameDay, differenceInMinutes, addMinutes } from 'date-fns';
 import { format } from 'date-fns';
 import { Card } from '@/components/ui/card';
-import { Event, Calendar } from '@/hooks/useAgendaData';
+import { Event, Calendar } from '@/hooks/useOptimizedAgendaData';
 import EventPopover from './EventPopover';
 import { EventQuickCreatePopover } from './EventQuickCreatePopover';
 import { EventCard } from './EventCard';

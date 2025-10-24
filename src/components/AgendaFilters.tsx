@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Search, X, Filter } from 'lucide-react';
-import { Calendar } from '@/hooks/useAgendaData';
+import { Calendar } from '@/hooks/useOptimizedAgendaData';
 import { RefObject } from 'react';
 
 interface AgendaFiltersProps {

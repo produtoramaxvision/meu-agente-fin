@@ -6,7 +6,7 @@ import { GoalForm } from '@/components/GoalForm';
 import { TaskForm } from '@/components/TaskForm';
 import { EventForm } from '@/components/EventForm';
 import { useAuth } from '@/contexts/AuthContext';
-import { useAgendaData, EventFormData } from '@/hooks/useAgendaData';
+import { useOptimizedAgendaData, EventFormData } from '@/hooks/useOptimizedAgendaData';
 import { useTasksData, TaskFormData } from '@/hooks/useTasksData';
 import { useGoalsData } from '@/hooks/useGoalsData';
 import { useFinancialData } from '@/hooks/useFinancialData';
@@ -30,7 +30,7 @@ export function QuickActions({ collapsed = false }: QuickActionsProps) {
   const { refetch: refetchFinancialData } = useFinancialData();
   const { refetch: refetchGoals } = useGoalsData();
   const { createTask } = useTasksData();
-  const { calendars, createEvent, createCalendar } = useAgendaData({
+  const { calendars, createEvent, createCalendar } = useOptimizedAgendaData({
     view: 'month',
     startDate: new Date(),
     endDate: new Date(),

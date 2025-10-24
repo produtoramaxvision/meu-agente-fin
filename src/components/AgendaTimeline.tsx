@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Card } from '@/components/ui/card';
-import { Event, Resource } from '@/hooks/useAgendaData';
+import { Event, Resource } from '@/hooks/useOptimizedAgendaData';
 import { format, isSameDay, differenceInDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { motion, AnimatePresence } from 'framer-motion';

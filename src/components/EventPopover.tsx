@@ -4,8 +4,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Pencil, Copy, Trash2, Clock, MapPin, Calendar, Eye, EyeOff, Shield, ExternalLink, MoreHorizontal, Video, Flag } from 'lucide-react';
-import { Event, EventFormData } from '@/hooks/useAgendaData';
-import { useAgendaData } from '@/hooks/useAgendaData';
+import { Event, EventFormData } from '@/hooks/useOptimizedAgendaData';
+import { useOptimizedAgendaData } from '@/hooks/useOptimizedAgendaData';
 import { useAuth } from '@/contexts/AuthContext';
 import { EventForm } from '@/components/EventForm';
 import { format, parseISO } from 'date-fns';
@@ -26,7 +26,7 @@ export default function EventPopover({ event, children, open: controlledOpen, on
   // Usar estado controlado se fornecido, senão usar estado interno
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
   const setOpen = onOpenChange || setInternalOpen;
-  const { updateEvent, duplicateEvent, deleteEvent, refetch, calendars, createCalendar } = useAgendaData({
+  const { updateEvent, duplicateEvent, deleteEvent, refetch, calendars, createCalendar } = useOptimizedAgendaData({
     view: 'day',
     startDate: new Date(event.start_ts),
     endDate: new Date(event.end_ts),

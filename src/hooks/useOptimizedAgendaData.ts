@@ -581,6 +581,53 @@ export function useOptimizedAgendaData(options: UseOptimizedAgendaDataOptions) {
     },
   });
 
+  // Duplicate event mutation
+  const duplicateEvent = useMutation({
+    mutationFn: async (event: Event) => {
+      if (!cliente?.phone) throw new Error('User not authenticated');
+
+      const { data: newEvent, error: eventError } = await supabase
+        .from('events')
+        .insert({
+          phone: cliente.phone,
+          calendar_id: event.calendar_id,
+          title: `${event.title} (cópia)`,
+          description: event.description,
+          start_ts: event.start_ts,
+          end_ts: event.end_ts,
+          all_day: event.all_day,
+          timezone: event.timezone,
+          location: event.location,
+          conference_url: event.conference_url,
+          category: event.category,
+          priority: event.priority,
+          privacy: event.privacy,
+          status: event.status,
+          color: event.color,
+        })
+        .select()
+        .single();
+
+      if (eventError) throw eventError;
+      return newEvent as Event;
+    },
+    onSuccess: (newEvent) => {
+      toast.success('Evento duplicado com sucesso!');
+      
+      // ✅ ATUALIZAÇÃO OTIMÍSTICA DO CACHE
+      queryClient.setQueryData(stableQueryKeys.events, (oldData: Event[] | undefined) => {
+        if (!oldData) return [newEvent];
+        return [...oldData, newEvent].sort((a, b) => 
+          new Date(a.start_ts).getTime() - new Date(b.start_ts).getTime()
+        );
+      });
+    },
+    onError: (error) => {
+      console.error('Error duplicating event:', error);
+      toast.error('Erro ao duplicar evento');
+    },
+  });
+
   return {
     // Dados
     calendars,
@@ -596,6 +643,7 @@ export function useOptimizedAgendaData(options: UseOptimizedAgendaDataOptions) {
     createEvent,
     updateEvent,
     deleteEvent,
+    duplicateEvent,
     createCalendar,
   };
 }

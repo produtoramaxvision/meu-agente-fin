@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { isSameDay, eachDayOfInterval, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Card } from '@/components/ui/card';
-import { Event, Calendar } from '@/hooks/useAgendaData';
+import { Event, Calendar } from '@/hooks/useOptimizedAgendaData';
 import { EventCard } from './EventCard';
 import { EmptyDayCard } from './EmptyDayCard';
 

@@ -2,7 +2,7 @@ import { useMemo, useState, useCallback } from 'react';
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, isSameMonth, format, differenceInDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Card } from '@/components/ui/card';
-import { Event, Calendar } from '@/hooks/useAgendaData';
+import { Event, Calendar } from '@/hooks/useOptimizedAgendaData';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { EventCard } from './EventCard';
 import { motion, AnimatePresence } from 'framer-motion';

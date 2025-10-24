@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { startOfYear, endOfYear, eachDayOfInterval, getMonth, format } from 'date-fns';
 import { Card } from '@/components/ui/card';
-import { Event } from '@/hooks/useAgendaData';
+import { Event } from '@/hooks/useOptimizedAgendaData';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface Props {
