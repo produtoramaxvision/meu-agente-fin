@@ -91,7 +91,10 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
           filter: `phone=eq.${cliente.phone}`,
         },
         (payload) => {
-          queryClient.invalidateQueries({ queryKey: ['tasks', cliente.phone] });
+          queryClient.invalidateQueries({ 
+            queryKey: ['tasks', cliente.phone],
+            exact: false
+          });
         }
       )
       .subscribe();
@@ -157,7 +160,10 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
       toast.success('Tarefa criada com sucesso!');
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks', cliente?.phone] });
+      queryClient.invalidateQueries({ 
+        queryKey: ['tasks', cliente?.phone],
+        exact: false // Invalida todas as queries de tasks, independente dos filtros
+      });
     },
   });
 
@@ -189,7 +195,10 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
       toast.error('Erro ao atualizar tarefa');
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks', cliente?.phone] });
+      queryClient.invalidateQueries({ 
+        queryKey: ['tasks', cliente?.phone],
+        exact: false
+      });
     },
   });
 
@@ -227,7 +236,10 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
       toast.error('Erro ao atualizar tarefa');
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks', cliente?.phone] });
+      queryClient.invalidateQueries({ 
+        queryKey: ['tasks', cliente?.phone],
+        exact: false
+      });
     },
   });
 
@@ -255,7 +267,10 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
       toast.success('Tarefa excluída com sucesso!');
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks', cliente?.phone] });
+      queryClient.invalidateQueries({ 
+        queryKey: ['tasks', cliente?.phone],
+        exact: false
+      });
     },
   });
 
@@ -284,7 +299,10 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
     },
     onSuccess: () => {
       toast.success('Tarefa duplicada com sucesso!');
-      queryClient.invalidateQueries({ queryKey: ['tasks', cliente?.phone] });
+      queryClient.invalidateQueries({ 
+        queryKey: ['tasks', cliente?.phone],
+        exact: false
+      });
     },
     onError: () => {
       toast.error('Erro ao duplicar tarefa');
