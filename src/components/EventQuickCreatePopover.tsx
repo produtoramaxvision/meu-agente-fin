@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar as CalendarIcon, Clock, MoreHorizontal } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Calendar, EventFormData } from '@/hooks/useAgendaData';
+import { Calendar, EventFormData } from '@/hooks/useOptimizedAgendaData';
 
 // Variável global para controlar se o popover está aberto
 let isPopoverOpen = false;
@@ -19,9 +19,9 @@ interface EventQuickCreatePopoverProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   anchor: { top: number; left: number } | null;
-  eventData: Partial<EventFormData>;
+  eventData: Partial<EventFormData> | { start_ts?: Date; end_ts?: Date };
   calendars: Calendar[];
-  onSubmit: (data: Partial<EventFormData>) => void;
+  onSubmit: (data: Partial<EventFormData> | { start_ts?: Date; end_ts?: Date; title: string; calendar_id: string }) => void;
   onMoreOptions: () => void;
 }
 

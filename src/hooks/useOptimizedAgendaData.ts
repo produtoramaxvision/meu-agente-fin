@@ -437,8 +437,28 @@ export function useOptimizedAgendaData(options: UseOptimizedAgendaDataOptions) {
 
   // Mutations otimizadas (mantidas do hook original mas com cache otimizado)
   const createEvent = useMutation({
-    mutationFn: async (eventData: EventFormData) => {
+    mutationFn: async (eventData: EventFormData | any) => {
       if (!cliente?.phone) throw new Error('User not authenticated');
+
+      // Converter para o formato correto dependendo do que foi recebido
+      let start_ts: string;
+      let end_ts: string;
+
+      if ('start_ts' in eventData && eventData.start_ts) {
+        // Formato com start_ts e end_ts (vindo do EventQuickCreatePopover)
+        start_ts = eventData.start_ts instanceof Date 
+          ? eventData.start_ts.toISOString() 
+          : new Date(eventData.start_ts).toISOString();
+        end_ts = eventData.end_ts instanceof Date 
+          ? eventData.end_ts.toISOString() 
+          : new Date(eventData.end_ts).toISOString();
+      } else if ('start_date' in eventData && eventData.start_date) {
+        // Formato com start_date/start_time (vindo do EventForm)
+        start_ts = new Date(`${eventData.start_date.toDateString()} ${eventData.start_time}`).toISOString();
+        end_ts = new Date(`${eventData.end_date.toDateString()} ${eventData.end_time}`).toISOString();
+      } else {
+        throw new Error('Formato de data inválido');
+      }
 
       const { data, error } = await supabase
         .from('events')
@@ -447,16 +467,16 @@ export function useOptimizedAgendaData(options: UseOptimizedAgendaDataOptions) {
           calendar_id: eventData.calendar_id,
           title: eventData.title,
           description: eventData.description || null,
-          start_ts: eventData.start_ts.toISOString(),
-          end_ts: eventData.end_ts.toISOString(),
-          all_day: eventData.all_day,
-          timezone: eventData.timezone,
+          start_ts,
+          end_ts,
+          all_day: eventData.all_day ?? false,
+          timezone: eventData.timezone || 'America/Sao_Paulo',
           location: eventData.location || null,
           conference_url: eventData.conference_url || null,
           category: eventData.category || null,
-          priority: eventData.priority,
-          privacy: eventData.privacy,
-          status: eventData.status,
+          priority: eventData.priority || 'medium',
+          privacy: eventData.privacy || 'default',
+          status: eventData.status || 'confirmed',
           color: eventData.color || null,
         })
         .select()

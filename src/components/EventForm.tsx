@@ -6,7 +6,7 @@ import { CalendarIcon, Clock, MapPin, Video, Tag, Flag, Users, Bell, Plus } from
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import { Event, EventFormData, Calendar } from '@/hooks/useAgendaData';
+import { Event, EventFormData, Calendar } from '@/hooks/useOptimizedAgendaData';
 import { CalendarForm } from './CalendarForm';
 
 import { Button } from '@/components/ui/button';
@@ -48,7 +48,7 @@ interface EventFormProps {
   calendars: Calendar[];
   createCalendar: (data: Omit<Calendar, 'id' | 'phone' | 'created_at' | 'updated_at'>) => void;
   isSubmitting?: boolean;
-  defaultEventData?: Partial<EventFormData> | null;
+  defaultEventData?: Partial<EventFormData> | { start_ts?: Date; end_ts?: Date } | null;
 }
 
 const CATEGORIES = ['Trabalho', 'Pessoal', 'Reunião', 'Viagem', 'Foco', 'Outros'];
@@ -152,8 +152,17 @@ export function EventForm({
         color: eventToEdit.color || '',
       });
     } else if (defaultEventData) {
-      const startDate = defaultEventData.start_ts || new Date();
-      const endDate = defaultEventData.end_ts || new Date();
+      // Aceitar tanto o formato com start_ts/end_ts quanto start_date/end_date
+      const startDate = ('start_ts' in defaultEventData && defaultEventData.start_ts) 
+        ? defaultEventData.start_ts 
+        : ('start_date' in defaultEventData && defaultEventData.start_date) 
+        ? defaultEventData.start_date 
+        : new Date();
+      const endDate = ('end_ts' in defaultEventData && defaultEventData.end_ts) 
+        ? defaultEventData.end_ts 
+        : ('end_date' in defaultEventData && defaultEventData.end_date) 
+        ? defaultEventData.end_date 
+        : new Date();
       form.reset({
         title: '',
         description: '',
@@ -207,20 +216,13 @@ export function EventForm({
   }, [calendars, form]);
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    const [startHour, startMinute] = values.start_time.split(':').map(Number);
-    const [endHour, endMinute] = values.end_time.split(':').map(Number);
-
-    const start_ts = new Date(values.start_date);
-    start_ts.setHours(startHour, startMinute, 0, 0);
-
-    const end_ts = new Date(values.end_date);
-    end_ts.setHours(endHour, endMinute, 0, 0);
-
     onSubmit({
       title: values.title,
       description: values.description,
-      start_ts,
-      end_ts,
+      start_date: values.start_date,
+      start_time: values.start_time,
+      end_date: values.end_date,
+      end_time: values.end_time,
       all_day: values.all_day,
       timezone: values.timezone,
       location: values.location,
