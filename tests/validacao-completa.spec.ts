@@ -1,5 +1,13 @@
 import { test, expect, Page } from '@playwright/test';
-import { navigateToPage, openMobileMenu, isMobileViewport } from './helpers/navigation';
+import { 
+  navigateToPage, 
+  goToContas, 
+  goToAgenda, 
+  goToMetas,
+  clickElement,
+  isMobileViewport,
+  openMobileMenuIfNeeded 
+} from './helpers/navigation';
 
 // Credenciais de teste
 const TEST_USER = {
@@ -133,8 +141,8 @@ test.describe('Validação Completa - Meu Agente', () => {
   test('TC004: CRUD de registros financeiros', async ({ page }) => {
     await login(page);
     
-    // Navegar para página de contas (com suporte a mobile)
-    await navigateToPage(page, '/contas');
+    // Navegar para página de contas (usando helper mobile-aware)
+    await goToContas(page);
     
     // Clicar em "Nova Transação"
     await page.click('button:has-text("Nova Transação")');
@@ -176,7 +184,7 @@ test.describe('Validação Completa - Meu Agente', () => {
   // ========================================
   test('TC005: Detecção de duplicatas', async ({ page }) => {
     await login(page);
-    await navigateToPage(page, '/contas');
+    await goToContas(page);
     
     // Criar primeiro registro
     await page.click('button:has-text("Nova Transação")');
@@ -213,10 +221,10 @@ test.describe('Validação Completa - Meu Agente', () => {
   // ========================================
   test('TC006: Exportação de dados para planos pagos', async ({ page }) => {
     await login(page);
-    await navigateToPage(page, '/contas');
+    await goToContas(page);
     
-    // Procurar botão de exportação
-    const exportButton = page.locator('button:has-text(/Exportar|Export/i)');
+    // Procurar botão de exportação (usando getByRole para evitar problemas com regex)
+    const exportButton = page.getByRole('button', { name: /exportar|export/i });
     
     // Verificar se botão existe (pode estar visível ou com restrição)
     const buttonCount = await exportButton.count();
@@ -260,7 +268,7 @@ test.describe('Validação Completa - Meu Agente', () => {
   test('TC010: Sistema de tickets e logout funcional', async ({ page }) => {
     await login(page);
     
-    // Verificar se existe seção de suporte/tickets (corrigido para usar getByRole)
+    // Verificar se existe seção de suporte/tickets (usando getByRole para evitar regex em CSS)
     const supportLink = page.getByRole('link', { name: /suporte|tickets|ajuda/i });
     const linkCount = await supportLink.count();
     
@@ -312,7 +320,7 @@ test.describe('Validação Completa - Meu Agente', () => {
   // ========================================
   test('TC015: Segurança - sanitização de entrada', async ({ page }) => {
     await login(page);
-    await navigateToPage(page, '/contas');
+    await goToContas(page);
     
     // Tentar injetar script XSS
     await page.click('button:has-text("Nova Transação")');
@@ -358,7 +366,7 @@ test.describe('Validação Completa - Meu Agente', () => {
     // Fazer login
     await login(page);
     
-    // Verificar elementos do dashboard (corrigido para usar seletor específico)
+    // Verificar elementos do dashboard (usando getByRole para evitar strict mode violation)
     await expect(page.getByRole('heading', { name: /dashboard/i })).toBeVisible();
     
     console.log('✅ TC016: PASSOU - UI responsiva em desktop');
@@ -424,12 +432,12 @@ test.describe('Validação Completa - Meu Agente', () => {
   test('TC018: Notificações em tempo real', async ({ page }) => {
     await login(page);
     
-    // Procurar sino de notificações (corrigido para usar getByRole ou seletor simples)
-    const notificationBell = page.getByRole('button', { name: /notificação|notification|notif/i }).first();
+    // Procurar sino de notificações (usando getByRole para evitar regex em CSS)
+    const notificationBell = page.getByRole('button', { name: /notifica|notification/i }).first();
     
     // Verificar que sino existe
-    const isVisible = await notificationBell.isVisible({ timeout: 3000 }).catch(() => false);
-    if (isVisible) {
+    const bellVisible = await notificationBell.isVisible().catch(() => false);
+    if (bellVisible) {
       await notificationBell.click();
       
       // Verificar dropdown de notificações
@@ -467,12 +475,9 @@ test.describe('Validação Realtime Multi-Tab', () => {
     await expect(page1).toHaveURL(/\/dashboard/);
     await expect(page2).toHaveURL(/\/dashboard/);
     
-    // Navegar para contas em ambas
-    await page1.click('a[href="/contas"]');
-    await page2.click('a[href="/contas"]');
-    
-    await page1.waitForURL(`${BASE_URL}/contas`);
-    await page2.waitForURL(`${BASE_URL}/contas`);
+    // Navegar para contas em ambas (usando helper mobile-aware)
+    await goToContas(page1);
+    await goToContas(page2);
     
     // Capturar total inicial na página 2
     const initialTotal = await page2.locator('text=/Total|A Pagar/i').first().textContent();

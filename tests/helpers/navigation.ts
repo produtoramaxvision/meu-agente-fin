@@ -1,96 +1,217 @@
+/**
+ * Helper de Navegação para Testes
+ * 
+ * Funções auxiliares para navegação que consideram:
+ * - Mobile: Menu hambúrguer que precisa ser aberto
+ * - Desktop: Sidebar sempre visível
+ */
+
 import { Page } from '@playwright/test';
-import { BASE_URL } from './login';
 
 /**
- * Helper para navegação que funciona tanto em desktop quanto mobile
- * Em mobile, abre o menu hambúrguer antes de clicar no link
- */
-export async function navigateToPage(page: Page, path: string): Promise<void> {
-  const viewport = page.viewportSize();
-  const isMobile = viewport ? viewport.width < 768 : false;
-
-  if (isMobile) {
-    // Em mobile, abrir menu hambúrguer primeiro
-    const hamburgerButton = page.locator('button[aria-label*="menu" i], button[aria-label*="Menu" i], button:has(svg.lucide-menu), button.mobile-menu-trigger');
-    
-    try {
-      // Verificar se o menu hambúrguer existe e está visível
-      await hamburgerButton.first().waitFor({ state: 'visible', timeout: 5000 });
-      await hamburgerButton.first().click();
-      
-      // Aguardar o menu abrir
-      await page.waitForTimeout(500);
-    } catch (error) {
-      console.log('⚠️  Menu hambúrguer não encontrado, tentando navegação direta...');
-    }
-  }
-
-  // Clicar no link de navegação
-  const link = page.locator(`a[href="${path}"]`).first();
-  await link.waitFor({ state: 'visible', timeout: 10000 });
-  await link.click();
-
-  // Aguardar navegação completar
-  await page.waitForURL(`${BASE_URL}${path}`, { timeout: 15000 });
-  
-  // Aguardar estado de rede idle
-  await page.waitForLoadState('networkidle', { timeout: 10000 });
-}
-
-/**
- * Abre o menu hambúrguer em mobile (se existir)
- */
-export async function openMobileMenu(page: Page): Promise<boolean> {
-  const viewport = page.viewportSize();
-  const isMobile = viewport ? viewport.width < 768 : false;
-
-  if (!isMobile) {
-    return false;
-  }
-
-  try {
-    const hamburgerButton = page.locator('button[aria-label*="menu" i], button[aria-label*="Menu" i], button:has(svg.lucide-menu), button.mobile-menu-trigger');
-    await hamburgerButton.first().waitFor({ state: 'visible', timeout: 5000 });
-    await hamburgerButton.first().click();
-    await page.waitForTimeout(500);
-    return true;
-  } catch (error) {
-    console.log('⚠️  Menu hambúrguer não encontrado');
-    return false;
-  }
-}
-
-/**
- * Fecha o menu hambúrguer em mobile (se estiver aberto)
- */
-export async function closeMobileMenu(page: Page): Promise<void> {
-  const viewport = page.viewportSize();
-  const isMobile = viewport ? viewport.width < 768 : false;
-
-  if (!isMobile) {
-    return;
-  }
-
-  try {
-    // Procurar botão de fechar (X ou Close)
-    const closeButton = page.locator('button[aria-label*="close" i], button[aria-label*="fechar" i], button:has(svg.lucide-x)');
-    
-    const isVisible = await closeButton.first().isVisible({ timeout: 2000 }).catch(() => false);
-    
-    if (isVisible) {
-      await closeButton.first().click();
-      await page.waitForTimeout(300);
-    }
-  } catch (error) {
-    // Ignorar se não encontrar botão de fechar
-  }
-}
-
-/**
- * Detecta se está em modo mobile
+ * Verifica se está em modo mobile baseado no viewport
  */
 export function isMobileViewport(page: Page): boolean {
   const viewport = page.viewportSize();
   return viewport ? viewport.width < 768 : false;
+}
+
+/**
+ * Abre o menu mobile (hambúrguer) se necessário
+ */
+export async function openMobileMenuIfNeeded(page: Page): Promise<void> {
+  if (isMobileViewport(page)) {
+    // Verificar se o menu já está aberto
+    const menuOpen = await page.locator('[aria-label="Fechar menu"]').isVisible().catch(() => false);
+    
+    if (!menuOpen) {
+      // Clicar no botão de menu hambúrguer
+      await page.click('button[aria-label="Abrir menu"]');
+      
+      // Esperar o menu abrir (animação de slide)
+      await page.waitForTimeout(400);
+      
+      // Verificar se a sidebar mobile está visível
+      await page.waitForSelector('.fixed.left-0.top-0.h-full.w-64', { 
+        state: 'visible',
+        timeout: 5000 
+      });
+    }
+  }
+}
+
+/**
+ * Fecha o menu mobile se estiver aberto
+ */
+export async function closeMobileMenuIfNeeded(page: Page): Promise<void> {
+  if (isMobileViewport(page)) {
+    const menuOpen = await page.locator('button[aria-label="Fechar menu"]').isVisible().catch(() => false);
+    
+    if (menuOpen) {
+      // Clicar no X para fechar
+      await page.click('button[aria-label="Fechar menu"]');
+      await page.waitForTimeout(400);
+    }
+  }
+}
+
+/**
+ * Navega para uma página específica, lidando com mobile/desktop
+ * 
+ * @param page - Instância do Playwright Page
+ * @param href - Caminho da rota (ex: '/contas', '/dashboard')
+ * @param options - Opções adicionais
+ */
+export async function navigateToPage(
+  page: Page, 
+  href: string,
+  options: {
+    waitForLoad?: boolean;
+    closeMenuAfter?: boolean;
+  } = {}
+): Promise<void> {
+  const { waitForLoad = true, closeMenuAfter = true } = options;
+  
+  // 1. Abrir menu mobile se necessário
+  await openMobileMenuIfNeeded(page);
+  
+  // 2. Esperar um pouco para garantir que o menu está pronto
+  await page.waitForTimeout(200);
+  
+  // 3. Clicar no link de navegação
+  // Usar seletor mais robusto que funciona em mobile e desktop
+  const linkSelector = `a[href="${href}"]`;
+  
+  try {
+    // Esperar o link estar visível
+    await page.waitForSelector(linkSelector, { 
+      state: 'visible',
+      timeout: 5000 
+    });
+    
+    // Clicar no link
+    await page.click(linkSelector);
+    
+  } catch (error) {
+    console.error(`Erro ao clicar no link ${href}:`, error);
+    throw error;
+  }
+  
+  // 4. Esperar navegação
+  if (waitForLoad) {
+    await page.waitForURL(`**${href}`, { timeout: 10000 });
+    await page.waitForLoadState('networkidle', { timeout: 10000 });
+  }
+  
+  // 5. Fechar menu mobile se solicitado (default: sim)
+  if (closeMenuAfter && isMobileViewport(page)) {
+    await page.waitForTimeout(300);
+    // O menu geralmente fecha automaticamente após clicar, mas podemos forçar
+  }
+}
+
+/**
+ * Navega para o Dashboard
+ */
+export async function goToDashboard(page: Page): Promise<void> {
+  await navigateToPage(page, '/dashboard');
+}
+
+/**
+ * Navega para Contas (Financeiro)
+ */
+export async function goToContas(page: Page): Promise<void> {
+  await navigateToPage(page, '/contas');
+}
+
+/**
+ * Navega para Tarefas
+ */
+export async function goToTarefas(page: Page): Promise<void> {
+  await navigateToPage(page, '/tarefas');
+}
+
+/**
+ * Navega para Agenda
+ */
+export async function goToAgenda(page: Page): Promise<void> {
+  await navigateToPage(page, '/agenda');
+}
+
+/**
+ * Navega para Metas
+ */
+export async function goToMetas(page: Page): Promise<void> {
+  await navigateToPage(page, '/metas');
+}
+
+/**
+ * Navega para Relatórios
+ */
+export async function goToRelatorios(page: Page): Promise<void> {
+  await navigateToPage(page, '/relatorios');
+}
+
+/**
+ * Navega para Perfil
+ */
+export async function goToPerfil(page: Page): Promise<void> {
+  await navigateToPage(page, '/perfil');
+}
+
+/**
+ * Clica em um botão ou elemento considerando mobile/desktop
+ */
+export async function clickElement(
+  page: Page,
+  selector: string,
+  options: {
+    role?: 'button' | 'link';
+    name?: string | RegExp;
+    exact?: boolean;
+  } = {}
+): Promise<void> {
+  const { role, name, exact = false } = options;
+  
+  let element;
+  
+  if (role && name) {
+    // Usar getByRole (mais semântico e acessível)
+    element = page.getByRole(role, { name, exact });
+  } else {
+    element = page.locator(selector);
+  }
+  
+  // Esperar elemento estar visível e clicável
+  await element.waitFor({ state: 'visible', timeout: 10000 });
+  await element.click();
+}
+
+/**
+ * Busca por texto na página de forma robusta
+ */
+export async function findTextOnPage(
+  page: Page,
+  text: string | RegExp,
+  options: {
+    exact?: boolean;
+    timeout?: number;
+  } = {}
+): Promise<boolean> {
+  const { exact = false, timeout = 5000 } = options;
+  
+  try {
+    if (typeof text === 'string') {
+      const selector = exact 
+        ? `text="${text}"`
+        : `text=${text}`;
+      await page.waitForSelector(selector, { timeout });
+    } else {
+      await page.getByText(text).waitFor({ state: 'visible', timeout });
+    }
+    return true;
+  } catch {
+    return false;
+  }
 }
 

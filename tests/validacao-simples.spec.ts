@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { login, BASE_URL, TEST_USER } from './helpers/login';
-import { navigateToPage } from './helpers/navigation';
+import { goToContas, goToRelatorios, navigateToPage } from './helpers/navigation';
 
 test.describe('Validação Simplificada - Meu Agente', () => {
   
@@ -47,8 +47,8 @@ test.describe('Validação Simplificada - Meu Agente', () => {
   test('✅ TC004: CRUD financeiro - Navegação e UI', async ({ page }) => {
     await login(page);
     
-    // Navegar para contas (com suporte a mobile)
-    await navigateToPage(page, '/contas');
+    // Navegar para contas (usando helper mobile-aware)
+    await goToContas(page);
     
     // Verificar que página carregou
     await expect(page.locator('text=/A Pagar|Pago|Receitas/i').first()).toBeVisible();
@@ -62,7 +62,13 @@ test.describe('Validação Simplificada - Meu Agente', () => {
 
   test('✅ TC006: Exportação de dados - UI presente', async ({ page }) => {
     await login(page);
-    await page.click('a[href="/relatorios"], a:has-text("Relatórios")').catch(() => {});
+    
+    // Tentar navegar para relatórios
+    try {
+      await goToRelatorios(page);
+    } catch (error) {
+      console.log('⚠️ Relatórios pode não ter rota específica');
+    }
     
     // Verificar se existe área de relatórios ou exportação
     const hasExportArea = await page.locator('text=/Relatório|Export|Download/i').count();
@@ -214,8 +220,9 @@ test.describe('Validação Simplificada - Meu Agente', () => {
   test('✅ AVANÇADO: Dados carregam corretamente', async ({ page }) => {
     await login(page);
     
-    // Ir para contas (com suporte a mobile)
-    await navigateToPage(page, '/contas');
+    // Ir para contas
+    await page.click('a[href="/contas"]');
+    await page.waitForURL(`${BASE_URL}/contas`);
     
     // Aguardar carregamento
     await page.waitForLoadState('networkidle', { timeout: 10000 });
