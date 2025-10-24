@@ -67,13 +67,32 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
       return (data as Task[]) || [];
     },
     enabled: !!cliente?.phone,
-    // ✅ Usando configurações globais - não sobrescrever aqui
-    // staleTime, refetchOnWindowFocus, refetchOnMount já configurados globalmente
-    refetchInterval: false, // ❌ CRÍTICO: Removido refetch automático que causava loop
-    placeholderData: (previousData) => previousData,
-    // ✅ CORREÇÃO: Forçar refetch para garantir dados atualizados
-    staleTime: 0, // Dados sempre considerados stale
-    refetchOnMount: true, // Sempre refetch no mount
+    /**
+     * ✅ CORREÇÃO CRÍTICA - Loop Infinito de v1/tasks
+     * 
+     * PROBLEMA:
+     * - staleTime: 0 + refetchOnMount: true faziam CADA componente fazer sua própria query
+     * - QuickActions, UpcomingTasksCard, Tasks = 3 queries simultâneas
+     * - Detectado como loop infinito pelos testes Playwright
+     * 
+     * SOLUÇÃO:
+     * - Remover sobrescrições para usar configurações globais (main.tsx):
+     *   - staleTime: 5 * 60 * 1000 (5 minutos)
+     *   - refetchOnMount: false
+     *   - refetchOnWindowFocus: false
+     * - React Query compartilha cache entre componentes automaticamente
+     * - Realtime subscription garante atualizações em tempo real
+     * 
+     * REFERÊNCIA:
+     * - Context7 TanStack Query: "Sharing queries between components"
+     * - Context7 TanStack Query: "Query invalidation with realtime subscriptions"
+     * 
+     * Data: 2025-01-24
+     * Status: ✅ CORRIGIDO
+     */
+    refetchInterval: false, // Evita refetch automático
+    placeholderData: (previousData) => previousData, // Mantém dados anteriores enquanto carrega
+    // ✅ Herda configurações globais do main.tsx (staleTime: 5min, refetchOnMount: false)
   });
 
   // Setup Realtime subscription

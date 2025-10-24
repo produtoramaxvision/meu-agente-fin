@@ -1,24 +1,8 @@
-import { useCallback } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { safeJSONParse } from '@/lib/safe-json';
+import { useCallback, useMemo } from 'react';
+import { useFinancialRecords, FinancialRecord } from './useFinancialRecords';
 
-export interface FinancialRecord {
-  id: number;
-  phone: string;
-  tipo: 'entrada' | 'saida';
-  categoria: string;
-  valor: number;
-  descricao: string | null;
-  data_hora: string;
-  created_at: string;
-  // New fields
-  status: 'pago' | 'pendente';
-  data_vencimento: string | null;
-  recorrente: boolean;
-  recorrencia_fim: string | null;
-}
+// Re-exportar FinancialRecord para manter compatibilidade
+export type { FinancialRecord };
 
 export interface DailyData {
   date: string;
@@ -45,59 +29,67 @@ export interface FinancialMetrics {
   totalTransacoes: number;
 }
 
+/**
+ * ✅ REFATORADO - Usa hook consolidado useFinancialRecords
+ * 
+ * MUDANÇA:
+ * - Antes: Fazia query própria com filtros no Supabase
+ * - Depois: Usa useFinancialRecords (query consolidada) + filtra no client-side
+ * 
+ * BENEFÍCIOS:
+ * - Elimina queries duplicadas
+ * - Compartilha cache entre componentes
+ * - Reduz carga no servidor
+ * - Previne loops infinitos
+ * 
+ * Data: 2025-01-24
+ */
 export function useFinancialData(
   periodDays?: number, 
   categoryFilter?: string, 
   typeFilter?: 'entrada' | 'saida' | 'all',
   statusFilter?: 'pago' | 'pendente' | 'all'
 ) {
-  const { cliente } = useAuth();
+  // ✅ Usar hook consolidado
+  const { data: allRecords = [], isLoading: loading, refetch } = useFinancialRecords();
 
-  // ✅ OTIMIZAÇÃO: Usar React Query com cache inteligente
-  const { data: records = [], isLoading: loading, refetch } = useQuery({
-    queryKey: ['financial-records', cliente?.phone, periodDays, categoryFilter, typeFilter, statusFilter],
-    queryFn: async () => {
-      if (!cliente?.phone) return [];
+  // ✅ Aplicar filtros no client-side usando useMemo para evitar recálculos
+  const records = useMemo(() => {
+    let filtered = [...allRecords];
 
-      let query = supabase
-        .from('financeiro_registros')
-        .select('*')
-        .eq('phone', cliente.phone)
-        .order('data_hora', { ascending: false });
+    // Filtrar por período (últimos N dias)
+    if (periodDays) {
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - periodDays);
+      filtered = filtered.filter(r => new Date(r.data_hora) >= startDate);
+    }
 
-      // Filtrar por período (últimos N dias)
-      if (periodDays) {
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - periodDays);
-        query = query.gte('data_hora', startDate.toISOString());
-      }
+    // Filtrar por categoria
+    if (categoryFilter && categoryFilter !== 'all') {
+      filtered = filtered.filter(r => r.categoria === categoryFilter);
+    }
 
-      if (categoryFilter && categoryFilter !== 'all') {
-        query = query.eq('categoria', categoryFilter);
-      }
-      if (typeFilter && typeFilter !== 'all') {
-        query = query.eq('tipo', typeFilter);
-      }
-      if (statusFilter && statusFilter !== 'all') {
-        query = query.eq('status', statusFilter);
-      }
+    // Filtrar por tipo
+    if (typeFilter && typeFilter !== 'all') {
+      filtered = filtered.filter(r => r.tipo === typeFilter);
+    }
 
-      const { data, error } = await query;
+    // Filtrar por status
+    if (statusFilter && statusFilter !== 'all') {
+      filtered = filtered.filter(r => r.status === statusFilter);
+    }
 
-      if (error) {
-        console.error('Erro ao buscar registros financeiros:', error);
-        throw error;
-      }
+    console.log('useFinancialData - Filtros aplicados:', {
+      total: allRecords.length,
+      filtrado: filtered.length,
+      periodDays,
+      categoryFilter,
+      typeFilter,
+      statusFilter
+    });
 
-      console.log('fetchData - Dados recebidos:', data?.length, 'registros');
-      return (data as FinancialRecord[]) || [];
-    },
-    enabled: !!cliente?.phone,
-    // ✅ Usando configurações globais - não sobrescrever aqui
-    // staleTime, refetchOnWindowFocus, refetchOnMount já configurados globalmente
-    refetchInterval: false, // ❌ CRÍTICO: Removido refetch automático que causava loop
-    placeholderData: (previousData) => previousData,
-  });
+    return filtered;
+  }, [allRecords, periodDays, categoryFilter, typeFilter, statusFilter]);
 
   // ✅ OTIMIZAÇÃO: Calcular métricas usando useMemo para evitar recálculos desnecessários
   const metrics = useCallback((): FinancialMetrics => {

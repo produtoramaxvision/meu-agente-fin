@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { endOfMonth, startOfMonth, subMonths, format } from 'date-fns';
 import { useAuth } from '@/contexts/AuthContext';
+import { useFinancialRecords } from './useFinancialRecords';
 
 export interface UpcomingBill {
   id: number;
@@ -45,14 +45,99 @@ export interface FinancialInsight {
   topSpendingIncrease: { category: string; change: number } | null;
 }
 
+/**
+ * ✅ REFATORADO - Usa hook consolidado useFinancialRecords
+ * 
+ * MUDANÇA:
+ * - Antes: Fazia 5-6 queries separadas para financeiro_registros
+ * - Depois: Usa useFinancialRecords + filtra no client-side
+ * 
+ * BENEFÍCIO: Elimina 5-6 queries duplicadas (maior fonte de loops!)
+ * 
+ * Data: 2025-01-24
+ */
 export function useAlertsData() {
   const { cliente } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [upcomingBills, setUpcomingBills] = useState<UpcomingBill[]>([]);
-  const [overdueBills, setOverdueBills] = useState<OverdueBill[]>([]);
-  const [monthlySummary, setMonthlySummary] = useState<MonthlySummary>({ income: 0, outcome: 0, balance: 0 });
-  const [categorySpending, setCategorySpending] = useState<CategorySpending[]>([]);
   const [insights, setInsights] = useState<FinancialInsight[]>([]);
+
+  // ✅ Usar hook consolidado (cache compartilhado)
+  const { data: allRecords = [], isLoading: recordsLoading } = useFinancialRecords();
+
+  // ✅ Calcular todos os dados usando useMemo (filtros no client-side)
+  const upcomingBills = useMemo((): UpcomingBill[] => {
+    const today = new Date().toISOString().split('T')[0];
+    const upcomingDate = new Date();
+    upcomingDate.setDate(upcomingDate.getDate() + 14);
+    const upcomingDateString = upcomingDate.toISOString().split('T')[0];
+
+    return allRecords
+      .filter(r => 
+        r.status === 'pendente' &&
+        r.tipo === 'saida' &&
+        r.data_vencimento !== null &&
+        r.data_vencimento >= today &&
+        r.data_vencimento <= upcomingDateString
+      )
+      .sort((a, b) => (a.data_vencimento || '').localeCompare(b.data_vencimento || '')) as UpcomingBill[];
+  }, [allRecords]);
+
+  const overdueBills = useMemo((): OverdueBill[] => {
+    const today = new Date().toISOString().split('T')[0];
+
+    return allRecords
+      .filter(r => 
+        r.status === 'pendente' &&
+        r.tipo === 'saida' &&
+        r.data_vencimento !== null &&
+        r.data_vencimento < today
+      )
+      .sort((a, b) => (b.data_vencimento || '').localeCompare(a.data_vencimento || ''))
+      .map(r => ({
+        id: r.id,
+        descricao: r.descricao || '',
+        valor: r.valor,
+        data_vencimento: r.data_vencimento || '',
+        categoria: r.categoria,
+      }));
+  }, [allRecords]);
+
+  const monthlySummary = useMemo((): MonthlySummary => {
+    const currentMonthStart = format(startOfMonth(new Date()), 'yyyy-MM-dd');
+    const currentMonthEnd = format(endOfMonth(new Date()), 'yyyy-MM-dd');
+
+    const monthlyRecords = allRecords.filter(r => 
+      r.status === 'pago' &&
+      r.data_vencimento !== null &&
+      r.data_vencimento >= currentMonthStart &&
+      r.data_vencimento <= currentMonthEnd
+    );
+
+    const income = monthlyRecords.filter(r => r.tipo === 'entrada').reduce((acc, r) => acc + r.valor, 0);
+    const outcome = monthlyRecords.filter(r => r.tipo === 'saida').reduce((acc, r) => acc + r.valor, 0);
+
+    return { income, outcome, balance: income - outcome };
+  }, [allRecords]);
+
+  const categorySpending = useMemo((): CategorySpending[] => {
+    const threeMonthsAgo = format(startOfMonth(subMonths(new Date(), 2)), 'yyyy-MM-dd');
+
+    const relevantRecords = allRecords.filter(r => 
+      r.tipo === 'saida' &&
+      r.status === 'pago' &&
+      r.data_vencimento !== null &&
+      r.data_vencimento >= threeMonthsAgo
+    );
+
+    const spendingMap = relevantRecords.reduce((acc, r) => {
+      acc[r.categoria] = (acc[r.categoria] || 0) + r.valor;
+      return acc;
+    }, {} as Record<string, number>);
+
+    return Object.entries(spendingMap)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value);
+  }, [allRecords]);
 
   const fetchAlertsData = useCallback(async () => {
     if (!cliente?.phone) {
@@ -61,112 +146,32 @@ export function useAlertsData() {
     }
 
     setLoading(true);
-    const today = new Date().toISOString().split('T')[0];
-    const upcomingDate = new Date();
-    upcomingDate.setDate(upcomingDate.getDate() + 14);
-    const upcomingDateString = upcomingDate.toISOString().split('T')[0];
 
-    // Buscar contas próximas do vencimento (apenas saídas pendentes)
-    const { data: upcomingData, error: upcomingError } = await supabase
-      .from('financeiro_registros')
-      .select('*')
-      .eq('phone', cliente.phone)
-      .eq('status', 'pendente')
-      .eq('tipo', 'saida')
-      .not('data_vencimento', 'is', null)
-      .gte('data_vencimento', today)
-      .lte('data_vencimento', upcomingDateString)
-      .order('data_vencimento', { ascending: true });
-
-    if (upcomingError) {
-      console.error('Error fetching upcoming bills:', upcomingError);
-    } else {
-      setUpcomingBills((upcomingData as UpcomingBill[]) || []);
-    }
-
-    // Buscar contas vencidas (apenas saídas pendentes)
-    const { data: overdueData, error: overdueError } = await supabase
-      .from('financeiro_registros')
-      .select('*')
-      .eq('phone', cliente.phone)
-      .eq('status', 'pendente')
-      .eq('tipo', 'saida')
-      .not('data_vencimento', 'is', null)
-      .lt('data_vencimento', today)
-      .order('data_vencimento', { ascending: false });
-
-    if (overdueError) {
-      console.error('Error fetching overdue bills:', overdueError);
-    } else {
-      setOverdueBills((overdueData as OverdueBill[]) || []);
-    }
-
-    // Resumo Mensal
+    // ✅ Calcular insights (única lógica que ainda precisa de dados calculados)
     const currentMonthStart = format(startOfMonth(new Date()), 'yyyy-MM-dd');
     const currentMonthEnd = format(endOfMonth(new Date()), 'yyyy-MM-dd');
-
-    const { data: monthlyData, error: monthlyError } = await supabase
-      .from('financeiro_registros')
-      .select('valor, tipo')
-      .eq('phone', cliente.phone)
-      .gte('data_vencimento', currentMonthStart)
-      .lte('data_vencimento', currentMonthEnd)
-      .eq('status', 'pago');
-
-    if (monthlyError) {
-      console.error('Error fetching monthly summary:', monthlyError);
-    } else {
-      const typedData = monthlyData as { valor: number; tipo: string }[];
-      const income = typedData.filter(c => c.tipo === 'entrada').reduce((acc, c) => acc + c.valor, 0);
-      const outcome = typedData.filter(c => c.tipo === 'saida').reduce((acc, c) => acc + c.valor, 0);
-      setMonthlySummary({ income, outcome, balance: income - outcome });
-    }
-
-    // Gastos por Categoria (últimos 3 meses)
-    const threeMonthsAgo = format(startOfMonth(subMonths(new Date(), 2)), 'yyyy-MM-dd');
-    const { data: categoryData, error: categoryError } = await supabase
-      .from('financeiro_registros')
-      .select('categoria, valor')
-      .eq('phone', cliente.phone)
-      .eq('tipo', 'saida')
-      .eq('status', 'pago')
-      .gte('data_vencimento', threeMonthsAgo);
-
-    if (categoryError) {
-      console.error('Error fetching category spending:', categoryError);
-    } else {
-      const typedCategoryData = categoryData as { categoria: string; valor: number }[];
-      const spendingMap = typedCategoryData.reduce((acc, { categoria, valor }) => {
-        acc[categoria] = (acc[categoria] || 0) + valor;
-        return acc;
-      }, {} as Record<string, number>);
-
-      const formattedSpending = Object.entries(spendingMap)
-        .map(([name, value]) => ({ name, value }))
-        .sort((a, b) => b.value - a.value);
-      setCategorySpending(formattedSpending);
-    }
-
-    // Calculate insights
     const previousMonthStart = format(startOfMonth(subMonths(new Date(), 1)), 'yyyy-MM-dd');
     const previousMonthEnd = format(endOfMonth(subMonths(new Date(), 1)), 'yyyy-MM-dd');
 
-    const { data: prevMonthData } = await supabase
-      .from('financeiro_registros')
-      .select('valor, tipo, categoria')
-      .eq('phone', cliente.phone)
-      .gte('data_vencimento', previousMonthStart)
-      .lte('data_vencimento', previousMonthEnd)
-      .eq('status', 'pago');
+    const currentMonthRecords = allRecords.filter(r => 
+      r.status === 'pago' &&
+      r.data_vencimento !== null &&
+      r.data_vencimento >= currentMonthStart &&
+      r.data_vencimento <= currentMonthEnd
+    );
 
-    if (prevMonthData && monthlyData) {
-      const typedPrevData = prevMonthData as { valor: number; tipo: string; categoria: string }[];
-      const typedCurrentData = monthlyData as { valor: number; tipo: string }[];
-      
-      const prevIncome = typedPrevData.filter(c => c.tipo === 'entrada').reduce((acc, c) => acc + c.valor, 0);
-      const prevOutcome = typedPrevData.filter(c => c.tipo === 'saida').reduce((acc, c) => acc + c.valor, 0);
-      const currIncome = typedCurrentData.filter(c => c.tipo === 'entrada').reduce((acc, c) => acc + c.valor, 0);
-      const currOutcome = typedCurrentData.filter(c => c.tipo === 'saida').reduce((acc, c) => acc + c.valor, 0);
+    const prevMonthRecords = allRecords.filter(r => 
+      r.status === 'pago' &&
+      r.data_vencimento !== null &&
+      r.data_vencimento >= previousMonthStart &&
+      r.data_vencimento <= previousMonthEnd
+    );
+
+    if (prevMonthRecords.length > 0 && currentMonthRecords.length > 0) {
+      const prevIncome = prevMonthRecords.filter(r => r.tipo === 'entrada').reduce((acc, r) => acc + r.valor, 0);
+      const prevOutcome = prevMonthRecords.filter(r => r.tipo === 'saida').reduce((acc, r) => acc + r.valor, 0);
+      const currIncome = currentMonthRecords.filter(r => r.tipo === 'entrada').reduce((acc, r) => acc + r.valor, 0);
+      const currOutcome = currentMonthRecords.filter(r => r.tipo === 'saida').reduce((acc, r) => acc + r.valor, 0);
 
       const spendingChange = prevOutcome > 0 ? ((currOutcome - prevOutcome) / prevOutcome) * 100 : null;
       const incomeChange = prevIncome > 0 ? ((currIncome - prevIncome) / prevIncome) * 100 : null;
@@ -182,11 +187,19 @@ export function useAlertsData() {
     }
 
     setLoading(false);
-  }, [cliente?.phone]);
+  }, [cliente?.phone, allRecords, categorySpending]);
 
   useEffect(() => {
     fetchAlertsData();
   }, [fetchAlertsData]);
 
-  return { loading, upcomingBills, overdueBills, monthlySummary, categorySpending, insights, refetch: fetchAlertsData };
+  return { 
+    loading: loading || recordsLoading, 
+    upcomingBills, 
+    overdueBills, 
+    monthlySummary, 
+    categorySpending, 
+    insights, 
+    refetch: fetchAlertsData 
+  };
 }
