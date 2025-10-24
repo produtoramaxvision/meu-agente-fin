@@ -78,20 +78,14 @@ export async function navigateToPage(
   // 2. Esperar um pouco para garantir que o menu está pronto
   await page.waitForTimeout(200);
   
-  // 3. Clicar no link de navegação
-  // Usar locator com .first() para lidar com múltiplos elementos (desktop + mobile sidebar)
+  // 3. Clicar no link de navegação usando selector engine 'visible=true'
+  // Isso garante clicar apenas no link VISÍVEL (mobile OU desktop)
   const linkSelector = `a[href="${href}"]`;
   
   try {
-    // ✅ CORREÇÃO: Usar .first() para pegar o primeiro elemento visível
-    // Isso resolve o problema de "2 elementos encontrados" quando existem sidebars desktop e mobile
-    const linkLocator = page.locator(linkSelector).first();
-    
-    // Esperar o link estar visível
-    await linkLocator.waitFor({ state: 'visible', timeout: 10000 });
-    
-    // Clicar no link
-    await linkLocator.click();
+    // ✅ CORREÇÃO DEFINITIVA: Usar seletor visible=true do Playwright
+    // Isso automaticamente filtra apenas elementos visíveis
+    await page.locator(`${linkSelector} >> visible=true`).first().click({ timeout: 10000 });
     
   } catch (error) {
     console.error(`Erro ao clicar no link ${href}:`, error);
