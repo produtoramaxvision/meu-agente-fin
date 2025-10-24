@@ -93,7 +93,7 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
         (payload) => {
           queryClient.invalidateQueries({ 
             queryKey: ['tasks', cliente.phone],
-            exact: false
+            exact: false // Invalida todas as queries que começam com esse prefixo
           });
         }
       )
@@ -162,7 +162,7 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
     onSettled: () => {
       queryClient.invalidateQueries({ 
         queryKey: ['tasks', cliente?.phone],
-        exact: false // Invalida todas as queries de tasks, independente dos filtros
+        exact: false // Invalida todas as queries que começam com esse prefixo
       });
     },
   });
@@ -197,7 +197,7 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
     onSettled: () => {
       queryClient.invalidateQueries({ 
         queryKey: ['tasks', cliente?.phone],
-        exact: false
+        exact: false // Invalida todas as queries que começam com esse prefixo
       });
     },
   });
@@ -238,7 +238,7 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
     onSettled: () => {
       queryClient.invalidateQueries({ 
         queryKey: ['tasks', cliente?.phone],
-        exact: false
+        exact: false // Invalida todas as queries que começam com esse prefixo
       });
     },
   });
@@ -269,7 +269,7 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
     onSettled: () => {
       queryClient.invalidateQueries({ 
         queryKey: ['tasks', cliente?.phone],
-        exact: false
+        exact: false // Invalida todas as queries que começam com esse prefixo
       });
     },
   });
@@ -301,7 +301,7 @@ export function useTasksData(statusFilter?: 'all' | 'pending' | 'done' | 'overdu
       toast.success('Tarefa duplicada com sucesso!');
       queryClient.invalidateQueries({ 
         queryKey: ['tasks', cliente?.phone],
-        exact: false
+        exact: false // Invalida todas as queries que começam com esse prefixo
       });
     },
     onError: () => {

@@ -435,3 +435,4 @@ dist/assets/index-CIq5HZLN.js              553.36 kB │ gzip: 163.67 kB
 
 **🚀 PRONTO PARA DEPLOY EM PRODUÇÃO**
 
+
