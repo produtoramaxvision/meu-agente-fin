@@ -107,7 +107,7 @@ const CACHE_CONFIG = {
     gcTime: 30 * 60 * 1000, // 30 minutos
   },
   EVENTS: {
-    staleTime: 30 * 1000, // ✅ 30 segundos - balanceamento entre realtime e performance
+    staleTime: 5 * 60 * 1000, // ✅ 5 minutos - alinhado com configuração global (main.tsx)
     gcTime: 10 * 60 * 1000, // 10 minutos
   },
   RESOURCES: {

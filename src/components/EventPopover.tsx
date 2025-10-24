@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,7 @@ import { Event, EventFormData } from '@/hooks/useOptimizedAgendaData';
 import { useOptimizedAgendaData } from '@/hooks/useOptimizedAgendaData';
 import { useAuth } from '@/contexts/AuthContext';
 import { EventForm } from '@/components/EventForm';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, startOfDay, endOfDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 
@@ -26,10 +26,22 @@ export default function EventPopover({ event, children, open: controlledOpen, on
   // Usar estado controlado se fornecido, senão usar estado interno
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
   const setOpen = onOpenChange || setInternalOpen;
+  
+  // ✅ CORREÇÃO: Criar datas estáveis para evitar loops infinitos
+  // Usar useMemo para garantir que as datas não mudem a cada render
+  const agendaDates = useMemo(() => {
+    const eventStart = new Date(event.start_ts);
+    const eventEnd = new Date(event.end_ts);
+    return {
+      startDate: startOfDay(eventStart),
+      endDate: endOfDay(eventEnd),
+    };
+  }, [event.start_ts, event.end_ts]); // Recalcular apenas se o evento mudar
+  
   const { updateEvent, duplicateEvent, deleteEvent, refetch, calendars, createCalendar } = useOptimizedAgendaData({
     view: 'day',
-    startDate: new Date(event.start_ts),
-    endDate: new Date(event.end_ts),
+    startDate: agendaDates.startDate,
+    endDate: agendaDates.endDate,
   });
 
   // Funções auxiliares para formatação

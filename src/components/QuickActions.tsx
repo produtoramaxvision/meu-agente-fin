@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Plus, Receipt, Target, CheckSquare, CalendarPlus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { FinanceRecordForm } from '@/components/FinanceRecordForm';
@@ -11,6 +11,7 @@ import { useTasksData, TaskFormData } from '@/hooks/useTasksData';
 import { useGoalsData } from '@/hooks/useGoalsData';
 import { useFinancialData } from '@/hooks/useFinancialData';
 import { cn } from '@/lib/utils';
+import { startOfMonth, endOfMonth } from 'date-fns';
 
 interface QuickActionsProps {
   collapsed?: boolean;
@@ -26,14 +27,24 @@ export function QuickActions({ collapsed = false }: QuickActionsProps) {
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
   const [isEventFormOpen, setIsEventFormOpen] = useState(false);
 
+  // ✅ CORREÇÃO: Criar datas estáveis para evitar loops infinitos
+  // Usar useMemo para garantir que as datas não mudem a cada render
+  const agendaDates = useMemo(() => {
+    const now = new Date();
+    return {
+      startDate: startOfMonth(now),
+      endDate: endOfMonth(now),
+    };
+  }, []); // Array vazio = calcula apenas uma vez no mount
+
   // Hooks for data and mutations
   const { refetch: refetchFinancialData } = useFinancialData();
   const { refetch: refetchGoals } = useGoalsData();
   const { createTask } = useTasksData();
   const { calendars, createEvent, createCalendar } = useOptimizedAgendaData({
     view: 'month',
-    startDate: new Date(),
-    endDate: new Date(),
+    startDate: agendaDates.startDate,
+    endDate: agendaDates.endDate,
   });
 
   // Callback handlers
