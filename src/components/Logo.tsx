@@ -1,4 +1,4 @@
-import logoImage from '@/assets/meuagente_logo.jpg';
+import logoImage from '@/assets/meuagente_logo.webp';
 import { cn } from '@/lib/utils';
 
 interface LogoProps {
