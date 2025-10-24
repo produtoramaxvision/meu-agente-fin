@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useCallback, useMemo } from 'react';
 
 interface SearchContextValue {
   searchQuery: string;
@@ -43,16 +43,19 @@ export function SearchProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  // ✅ OTIMIZAÇÃO: Memoizar value do context (padrão React.dev)
+  const contextValue = useMemo(() => ({
+    searchQuery, 
+    setSearchQuery, 
+    hasResults, 
+    setHasResults, 
+    searchResults, 
+    setSearchResults,
+    clearSearch
+  }), [searchQuery, hasResults, searchResults, clearSearch]);
+
   return (
-    <SearchContext.Provider value={{ 
-      searchQuery, 
-      setSearchQuery, 
-      hasResults, 
-      setHasResults, 
-      searchResults, 
-      setSearchResults,
-      clearSearch 
-    }}>
+    <SearchContext.Provider value={contextValue}>
       {children}
     </SearchContext.Provider>
   );

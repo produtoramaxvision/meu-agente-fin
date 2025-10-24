@@ -89,14 +89,15 @@ export function SupportDialog({ open, onOpenChange }: SupportDialogProps) {
         <div className="space-y-4">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             {/* Tabs fixas */}
-            <TabsList className="grid w-full grid-cols-3 mt-4" data-testid="support-tabs-list">
+            <TabsList className="grid w-full grid-cols-3 mt-4" data-testid="support-tabs-list" aria-label="Opções de suporte">
               <TabsTrigger 
                 value="form" 
                 className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm" 
                 data-testid="new-ticket-tab"
                 onClick={(e) => e.stopPropagation()}
+                aria-label="Criar novo ticket de suporte"
               >
-                <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                <FileText className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                 <span className="hidden sm:inline">Novo Ticket</span>
                 <span className="sm:hidden">Novo</span>
               </TabsTrigger>
@@ -105,8 +106,9 @@ export function SupportDialog({ open, onOpenChange }: SupportDialogProps) {
                 className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm" 
                 data-testid="my-tickets-tab"
                 onClick={(e) => e.stopPropagation()}
+                aria-label="Ver meus tickets de suporte"
               >
-                <List className="h-3 w-3 sm:h-4 sm:w-4" />
+                <List className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                 <span className="hidden sm:inline">Meus Tickets</span>
                 <span className="sm:hidden">Tickets</span>
               </TabsTrigger>
@@ -115,8 +117,9 @@ export function SupportDialog({ open, onOpenChange }: SupportDialogProps) {
                 className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm" 
                 data-testid="faq-tab"
                 onClick={(e) => e.stopPropagation()}
+                aria-label="Perguntas frequentes"
               >
-                <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                <HelpCircle className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />
                 FAQ
               </TabsTrigger>
             </TabsList>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { User, Session } from '@supabase/supabase-js';
 
@@ -536,20 +536,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // ✅ OTIMIZAÇÃO: Memoizar value do context (padrão React.dev)
+  // Evita re-renders desnecessários dos consumers quando deps não mudam
+  const contextValue = useMemo(() => ({
+    cliente, 
+    loading, 
+    isLoggingOut,
+    user, 
+    session, 
+    login, 
+    signup, 
+    logout, 
+    updateAvatar, 
+    updateCliente,
+    checkPhoneExists
+  }), [cliente, loading, isLoggingOut, user, session, login, signup, logout, updateAvatar, updateCliente, checkPhoneExists]);
+
   return (
-    <AuthContext.Provider value={{ 
-      cliente, 
-      loading, 
-      isLoggingOut,
-      user, 
-      session, 
-      login, 
-      signup, 
-      logout, 
-      updateAvatar, 
-      updateCliente,
-      checkPhoneExists
-    }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );

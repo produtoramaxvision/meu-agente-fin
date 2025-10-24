@@ -62,6 +62,7 @@ export function HelpAndSupport({ collapsed = false, mode }: HelpAndSupportProps)
   const triggerButton = (
     <Button
       variant="ghost"
+      aria-label="Abrir menu de ajuda e suporte"
       className={cn(
         'group relative overflow-hidden flex w-full items-center gap-3 rounded-lg text-sm font-medium transition-all duration-200',
         mode === 'sidebar' && 'px-3 py-2.5 text-[hsl(var(--sidebar-text-muted))] hover:bg-[hsl(var(--sidebar-hover))] hover:text-[hsl(var(--sidebar-text))] hover:scale-105 hover:shadow-lg',

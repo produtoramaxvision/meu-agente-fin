@@ -66,9 +66,39 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            vendor: ['react', 'react-dom'],
-            supabase: ['@supabase/supabase-js'],
-            ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu']
+            // React core (react + react-dom + react-router)
+            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+            
+            // Supabase
+            'supabase': ['@supabase/supabase-js'],
+            
+            // TanStack Query (separado para melhor cache)
+            'tanstack': ['@tanstack/react-query', '@tanstack/react-query-persist-client'],
+            
+            // UI Components (Radix UI + Shadcn)
+            'ui': [
+              '@radix-ui/react-dialog',
+              '@radix-ui/react-dropdown-menu',
+              '@radix-ui/react-select',
+              '@radix-ui/react-popover',
+              '@radix-ui/react-tabs',
+              '@radix-ui/react-toast',
+              '@radix-ui/react-tooltip',
+              '@radix-ui/react-avatar',
+              '@radix-ui/react-checkbox',
+              '@radix-ui/react-label',
+              '@radix-ui/react-switch',
+              '@radix-ui/react-slot'
+            ],
+            
+            // Charts (apenas quando Reports for carregado)
+            'charts': ['recharts'],
+            
+            // Date utilities (usado em várias páginas)
+            'date-utils': ['date-fns', 'date-fns-tz'],
+            
+            // Icons (usado em toda aplicação)
+            'icons': ['lucide-react']
           }
         }
       }

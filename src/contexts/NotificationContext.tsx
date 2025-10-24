@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -298,7 +298,8 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     return Promise.resolve();
   }, [cliente?.phone, fetchNotifications]);
 
-  const value: NotificationContextType = {
+  // ✅ OTIMIZAÇÃO: Memoizar value do context (padrão React.dev)
+  const contextValue = useMemo<NotificationContextType>(() => ({
     notifications,
     loading,
     unreadCount,
@@ -307,10 +308,10 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     markAllAsRead,
     deleteNotification,
     refetch,
-  };
+  }), [notifications, loading, unreadCount, markAsRead, markAsUnread, markAllAsRead, deleteNotification, refetch]);
 
   return (
-    <NotificationContext.Provider value={value}>
+    <NotificationContext.Provider value={contextValue}>
       {children}
     </NotificationContext.Provider>
   );
