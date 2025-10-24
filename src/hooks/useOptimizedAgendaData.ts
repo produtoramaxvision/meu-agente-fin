@@ -107,7 +107,7 @@ const CACHE_CONFIG = {
     gcTime: 30 * 60 * 1000, // 30 minutos
   },
   EVENTS: {
-    staleTime: 2 * 60 * 1000, // 2 minutos - eventos podem mudar mais frequentemente
+    staleTime: 30 * 1000, // ✅ 30 segundos - balanceamento entre realtime e performance
     gcTime: 10 * 60 * 1000, // 10 minutos
   },
   RESOURCES: {
@@ -194,7 +194,7 @@ export function useOptimizedAgendaData(options: UseOptimizedAgendaDataOptions) {
         queryFn: async (): Promise<Event[]> => {
           if (!cliente?.phone) return [];
 
-          // ✅ PROTEÇÃO CONTRA LOOPS INFINITOS
+          // ✅ PROTEÇÃO CONTRA LOOPS INFINITOS (relaxada para permitir montagens legítimas)
           const now = Date.now();
           const timeSinceLastRequest = now - lastRequestTimeRef.current;
           
@@ -208,9 +208,11 @@ export function useOptimizedAgendaData(options: UseOptimizedAgendaDataOptions) {
             }
           }
           
-          if (timeSinceLastRequest < 100) {
+          // ✅ Thresholds ajustados: 500ms (era 100ms) e 30 requisições (era 10)
+          // Permite múltiplos componentes montando simultaneamente sem falsos positivos
+          if (timeSinceLastRequest < 500) {
             requestCountRef.current++;
-            if (requestCountRef.current > 10) {
+            if (requestCountRef.current > 30) {
               console.error('🚨 LOOP INFINITO DETECTADO! Bloqueando requisições por 5 segundos');
               isBlockedRef.current = true;
               return [];
