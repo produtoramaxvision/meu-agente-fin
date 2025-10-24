@@ -502,10 +502,42 @@ export function useOptimizedAgendaData(options: UseOptimizedAgendaDataOptions) {
   });
 
   const updateEvent = useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: Partial<Event> }) => {
+    mutationFn: async ({ id, updates }: { id: string; updates: Partial<Event> | Partial<EventFormData> | any }) => {
+      // ✅ CORREÇÃO: Converter formato EventFormData para Event se necessário
+      let updateData: any = {};
+
+      if ('start_ts' in updates && updates.start_ts) {
+        // Formato já está correto (com start_ts e end_ts)
+        updateData = { ...updates };
+      } else if ('start_date' in updates && updates.start_date) {
+        // Formato EventFormData - precisa converter para start_ts/end_ts
+        const start_ts = new Date(`${(updates as any).start_date.toDateString()} ${(updates as any).start_time}`).toISOString();
+        const end_ts = new Date(`${(updates as any).end_date.toDateString()} ${(updates as any).end_time}`).toISOString();
+        
+        updateData = {
+          title: updates.title,
+          description: updates.description || null,
+          start_ts,
+          end_ts,
+          all_day: (updates as any).all_day ?? false,
+          timezone: (updates as any).timezone || 'America/Sao_Paulo',
+          location: (updates as any).location || null,
+          conference_url: (updates as any).conference_url || null,
+          category: (updates as any).category || null,
+          priority: (updates as any).priority || 'medium',
+          privacy: (updates as any).privacy || 'default',
+          status: (updates as any).status || 'confirmed',
+          color: (updates as any).color || null,
+          calendar_id: (updates as any).calendar_id,
+        };
+      } else {
+        // Formato parcial - apenas atualizar os campos fornecidos
+        updateData = { ...updates };
+      }
+
       const { data, error } = await supabase
         .from('events')
-        .update(updates)
+        .update(updateData)
         .eq('id', id)
         .select()
         .single();
