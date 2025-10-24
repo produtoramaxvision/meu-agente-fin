@@ -320,16 +320,18 @@ export function EventForm({
                                 <Button
                                   variant="outline"
                                   className={cn(
-                                    'w-full h-10 pl-3 text-left font-normal justify-start',
+                                    'w-full h-10 pl-3 pr-9 text-left font-normal justify-start relative',
                                     !field.value && 'text-text-muted'
                                   )}
                                 >
-                                  {field.value ? (
-                                    format(field.value, 'PPP', { locale: ptBR })
-                                  ) : (
-                                    <span>Selecione</span>
-                                  )}
-                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                  <span className="truncate">
+                                    {field.value ? (
+                                      format(field.value, 'PPP', { locale: ptBR })
+                                    ) : (
+                                      'Selecione'
+                                    )}
+                                  </span>
+                                  <CalendarIcon className="absolute right-3 h-4 w-4 opacity-50" />
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
@@ -392,16 +394,18 @@ export function EventForm({
                                 <Button
                                   variant="outline"
                                   className={cn(
-                                    'w-full h-10 pl-3 text-left font-normal justify-start',
+                                    'w-full h-10 pl-3 pr-9 text-left font-normal justify-start relative',
                                     !field.value && 'text-text-muted'
                                   )}
                                 >
-                                  {field.value ? (
-                                    format(field.value, 'PPP', { locale: ptBR })
-                                  ) : (
-                                    <span>Selecione</span>
-                                  )}
-                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                  <span className="truncate">
+                                    {field.value ? (
+                                      format(field.value, 'PPP', { locale: ptBR })
+                                    ) : (
+                                      'Selecione'
+                                    )}
+                                  </span>
+                                  <CalendarIcon className="absolute right-3 h-4 w-4 opacity-50" />
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
