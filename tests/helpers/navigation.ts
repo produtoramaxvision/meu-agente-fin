@@ -79,18 +79,19 @@ export async function navigateToPage(
   await page.waitForTimeout(200);
   
   // 3. Clicar no link de navegação
-  // Usar seletor mais robusto que funciona em mobile e desktop
+  // Usar locator com .first() para lidar com múltiplos elementos (desktop + mobile sidebar)
   const linkSelector = `a[href="${href}"]`;
   
   try {
+    // ✅ CORREÇÃO: Usar .first() para pegar o primeiro elemento visível
+    // Isso resolve o problema de "2 elementos encontrados" quando existem sidebars desktop e mobile
+    const linkLocator = page.locator(linkSelector).first();
+    
     // Esperar o link estar visível
-    await page.waitForSelector(linkSelector, { 
-      state: 'visible',
-      timeout: 5000 
-    });
+    await linkLocator.waitFor({ state: 'visible', timeout: 10000 });
     
     // Clicar no link
-    await page.click(linkSelector);
+    await linkLocator.click();
     
   } catch (error) {
     console.error(`Erro ao clicar no link ${href}:`, error);
