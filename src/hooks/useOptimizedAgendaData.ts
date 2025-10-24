@@ -512,13 +512,14 @@ export function useOptimizedAgendaData(options: UseOptimizedAgendaDataOptions) {
       if (error) throw error;
       return data as Event;
     },
-    onSuccess: (updatedEvent) => {
+    onSuccess: () => {
       toast.success('Evento atualizado com sucesso!');
       
-      // ✅ ATUALIZAÇÃO OTIMÍSTICA DO CACHE
-      queryClient.setQueryData(stableQueryKeys.events, (oldData: Event[] | undefined) => {
-        if (!oldData) return [updatedEvent];
-        return oldData.map(event => event.id === updatedEvent.id ? updatedEvent : event);
+      // ✅ INVALIDAR TODAS AS QUERIES DE EVENTS para garantir sincronização
+      // Isso garante que todos os componentes com diferentes query keys sejam atualizados
+      queryClient.invalidateQueries({ 
+        queryKey: ['agenda-data', cliente?.phone, 'events'],
+        exact: false // Invalida todas as queries que começam com esse prefixo
       });
     },
     onError: (error) => {
@@ -532,13 +533,14 @@ export function useOptimizedAgendaData(options: UseOptimizedAgendaDataOptions) {
       const { error } = await supabase.from('events').delete().eq('id', id);
       if (error) throw error;
     },
-    onSuccess: (_, deletedId) => {
+    onSuccess: () => {
       toast.success('Evento excluído com sucesso!');
       
-      // ✅ ATUALIZAÇÃO OTIMÍSTICA DO CACHE
-      queryClient.setQueryData(stableQueryKeys.events, (oldData: Event[] | undefined) => {
-        if (!oldData) return oldData;
-        return oldData.filter(event => event.id !== deletedId);
+      // ✅ INVALIDAR TODAS AS QUERIES DE EVENTS para garantir sincronização
+      // Isso garante que todos os componentes com diferentes query keys sejam atualizados
+      queryClient.invalidateQueries({ 
+        queryKey: ['agenda-data', cliente?.phone, 'events'],
+        exact: false // Invalida todas as queries que começam com esse prefixo
       });
     },
     onError: (error) => {
