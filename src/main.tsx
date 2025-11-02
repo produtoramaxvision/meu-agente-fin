@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import App from "./App.tsx";
 import "./index.css";
+import { PWARegister } from "./components/PWARegister";
 
 // Configuração global do React Query para otimização
 const queryClient = new QueryClient({
@@ -29,6 +30,7 @@ const queryClient = new QueryClient({
 
 createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
+    <PWARegister />
     <App />
     {/* DevTools apenas em desenvolvimento */}
     {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}

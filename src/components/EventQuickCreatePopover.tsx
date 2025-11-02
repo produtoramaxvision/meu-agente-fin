@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Popover, PopoverContent } from '@/components/ui/popover';
-import { Anchor as RadixPopoverAnchor } from '@radix-ui/react-popover';
+import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -9,11 +8,17 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Calendar, EventFormData } from '@/hooks/useOptimizedAgendaData';
 
-// Variável global para controlar se o popover está aberto
-let isPopoverOpen = false;
+// Hook para controlar o estado do popover (substitui variável global)
+// Usado pela página Agenda para verificar se o popover está aberto
+export const useEventPopoverOpen = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  return { isOpen, setIsOpen };
+};
 
-// Função para verificar se o popover está aberto (usada pela página Agenda)
-export const isEventPopoverOpen = () => isPopoverOpen;
+// Função helper para verificar se o popover está aberto (mantida para compatibilidade)
+// Nota: Esta é uma verificação limitada, considere usar o hook useEventPopoverOpen
+let _isPopoverOpen = false;
+export const isEventPopoverOpen = () => _isPopoverOpen;
 
 interface EventQuickCreatePopoverProps {
   open: boolean;
@@ -41,7 +46,7 @@ export function EventQuickCreatePopover({
 
   // Validação em tempo real
   useEffect(() => {
-    setIsValid(title.trim().length > 0 && calendarId);
+    setIsValid(title.trim().length > 0 && !!calendarId);
   }, [title, calendarId]);
 
   useEffect(() => {
@@ -53,16 +58,19 @@ export function EventQuickCreatePopover({
       const selectedCalendarId = primaryCalendar?.id || firstCalendar?.id;
       
       setCalendarId(selectedCalendarId);
-      isPopoverOpen = true; // Marcar popover como aberto
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 100);
+      _isPopoverOpen = true; // Marcar popover como aberto (para compatibilidade)
+      // Usar requestAnimationFrame para garantir que o DOM está pronto, mas sem delay perceptível
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          inputRef.current?.focus();
+        });
+      });
     } else {
-      isPopoverOpen = false; // Marcar popover como fechado
+      _isPopoverOpen = false; // Marcar popover como fechado (para compatibilidade)
     }
   }, [open, calendars]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !isValid || !calendarId) return;
     
@@ -74,16 +82,21 @@ export function EventQuickCreatePopover({
     onOpenChange(false);
   };
 
-  const { start_ts, end_ts } = eventData;
+  // Extrair start_ts e end_ts de forma type-safe
+  const start_ts = 'start_ts' in eventData ? eventData.start_ts : undefined;
+  const end_ts = 'end_ts' in eventData ? eventData.end_ts : undefined;
 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       {anchor && (
-        <RadixPopoverAnchor
+        <PopoverAnchor
           style={{ position: 'absolute', top: anchor.top, left: anchor.left, width: 0, height: 0 }}
         />
       )}
-      <PopoverContent className="w-80" onOpenAutoFocus={(e) => e.preventDefault()}>
+      <PopoverContent 
+        className="w-80" 
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             ref={inputRef}

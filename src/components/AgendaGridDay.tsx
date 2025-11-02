@@ -391,36 +391,56 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
   }, [mapYToTime]);
 
   const handlePointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    if (!gridRef.current || !selection) return;
+    if (!gridRef.current) return;
     const gridRect = gridRef.current.getBoundingClientRect();
     const y = e.clientY - gridRect.top;
 
-    const startY = Math.min(selection.start, y);
-    const endY = Math.max(selection.start, y);
+    // Se houver seleção (arrasto), usar os valores da seleção
+    if (selection) {
+      const startY = Math.min(selection.start, y);
+      const endY = Math.max(selection.start, y);
 
-    const startTime = mapYToTime(startY);
-    let endTime = mapYToTime(endY);
+      const startTime = mapYToTime(startY);
+      let endTime = mapYToTime(endY);
 
-    if (Math.abs(y - selection.start) < 5) {
-      endTime = addMinutes(startTime, 30);
+      if (Math.abs(y - selection.start) < 5) {
+        endTime = addMinutes(startTime, 30);
+      }
+
+      if (endTime <= startTime) {
+        endTime = addMinutes(startTime, SNAP_MINUTES);
+      }
+
+      setPopoverState({
+        open: true,
+        anchor: { top: startY, left: e.clientX - gridRect.left },
+        eventData: { start_ts: startTime, end_ts: endTime },
+      });
+      setSelection(null);
+    } else {
+      // Clique simples - criar evento com duração padrão de 30 minutos
+      const startTime = mapYToTime(y);
+      const endTime = addMinutes(startTime, 30);
+
+      setPopoverState({
+        open: true,
+        anchor: { top: y, left: e.clientX - gridRect.left },
+        eventData: { start_ts: startTime, end_ts: endTime },
+      });
     }
-
-    if (endTime <= startTime) {
-      endTime = addMinutes(startTime, SNAP_MINUTES);
-    }
-
-    setPopoverState({
-      open: true,
-      anchor: { top: startY, left: e.clientX - gridRect.left },
-      eventData: { start_ts: startTime, end_ts: endTime },
-    });
-    setSelection(null);
+    
     // Fechar qualquer EventPopover aberto quando abrir EventQuickCreatePopover
     // Mas preservar o último evento clicado para permitir reabertura
     setOpenEventPopover(null);
   }, [mapYToTime, selection, setOpenEventPopover]);
 
+  // handleGridClick agora é um fallback caso o handlePointerUp não capture o clique
+  // Normalmente não será necessário, mas mantemos para garantir compatibilidade
   const handleGridClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    // Prevenir se já foi tratado por handlePointerUp
+    // Verificar se o popover já está sendo aberto
+    if (popoverState.open) return;
+    
     const gridRect = gridRef.current?.getBoundingClientRect();
     if (!gridRect) return;
     
@@ -436,7 +456,7 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
     // Fechar qualquer EventPopover aberto quando abrir EventQuickCreatePopover
     // Mas preservar o último evento clicado para permitir reabertura
     setOpenEventPopover(null);
-  }, [mapYToTime, setOpenEventPopover]);
+  }, [mapYToTime, setOpenEventPopover, popoverState.open]);
 
   const handleDoubleClick = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!gridRef.current) return;
@@ -652,34 +672,21 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
         </DndContext>
       </Card>
       
-      <AnimatePresence>
-        {popoverState.open && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            transition={{ 
-              type: "spring", 
-              stiffness: 400, 
-              damping: 25,
-              mass: 0.8 
-            }}
-          >
-            <EventQuickCreatePopover
-              open={popoverState.open}
-              onOpenChange={(open) => setPopoverState(s => ({ ...s, open }))}
-              anchor={popoverState.anchor}
-              eventData={popoverState.eventData}
-              calendars={calendars}
-              onSubmit={onEventCreate}
-              onMoreOptions={() => {
-                setPopoverState(s => ({ ...s, open: false }));
-                onEventDoubleClick(popoverState.eventData);
-              }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Removido AnimatePresence e motion.div para eliminar delay - Radix UI já cuida das animações */}
+      {popoverState.open && (
+        <EventQuickCreatePopover
+          open={popoverState.open}
+          onOpenChange={(open) => setPopoverState(s => ({ ...s, open }))}
+          anchor={popoverState.anchor}
+          eventData={popoverState.eventData}
+          calendars={calendars}
+          onSubmit={onEventCreate}
+          onMoreOptions={() => {
+            setPopoverState(s => ({ ...s, open: false }));
+            onEventDoubleClick(popoverState.eventData);
+          }}
+        />
+      )}
     </>
   );
 }
