@@ -18,7 +18,7 @@ import {
   MessageSquare,
   Settings
 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
 interface PrivacySettings {
@@ -35,7 +35,6 @@ interface PrivacySettings {
 
 export function PrivacySection() {
   const { cliente } = useAuth();
-  const { toast } = useToast();
   const [settings, setSettings] = useState<PrivacySettings>({
     dataCollection: true,
     dataProcessing: true,
@@ -129,8 +128,7 @@ export function PrivacySection() {
 
   const handleDataExport = async () => {
     try {
-      toast({
-        title: "Exportando dados...",
+      toast.loading("Exportando dados...", {
         description: "Preparando arquivo com seus dados pessoais",
       });
 

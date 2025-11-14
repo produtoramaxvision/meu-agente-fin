@@ -91,8 +91,7 @@ export function AvatarUpload({
     });
     
     try {
-      setUploading(true);
-
+      // Validações básicas antes de marcar como uploading
       if (!event.target.files || event.target.files.length === 0) {
         return;
       }
@@ -118,6 +117,9 @@ export function AvatarUpload({
         toast.error('O tamanho máximo da imagem é de 600KB.');
         return;
       }
+
+      // A partir daqui consideramos que realmente teremos upload
+      setUploading(true);
 
       const fileExt = file.name.split('.').pop();
       const fileName = `${userPhone}/avatar.${fileExt}`;
@@ -168,11 +170,33 @@ export function AvatarUpload({
       onUploadComplete(publicUrlWithTimestamp);
       
       toast.success('Foto de perfil atualizada com sucesso!');
-    } catch (error) {
-      toast.error('Erro ao fazer upload da foto. Verifique o console para mais detalhes.');
+    } catch (error: any) {
+      console.error('❌ Erro ao fazer upload de avatar:', error);
+
+      let errorMessage = 'Erro ao fazer upload da foto.';
+
+      if (error?.message?.includes('row-level security') || error?.message?.includes('RLS')) {
+        errorMessage = 'Erro de permissão. Verifique se você está logado corretamente.';
+      } else if (error?.message?.includes('size') || error?.message?.includes('large') || error?.statusCode === 413) {
+        errorMessage = 'Arquivo muito grande. O tamanho máximo é de 600KB.';
+      } else if (
+        error?.message?.includes('type') ||
+        error?.message?.includes('format') ||
+        error?.message?.includes('content-type')
+      ) {
+        errorMessage = 'Formato não suportado. Use apenas imagens JPEG ou PNG.';
+      } else if (error?.statusCode === 400) {
+        errorMessage = 'Erro ao fazer upload. Verifique se o arquivo é uma imagem válida.';
+      } else if (error?.statusCode === 401 || error?.statusCode === 403) {
+        errorMessage = 'Erro de autenticação. Faça login novamente.';
+      } else if (error?.statusCode === 500) {
+        errorMessage = 'Erro no servidor. Tente novamente em alguns instantes.';
+      }
+
+      toast.error(errorMessage);
     } finally {
       setUploading(false);
-      if(fileInputRef.current) {
+      if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
     }
@@ -183,7 +207,7 @@ export function AvatarUpload({
     <TooltipProvider>
       <div className="flex flex-col items-center gap-4">
         <Tooltip>
-          <TooltipTrigger onClick={triggerFileSelect}>
+          <TooltipTrigger asChild>
             <div 
               className={`
                 relative cursor-pointer rounded-full transition-all duration-300 ease-in-out
@@ -191,6 +215,7 @@ export function AvatarUpload({
                 ${isDragging ? 'scale-110 shadow-xl ring-2 ring-primary ring-offset-2' : ''}
                 ${uploading ? 'opacity-50 cursor-not-allowed' : ''}
               `}
+              onClick={triggerFileSelect}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               onDragEnter={handleDragEnter}

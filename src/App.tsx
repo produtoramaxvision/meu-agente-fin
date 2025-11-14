@@ -15,6 +15,8 @@ import { PageLoadingFallback } from "./components/PageLoadingFallback";
 // ✅ Auth pages mantidas eager (primeira coisa que usuário não autenticado vê)
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 
 // ✅ NotFound mantida eager (pequena e importante)
 import NotFound from "./pages/NotFound";
@@ -50,6 +52,8 @@ const App = () => (
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
                   <Route path="/auth/login" element={<AuthLayout><Login /></AuthLayout>} />
                   <Route path="/auth/signup" element={<AuthLayout><Signup /></AuthLayout>} />
+                  <Route path="/auth/forgot-password" element={<AuthLayout><ForgotPassword /></AuthLayout>} />
+                  <Route path="/auth/reset-password" element={<AuthLayout><ResetPassword /></AuthLayout>} />
                   <Route
                     path="/dashboard"
                     element={

@@ -19,8 +19,9 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     storage: localStorage, // ✅ CORREÇÃO: Usar localStorage para persistir sessão entre recarregamentos
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: false, // ✅ CORREÇÃO: Evitar conflitos com URLs
-    flowType: 'pkce', // ✅ CORREÇÃO: Usar PKCE para melhor segurança
+    // Vamos permitir que o Supabase processe automaticamente os tokens na URL
+    // (necessário para fluxos como recuperação de senha).
+    detectSessionInUrl: true,
   },
   global: {
     headers: {

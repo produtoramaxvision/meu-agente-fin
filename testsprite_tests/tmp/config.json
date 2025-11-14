@@ -1,0 +1,18 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:8080",
+  "loginUser": "5511949746110",
+  "loginPassword": "123456789",
+  "executionArgs": {
+    "projectName": "meu-agente-fin",
+    "projectPath": "C:\\Users\\MaxVision\\Desktop\\cursor-oficial\\meu-agente-fin",
+    "testIds": [],
+    "additionalInstruction": "",
+    "envs": {
+      "API_KEY": "sk-user-_OEteUEV1vCc_fNIKnGa13JhkOzww1OCaFHdS7D7rGXHKifQVT7j4ZBhY0B3zKc72oPen3IXxkSnQ9IRLYDqMzZarkZGTAls_RuC3JC8XVOAgqV9iuWEdA1Qsg0Ft-qMyaM"
+    }
+  },
+  "proxy": "http://a73a6309-2cb2-4b1d-a355-2c6f29d90eae:qUYCYrHtY3Da1BwiGVsoeqDwiNVY59Ya@tun.testsprite.com:8080"
+}

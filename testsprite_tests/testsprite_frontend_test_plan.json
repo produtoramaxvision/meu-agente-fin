@@ -1,0 +1,490 @@
+[
+  {
+    "id": "TC001",
+    "title": "User Signup with Valid Data",
+    "description": "Verify that a new user can successfully create an account using valid signup details via Supabase Auth.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the signup page."
+      },
+      {
+        "type": "action",
+        "description": "Enter valid new user credentials (email, password, username)."
+      },
+      {
+        "type": "action",
+        "description": "Submit the signup form."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm user account is created and user is redirected to the dashboard."
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Login with Correct Credentials",
+    "description": "Ensure that users can login successfully using valid registered email and password.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page."
+      },
+      {
+        "type": "action",
+        "description": "Input registered username/email and correct password."
+      },
+      {
+        "type": "action",
+        "description": "Click on the login button."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify successful login and access to user dashboard and features according to subscription."
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Login with Incorrect Password",
+    "description": "Verify the application behavior when user inputs correct email but incorrect password.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to login page."
+      },
+      {
+        "type": "action",
+        "description": "Input correct email and incorrect password."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to login."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm login failure and display of appropriate error message."
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Password Recovery Flow",
+    "description": "Test password recovery using the password reset feature integrated with Supabase.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page."
+      },
+      {
+        "type": "action",
+        "description": "Click on the 'Forgot password' link."
+      },
+      {
+        "type": "action",
+        "description": "Submit the registered email for password reset."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a password reset email is received and instructions allow resetting the password successfully."
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Access Control by Subscription Plan",
+    "description": "Verify that users only have access to features appropriate to their subscription plan (Free, Basic, Business, Premium).",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as a Free plan user."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access to only manual operational entries and limited AI features; no WhatsApp automation."
+      },
+      {
+        "type": "action",
+        "description": "Login as a Business plan user."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access to WhatsApp AI agents for automation of finance, marketing, scheduling, etc."
+      },
+      {
+        "type": "action",
+        "description": "Login as a Premium user."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access to advanced AI agents, backup features, and higher tier support."
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Record Financial Entry with Valid Data",
+    "description": "Ensure that Business and Premium users can record financial entries properly with correct categorization and validation.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as a Business or Premium user."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the financial management page."
+      },
+      {
+        "type": "action",
+        "description": "Input a new financial entry: amount, category, description, date."
+      },
+      {
+        "type": "action",
+        "description": "Submit the entry."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new entry is recorded, categorized correctly, and visible in the dashboard."
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Prevent Duplicate Financial Entry",
+    "description": "Verify that the system identifies and warns users when attempting to create a duplicate financial entry.",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Create a financial entry with specific details."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to create another entry with the same details (amount, category, date, description)."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that the system displays a duplicate warning and prevents the creation of the entry."
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Export Financial Data in Paid Plans",
+    "description": "Verify that users on paid plans can export financial data in CSV, PDF, and JSON formats correctly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as a Basic, Business, or Premium user."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the reports or financial export section."
+      },
+      {
+        "type": "action",
+        "description": "Select export format (CSV, PDF, JSON) and initiate export."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that the export file matches the selected format and contains correct data."
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Automated Financial Record via WhatsApp AI Agents",
+    "description": "Verify that Business and Premium users can interact with AI agents on WhatsApp to record financial transactions using natural language.",
+    "category": "integration",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Use WhatsApp to send a natural language command to record a financial entry (e.g., 'Add expense 50 BRL for marketing yesterday')."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the AI agent confirms record creation and the entry appears in the user's financial dashboard."
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Google Workspace Scheduling Integration",
+    "description": "Ensure that Business and Premium plans can create, edit, and sync calendar events through AI agents integrated with Google Workspace.",
+    "category": "integration",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Authenticate Business or Premium user with Google Workspace calendar integration."
+      },
+      {
+        "type": "action",
+        "description": "Use WhatsApp AI agent to schedule a meeting by natural language input."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that the scheduled event appears on Google Calendar and in the app's agenda interface."
+      },
+      {
+        "type": "action",
+        "description": "Modify an existing event via AI agent command."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm updated event data is synced correctly to Google Calendar."
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Notification Delivery via WhatsApp and In-App",
+    "description": "Verify that notifications and alerts are delivered properly in the app and through WhatsApp API as per user subscription and event triggers.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Trigger a notification event (e.g., upcoming bill due, new support ticket update) for a user."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the notification is displayed correctly in the app notification menu."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify user receives the corresponding WhatsApp message notification if plan supports it."
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Support Ticket Creation and Tracking",
+    "description": "Test the support system for ticket creation, status tracking, and role-level security appropriate to the user's subscription.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as Business or Premium user."
+      },
+      {
+        "type": "action",
+        "description": "Create a new support ticket with description and priority."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the ticket appears in the user's support ticket list with correct status."
+      },
+      {
+        "type": "action",
+        "description": "Update ticket status and add comments."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm updated status and comments are visible only to authorized users."
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Daily Backup and Restore on Premium Plan",
+    "description": "Validate that Premium users have daily off-site backups and can restore data reliably.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login as Premium plan user."
+      },
+      {
+        "type": "action",
+        "description": "Trigger or wait for daily backup process."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify backup completed successfully and logs record backup status."
+      },
+      {
+        "type": "action",
+        "description": "Perform a restore operation from backup."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify data restored matches backup contents and integrity is preserved."
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "User Profile Update and Avatar Upload",
+    "description": "Test ability of users to update profile information including uploading and changing avatar image.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to user profile page."
+      },
+      {
+        "type": "action",
+        "description": "Edit profile fields like name, email, and preferences."
+      },
+      {
+        "type": "action",
+        "description": "Upload a new avatar image and save changes."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify details are saved and avatar is updated and displayed properly."
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Data Privacy Compliance and Opt-Out Management",
+    "description": "Ensure user data handling complies with LGPD; users can manage privacy settings and opt-out preferences.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access privacy settings section."
+      },
+      {
+        "type": "action",
+        "description": "Adjust privacy preferences and opt-out from data usage."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that changes take immediate effect and data processing reflects user preferences."
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "PWA Functionality and Offline Access",
+    "description": "Test the Progressive Web App support including offline usage and service worker registration.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Install the PWA version of the application."
+      },
+      {
+        "type": "action",
+        "description": "Use key features in an offline state (without network)."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify application works gracefully offline with cached data and syncs changes when online."
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "AI Agents Web Search and Scraping Compliance",
+    "description": "Verify AI agents perform web search and scraping only on authorized sources and APIs in compliance with regulations.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Trigger AI agent to perform web search and data scraping requests."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that AI agents do not scrape unauthorized sources and respect API limits."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm logging of scraping actions for audit and compliance."
+      }
+    ]
+  },
+  {
+    "id": "TC018",
+    "title": "Role-Based Access Control Enforcement",
+    "description": "Test that role-level security policies prevent unauthorized users from accessing restricted data and features.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Login with a user account of limited permission."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to access features or data reserved for higher-tier plans or different users."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify access is denied and appropriate error or redirect is shown."
+      }
+    ]
+  },
+  {
+    "id": "TC019",
+    "title": "Financial Goal Tracking and Alerts",
+    "description": "Validate creation of financial goals, progress tracking, and alert generation on goal milestones or failures.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Create a new financial goal with target amount and deadline."
+      },
+      {
+        "type": "action",
+        "description": "Record financial transactions affecting the goal."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify goal progress updates and alerts are generated as expected."
+      }
+    ]
+  },
+  {
+    "id": "TC020",
+    "title": "Robustness of Drag-and-Drop in Calendar and Tasks",
+    "description": "Test the drag-and-drop functionality in calendar event management and tasks prioritization for edge cases.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Attempt to drag events across different calendar views (day, week, month) and drop to valid/invalid dates."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify events update correctly when dropped in valid areas and reject invalid drops gracefully."
+      },
+      {
+        "type": "action",
+        "description": "Drag and reorder tasks with various status and priorities."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm tasks reorder properly, status and priority updates persist."
+      }
+    ]
+  }
+]

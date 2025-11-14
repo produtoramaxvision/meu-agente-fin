@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 import { Phone, Lock, User, Mail, ArrowLeft } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { HelpAndSupport } from '@/components/HelpAndSupport';
@@ -13,6 +14,7 @@ type AuthStep = 'phone' | 'password' | 'signup';
 
 export default function Login() {
   const { login, signup, checkPhoneExists } = useAuth();
+  const navigate = useNavigate();
   const [step, setStep] = useState<AuthStep>('phone');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -295,7 +297,7 @@ export default function Login() {
                   <button
                     type="button"
                     className="text-sm text-brand hover:opacity-80"
-                    onClick={() => toast.info('Entre em contato com o suporte')}
+                    onClick={() => navigate('/auth/forgot-password')}
                   >
                     Esqueci minha senha
                   </button>
