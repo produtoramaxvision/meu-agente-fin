@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { motion } from 'framer-motion';
 import { Clock, MapPin, Calendar, Users, Video, Flag, Eye, EyeOff, Shield } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, differenceInMinutes } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -30,7 +30,9 @@ const EventCard = React.forwardRef<HTMLDivElement, EventCardProps>(
     // Formatação de data e hora
     const startDate = new Date(event.start_ts);
     const endDate = new Date(event.end_ts);
-    
+    const durationMinutes = differenceInMinutes(endDate, startDate);
+    const isShortEvent = durationMinutes <= 30;
+
     const formatTime = (date: Date) => format(date, 'HH:mm', { locale: ptBR });
     const formatDate = (date: Date) => format(date, 'dd/MM', { locale: ptBR });
     const formatDateTime = (date: Date) => format(date, 'dd/MM HH:mm', { locale: ptBR });
@@ -83,6 +85,88 @@ const EventCard = React.forwardRef<HTMLDivElement, EventCardProps>(
 
     // Variantes de layout
     if (variant === 'compact') {
+      // Layout hiper compacto para eventos curtos (30 minutos ou menos):
+      // tudo em uma linha, para evitar corte em cards baixos.
+      if (isShortEvent) {
+        return (
+          <motion.div
+            ref={ref}
+            initial={{ opacity: 0, scale: 0.95, y: -6 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -6 }}
+            transition={{ 
+              type: "spring", 
+              stiffness: 300, 
+              damping: 25,
+              mass: 0.8 
+            }}
+            whileHover={{ 
+              scale: 1.01, 
+              y: -1,
+              boxShadow: '0 8px 12px -4px rgba(0, 0, 0, 0.12)',
+              transition: { duration: 0.15 }
+            }}
+            whileTap={{ 
+              scale: 0.98,
+              transition: { duration: 0.08 }
+            }}
+            className={cn(
+              "group relative overflow-hidden rounded-lg border bg-card/60 backdrop-blur-sm",
+              "hover:bg-card hover:shadow-md hover:shadow-primary/5",
+              "transition-all duration-150 cursor-pointer",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "h-full",
+              className
+            )}
+            onClick={onClick}
+            onDoubleClick={onDoubleClick}
+            tabIndex={0}
+            role="button"
+            aria-label={`Evento: ${event.title}`}
+          >
+            {showCalendarColor && calendarColor && (
+              <motion.div 
+                className="absolute left-0 top-0 bottom-0 w-1 rounded-l-lg"
+                style={{ backgroundColor: calendarColor }}
+                initial={{ scaleY: 0 }}
+                animate={{ scaleY: 1 }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 400, 
+                  damping: 25,
+                  delay: 0.05 
+                }}
+              />
+            )}
+
+            <div className="px-2.5 py-1.5 h-full flex items-center justify-between gap-2">
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-xs truncate group-hover:text-primary transition-colors">
+                  {event.title}
+                </h3>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                  <Clock className="h-3 w-3" />
+                  <span>
+                    {event.all_day
+                      ? formatDate(startDate)
+                      : `${formatTime(startDate)} - ${formatTime(endDate)}`}
+                  </span>
+                </div>
+                <Badge
+                  variant={getPriorityVariant(event.priority)}
+                  className="text-[10px] px-1.5 py-0.5 leading-none"
+                >
+                  {priorityLabels[event.priority as keyof typeof priorityLabels]}
+                </Badge>
+              </div>
+            </div>
+          </motion.div>
+        );
+      }
+
+      // Layout compacto padrão (usado para eventos com duração maior)
       return (
         <motion.div
           ref={ref}

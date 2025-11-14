@@ -112,7 +112,14 @@ function DraggableEvent({
     const end = new Date(event.end_ts);
     const dayStart = startOfDay(selectedDate);
     const top = Math.max(0, differenceInMinutes(start, dayStart) * PX_PER_MINUTE);
-    const height = Math.max(60, differenceInMinutes(end, start) * PX_PER_MINUTE);
+
+    // Altura proporcional à duração real do evento.
+    // Cada hora tem 64px (HOUR_HEIGHT_PX), então 30 minutos ≈ 32px.
+    // Definimos uma altura mínima visual de meia hora para eventos muito curtos,
+    // mas SEM forçar todos os eventos a parecerem de 1h.
+    const rawHeight = differenceInMinutes(end, start) * PX_PER_MINUTE;
+    const minHeight = HOUR_HEIGHT_PX / 2; // 30 minutos
+    const height = Math.max(minHeight, rawHeight);
     
     // Calcular empilhamento para eventos sobrepostos
     const overlappingEvents = allEvents.filter(e => {
@@ -265,6 +272,7 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
   // Estados para drag and drop
   const [activeEvent, setActiveEvent] = useState<Event | null>(null);
   const [draggedEventId, setDraggedEventId] = useState<string | null>(null);
+  const [dragStartPointerY, setDragStartPointerY] = useState<number | null>(null);
 
   // Configuração dos sensores para drag and drop
   const sensors = useSensors(
@@ -294,6 +302,14 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
     const eventId = activeId.startsWith('event-') ? activeId.replace('event-', '') : activeId;
     const eventData = dayEvents.find(e => e.id === eventId);
     
+    // Capturar posição inicial do ponteiro em Y
+    const activatorEvent = dragEvent.activatorEvent as any;
+    if (activatorEvent && typeof activatorEvent.clientY === 'number') {
+      setDragStartPointerY(activatorEvent.clientY);
+    } else {
+      setDragStartPointerY(null);
+    }
+    
     // Só iniciar drag se for um evento válido
     if (eventData) {
       setActiveEvent(eventData);
@@ -307,21 +323,29 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
   }, []);
 
   const handleDragEnd = useCallback((dragEvent: DragEndEvent) => {
-    if (!activeEvent || !onEventMove) {
+    if (!gridRef.current || !activeEvent || !onEventMove) {
       setActiveEvent(null);
       setDraggedEventId(null);
+      setDragStartPointerY(null);
       return;
     }
 
-    // Converte o delta vertical em minutos na grade
+    const gridRect = gridRef.current.getBoundingClientRect();
+
+    // Calcula a posição final do ponteiro em relação ao grid
+    const startPointerY = dragStartPointerY ?? (gridRect.top + mapTimeToY(new Date(activeEvent.start_ts)));
+    const endPointerY = startPointerY + dragEvent.delta.y;
+    const relativeY = endPointerY - gridRect.top;
+
+    // Converte a posição final do ponteiro em horário absoluto (snap para a grade)
+    // Aqui a linha representa o INÍCIO do evento: se o mouse está em 07:00,
+    // o evento será salvo iniciando exatamente às 07:00.
+    const newStartTime = mapYToTime(relativeY);
+
+    // Mantém a duração original do evento
     const originalStart = new Date(activeEvent.start_ts);
     const originalEnd = new Date(activeEvent.end_ts);
     const duration = differenceInMinutes(originalEnd, originalStart);
-
-    const rawMinutesDelta = dragEvent.delta.y / PX_PER_MINUTE;
-    const snappedMinutesDelta = Math.round(rawMinutesDelta / SNAP_MINUTES) * SNAP_MINUTES;
-
-    const newStartTime = addMinutes(originalStart, snappedMinutesDelta);
     const newEndTime = addMinutes(newStartTime, duration);
 
     // Chamar callback para mover o evento
@@ -329,7 +353,8 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
     
     setActiveEvent(null);
     setDraggedEventId(null);
-  }, [activeEvent, onEventMove]);
+    setDragStartPointerY(null);
+  }, [activeEvent, onEventMove, dragStartPointerY, mapTimeToY, mapYToTime]);
 
   useEffect(() => {
     const updateNowIndicator = () => {
