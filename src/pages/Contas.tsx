@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useFinancialData } from '@/hooks/useFinancialData';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -8,6 +8,7 @@ import { Wallet, ArrowDownIcon, ArrowUpIcon, CheckCircle2, Plus } from 'lucide-r
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { FinanceRecordForm } from '@/components/FinanceRecordForm';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type TabFilter = 'a-pagar' | 'a-receber' | 'pagas' | 'recebidas';
 
@@ -15,17 +16,29 @@ export default function Contas() {
   const { cliente } = useAuth();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [tabFilter, setTabFilter] = useState<TabFilter>('a-pagar');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   
-  // Buscar TODOS os registros sem filtros para calcular as métricas corretamente
+  // Buscar registros com filtro de categoria aplicado no hook
   const { 
-    records: allRecords, 
+    records, 
     loading, 
     refetch,
     getTotalPendingBills,
     getTotalPendingIncome,
     getTotalPaidBills,
     getTotalReceivedIncome
-  } = useFinancialData(undefined, 'all', 'all', 'all');
+  } = useFinancialData(undefined, categoryFilter, 'all', 'all');
+
+  // Obter categorias únicas dos registros para o Select
+  const categories = useMemo(() => {
+    const uniqueCategories = new Set<string>();
+    records.forEach(record => {
+      if (record.categoria) {
+        uniqueCategories.add(record.categoria);
+      }
+    });
+    return Array.from(uniqueCategories).sort();
+  }, [records]);
 
   // Determinar tipo e status baseado na tab selecionada para filtrar apenas a exibição
   const typeFilter: 'saida' | 'entrada' = 
@@ -34,7 +47,7 @@ export default function Contas() {
     tabFilter === 'pagas' || tabFilter === 'recebidas' ? 'pago' : 'pendente';
 
   // Filtrar registros para exibição baseado na tab selecionada
-  const filteredRecords = allRecords.filter(record => {
+  const filteredRecords = records.filter(record => {
     const matchesType = record.tipo === typeFilter;
     const matchesStatus = record.status === statusFilter;
     return matchesType && matchesStatus;
@@ -136,7 +149,7 @@ export default function Contas() {
 
   return (
     <div className="py-4 sm:py-6 lg:py-8 space-y-8">
-      {/* Header */}
+      {/* Header + Filtro de Categoria */}
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         <div className="animate-fade-in">
           <h1 className="text-4xl font-extrabold bg-gradient-to-br from-text via-brand-700 to-brand-500 bg-clip-text text-transparent drop-shadow-sm">
@@ -147,18 +160,35 @@ export default function Contas() {
           </p>
         </div>
 
-        {/* Desktop New Transaction Button */}
-        <div className="hidden md:block animate-fade-in" style={{ animationDelay: '100ms' }}>
-          <button
-            onClick={() => setIsFormOpen(true)}
-            className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-[hsl(var(--brand-900))] to-[hsl(var(--brand-700))] px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:scale-105 hover:shadow-lg"
-          >
-            <span className="relative z-10 flex items-center">
-              <Plus className="mr-2 h-4 w-4 transition-transform group-hover:scale-110 group-hover:rotate-90" />
-              Nova Transação
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-          </button>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 animate-fade-in" style={{ animationDelay: '100ms' }}>
+          {/* Filtro de Categoria */}
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <SelectTrigger className="w-full sm:w-[220px]">
+              <SelectValue placeholder="Todas as categorias" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas as categorias</SelectItem>
+              {categories.map((category) => (
+                <SelectItem key={category} value={category}>
+                  {category}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Desktop New Transaction Button */}
+          <div className="hidden md:block">
+            <button
+              onClick={() => setIsFormOpen(true)}
+              className="group relative inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-[hsl(var(--brand-900))] to-[hsl(var(--brand-700))] px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:scale-105 hover:shadow-lg"
+            >
+              <span className="relative z-10 flex items-center">
+                <Plus className="mr-2 h-4 w-4 transition-transform group-hover:scale-110 group-hover:rotate-90" />
+                Nova Transação
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+            </button>
+          </div>
         </div>
       </div>
 

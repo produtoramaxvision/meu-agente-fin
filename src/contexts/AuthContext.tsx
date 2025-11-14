@@ -420,14 +420,86 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (error) {
-        // Mapear erros do Supabase para mensagens amigáveis
-        let errorMessage = 'Erro ao criar conta';
-        if (error.message.includes('User already registered')) {
-          errorMessage = 'Este telefone já está cadastrado';
-        } else if (error.message.includes('Password should be at least')) {
-          errorMessage = 'Senha deve ter no mínimo 8 caracteres';
-        } else if (error.message.includes('Invalid email')) {
-          errorMessage = 'Email inválido';
+        // Mapear erros do Supabase para mensagens amigáveis e específicas
+        let errorMessage = 'Erro ao criar conta. Tente novamente.';
+        
+        // Verificar códigos de erro específicos primeiro
+        const errorCode = error.status || error.message;
+        const errorMsgLower = error.message.toLowerCase();
+        
+        // Erros relacionados a email duplicado
+        if (
+          errorMsgLower.includes('user already registered') ||
+          errorMsgLower.includes('email already registered') ||
+          errorMsgLower.includes('already exists') ||
+          errorCode === 422
+        ) {
+          errorMessage = 'Este email já está cadastrado. Use outro email ou faça login.';
+        }
+        // Erros relacionados a senha
+        else if (
+          errorMsgLower.includes('password should be at least') ||
+          errorMsgLower.includes('password is too short') ||
+          errorMsgLower.includes('password_length')
+        ) {
+          errorMessage = 'Senha deve ter no mínimo 8 caracteres.';
+        }
+        else if (
+          errorMsgLower.includes('weak password') ||
+          errorMsgLower.includes('password is too weak')
+        ) {
+          errorMessage = 'Senha muito fraca. Use uma senha mais forte com letras, números e caracteres especiais.';
+        }
+        // Erros relacionados a email inválido
+        else if (
+          errorMsgLower.includes('invalid email') ||
+          errorMsgLower.includes('email format') ||
+          errorCode === 400
+        ) {
+          errorMessage = 'Email inválido. Verifique o formato do email.';
+        }
+        // Erros relacionados a rate limiting
+        else if (
+          errorMsgLower.includes('rate limit') ||
+          errorMsgLower.includes('too many requests') ||
+          errorMsgLower.includes('email rate limit') ||
+          errorCode === 429
+        ) {
+          errorMessage = 'Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.';
+        }
+        // Erros relacionados a signup desabilitado
+        else if (
+          errorMsgLower.includes('signup disabled') ||
+          errorMsgLower.includes('signups are disabled')
+        ) {
+          errorMessage = 'Cadastros estão temporariamente desabilitados. Tente novamente mais tarde.';
+        }
+        // Erros relacionados a domínio de email não permitido
+        else if (
+          errorMsgLower.includes('email domain') ||
+          errorMsgLower.includes('email not allowed') ||
+          errorMsgLower.includes('domain not allowed')
+        ) {
+          errorMessage = 'Este domínio de email não é permitido. Use outro email.';
+        }
+        // Erros relacionados a configuração
+        else if (
+          errorMsgLower.includes('redirect url') ||
+          errorMsgLower.includes('redirect_to')
+        ) {
+          errorMessage = 'Erro de configuração. Entre em contato com o suporte.';
+        }
+        // Erro genérico com mais contexto
+        else {
+          // Log detalhado em desenvolvimento para debugging
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Signup error details:', {
+              message: error.message,
+              status: error.status,
+              code: errorCode,
+            });
+          }
+          errorMessage = `Erro ao criar conta: ${error.message || 'Tente novamente mais tarde.'}`;
         }
         
         throw new Error(errorMessage);
@@ -475,33 +547,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     /**
-     * CORREÇÃO DO LOGOUT - FASE 3
-     * Implementando loading state e melhorias de UX
-     * Data: 2025-01-16
+     * LOGOUT SEGURO - FASE 4
+     * - Verifica se há sessão antes de chamar signOut
+     * - Usa scope 'local' para evitar erros desnecessários
+     * - Limpa estado e storage mesmo em caso de erro
+     * Data: 2025-01-16 (atualizado)
      */
     
     setIsLoggingOut(true);
     
     try {
-      // 1. Limpar estado local primeiro para evitar race conditions
+      // 1. Verificar se há sessão ativa
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (session) {
+        // 2. Fazer logout no Supabase primeiro (escopo local)
+        const { error } = await supabase.auth.signOut({ scope: 'local' });
+
+        if (error) {
+          console.error('Logout error:', error);
+          // Se a sessão já não existir, apenas logar e continuar
+          if (!error.message?.toLowerCase().includes('auth session missing')) {
+            // Outros erros são logados mas não bloqueiam limpeza local
+            console.warn('Continuando logout mesmo com erro do Supabase Auth.');
+          }
+        }
+      } else {
+        console.warn('⚠️ Nenhuma sessão ativa encontrada ao tentar logout. Limpando estado local mesmo assim.');
+      }
+
+      // 3. Limpar estado local e storages depois do signOut
       setCliente(null);
       setUser(null);
       setSession(null);
       
-      // 2. Limpar dados de sessão e localStorage
       sessionStorage.removeItem('auth_phone');
       sessionStorage.removeItem('auth_avatar');
       sessionStorage.removeItem('agendaView');
       localStorage.removeItem('login_failed_attempts');
       localStorage.removeItem('login_blocked_until');
-      
-      // 3. Fazer logout no Supabase
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        console.error('Logout error:', error);
-        // Continuar mesmo com erro - estado já foi limpo
-      }
       
       // 4. Mostrar feedback e navegar
       toast.info('Sessão encerrada');
@@ -509,7 +593,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
     } catch (err) {
       console.error('Logout error:', err);
-      // Garantir navegação mesmo com erro
+      // Em qualquer erro, garantir limpeza local e navegação
+      setCliente(null);
+      setUser(null);
+      setSession(null);
+      sessionStorage.clear();
+      localStorage.removeItem('login_failed_attempts');
+      localStorage.removeItem('login_blocked_until');
       navigate('/auth/login');
     } finally {
       setIsLoggingOut(false);

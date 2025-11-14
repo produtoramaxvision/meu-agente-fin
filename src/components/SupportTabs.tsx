@@ -38,13 +38,15 @@ import {
   Clock,
   XCircle,
   Loader2,
-  Eye
+  Eye,
+  List
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { sanitizeText } from '@/lib/sanitize';
 import { useSupportTickets, getSupportSLA, SupportTicket } from '@/hooks/useSupportTickets';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePermissions } from '@/hooks/usePermissions';
+import { useNavigate } from 'react-router-dom';
 
 const supportTicketSchema = z.object({
   type: z.enum(['support', 'bug', 'suggestion'], {
@@ -242,6 +244,7 @@ function TicketCard({ ticket }: { ticket: SupportTicket }) {
 export function SupportFormTab({ onSuccess }: { onSuccess: (ticketNumber: string) => void }) {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [ticketNumber, setTicketNumber] = useState<string>('');
+  const navigate = useNavigate();
   
   const { cliente } = useAuth();
   const { permissions, getUpgradeMessage } = usePermissions();
@@ -273,7 +276,7 @@ export function SupportFormTab({ onSuccess }: { onSuccess: (ticketNumber: string
             </p>
           </div>
           <Button 
-            onClick={() => window.location.href = '/perfil?tab=plans'}
+            onClick={() => navigate('/perfil?tab=plans')}
             className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
           >
             Ver Planos Disponíveis
@@ -538,6 +541,7 @@ export function SupportFormTab({ onSuccess }: { onSuccess: (ticketNumber: string
 }
 
 export function SupportTicketsTab() {
+  const navigate = useNavigate();
   const { permissions, getUpgradeMessage } = usePermissions();
   const { 
     tickets, 
@@ -563,7 +567,7 @@ export function SupportTicketsTab() {
             </p>
           </div>
           <Button 
-            onClick={() => window.location.href = '/perfil?tab=plans'}
+            onClick={() => navigate('/perfil?tab=plans')}
             className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
           >
             Ver Planos Disponíveis

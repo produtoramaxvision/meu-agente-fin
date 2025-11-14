@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { startOfWeek, addDays, isSameDay, format, differenceInDays, addMinutes } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Card } from '@/components/ui/card';
@@ -109,63 +109,77 @@ export default function AgendaGridWeek({ weekDate, events, calendars, isLoading,
     onEventClick?: (evt: Event) => void;
   }
 
-  function DraggableEvent({ event, calendarColor, onEventClick }: DraggableEventProps) {
-    const {
-      attributes,
-      listeners,
-      setNodeRef,
-      transform,
-      transition,
-      isDragging,
-    } = useDraggable({
-      id: `event-${event.id}`,
-    });
+  const DraggableEvent = React.forwardRef<HTMLDivElement, DraggableEventProps>(
+    ({ event, calendarColor, onEventClick }, ref) => {
+      const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+      } = useDraggable({
+        id: `event-${event.id}`,
+      });
 
-    const style = {
-      transform: CSS.Transform.toString(transform),
-      transition,
-    };
+      // Combinar refs: setNodeRef do dnd-kit + ref externo
+      const combinedRef = useCallback((node: HTMLDivElement | null) => {
+        setNodeRef(node);
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          ref.current = node;
+        }
+      }, [setNodeRef, ref]);
 
-    return (
-      <motion.div
-        ref={setNodeRef}
-        style={style}
-        className="cursor-grab active:cursor-grabbing"
-        {...attributes}
-        {...listeners}
-        onClick={(e) => { 
-          e.stopPropagation(); 
-          onEventClick?.(event);
-        }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ 
-          opacity: isDragging ? 0.3 : 1, 
-          scale: isDragging ? 1.05 : 1,
-        }}
-        whileHover={{ 
-          scale: 1.02,
-          transition: { duration: 0.2 }
-        }}
-        whileTap={{ 
-          scale: 0.98,
-          transition: { duration: 0.1 }
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 300,
-          damping: 30,
-          mass: 0.8
-        }}
-      >
-        <EventCard
-          event={event}
-          variant="compact"
-          calendarColor={calendarColor}
-          className="text-xs"
-        />
-      </motion.div>
-    );
-  }
+      const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+      };
+
+      return (
+        <motion.div
+          ref={combinedRef}
+          style={style}
+          className="cursor-grab active:cursor-grabbing"
+          {...attributes}
+          {...listeners}
+          onClick={(e) => { 
+            e.stopPropagation(); 
+            onEventClick?.(event);
+          }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ 
+            opacity: isDragging ? 0.3 : 1, 
+            scale: isDragging ? 1.05 : 1,
+          }}
+          whileHover={{ 
+            scale: 1.02,
+            transition: { duration: 0.2 }
+          }}
+          whileTap={{ 
+            scale: 0.98,
+            transition: { duration: 0.1 }
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 30,
+            mass: 0.8
+          }}
+        >
+          <EventCard
+            event={event}
+            variant="compact"
+            calendarColor={calendarColor}
+            className="text-xs"
+          />
+        </motion.div>
+      );
+    }
+  );
+
+  DraggableEvent.displayName = 'DraggableEvent';
 
   // Componente para dias droppable
   interface DroppableDayProps {

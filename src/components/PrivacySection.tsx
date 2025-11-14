@@ -7,6 +7,17 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+  AlertDialogDescription,
+} from '@/components/ui/alert-dialog';
 import { 
   Shield, 
   Download, 
@@ -16,7 +27,8 @@ import {
   User,
   Database,
   MessageSquare,
-  Settings
+  Settings,
+  Loader2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -46,6 +58,8 @@ export function PrivacySection() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     loadPrivacySettings();
@@ -162,40 +176,49 @@ export function PrivacySection() {
   };
 
   const handleDataDeletion = async () => {
-    if (!confirm('ATENÇÃO: Esta ação irá deletar TODOS os seus dados permanentemente. Esta ação não pode ser desfeita. Tem certeza?')) {
-      return;
-    }
+    setIsDeleting(true);
 
-    if (!confirm('Confirmação final: Você tem certeza absoluta de que deseja deletar todos os seus dados?')) {
-      return;
-    }
+    // Mostrar feedback de carregamento enquanto processa a exclusão
+    const loadingToast = toast.loading("Excluindo seus dados...", {
+      description: "Esta operação pode levar alguns segundos.",
+    });
 
     try {
-      setIsSaving(true);
-      
       // Usar função do Supabase para exclusão completa e segura
       const { data, error } = await supabase.rpc('delete_user_data');
 
-      if (error) throw error;
-
-      if (!data.success) {
-        throw new Error(data.error || 'Erro na exclusão');
+      if (error) {
+        toast.dismiss(loadingToast);
+        throw error;
       }
 
-      toast({
-        title: "Dados deletados",
-        description: `Todos os seus dados foram removidos permanentemente. Tabelas afetadas: ${data.deleted_tables.join(', ')}`,
+      if (!data || !data.success) {
+        toast.dismiss(loadingToast);
+        throw new Error((data as any)?.error || 'Erro na exclusão');
+      }
+
+      toast.dismiss(loadingToast);
+      toast.success("Dados deletados com sucesso", {
+        description: `Todos os seus dados foram removidos permanentemente. Tabelas afetadas: ${data.deleted_tables?.join(', ') || 'N/A'}`,
+        duration: 5000,
       });
 
+      // Fechar o diálogo de confirmação
+      setShowDeleteDialog(false);
+
+      // Redirecionar após pequena pausa
       setTimeout(() => {
         window.location.href = '/auth/login';
       }, 2000);
-
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao deletar dados:', error);
-      toast.error("Não foi possível deletar seus dados. Tente novamente.");
+      toast.dismiss(loadingToast);
+      toast.error("Não foi possível deletar seus dados", {
+        description: error?.message || "Tente novamente ou entre em contato com o suporte.",
+        duration: 5000,
+      });
     } finally {
-      setIsSaving(false);
+      setIsDeleting(false);
     }
   };
 
@@ -409,15 +432,61 @@ export function PrivacySection() {
               Exportar Meus Dados
             </Button>
 
-            <Button 
-              onClick={handleDataDeletion}
-              variant="destructive"
-              className="flex items-center gap-2"
-              disabled={isSaving}
-            >
-              <Trash2 className="h-4 w-4" />
-              Deletar Todos os Dados
-            </Button>
+            <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="destructive"
+                  className="flex items-center gap-2"
+                  disabled={isSaving || isDeleting}
+                >
+                  {isDeleting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Excluindo...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="h-4 w-4" />
+                      Deletar Todos os Dados
+                    </>
+                  )}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>⚠️ Atenção: Exclusão Permanente</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esta ação irá deletar <strong>TODOS</strong> os seus dados permanentemente:
+                    <ul className="list-disc list-inside mt-2 space-y-1">
+                      <li>Registros financeiros</li>
+                      <li>Tarefas e eventos</li>
+                      <li>Metas e configurações</li>
+                      <li>Notificações e histórico</li>
+                    </ul>
+                    <p className="mt-2 font-semibold text-destructive">
+                      Esta ação NÃO pode ser desfeita. Tem certeza absoluta de que deseja continuar?
+                    </p>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDataDeletion}
+                    disabled={isDeleting}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {isDeleting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Excluindo...
+                      </>
+                    ) : (
+                      'Sim, deletar tudo'
+                    )}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </CardContent>
       </Card>

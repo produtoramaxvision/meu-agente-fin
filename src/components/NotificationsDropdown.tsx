@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useNotificationsData } from '@/hooks/useNotificationsData';
 import { NotificationItem } from './NotificationItem';
 import { SkeletonNotification } from './SkeletonNotification';
@@ -5,11 +6,16 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { BellRing, CheckCheck, Settings, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
 
 export function NotificationsDropdown() {
   const { notifications, unreadCount, markAsRead, markAsUnread, deleteNotification, markAllAsRead, loading, refetch } = useNotificationsData();
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Garantir que, sempre que o dropdown for aberto (componente montado),
+  // as notificações sejam buscadas novamente para refletir o estado mais recente.
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
