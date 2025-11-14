@@ -60,6 +60,7 @@ export function PrivacySection() {
   const [isSaving, setIsSaving] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     loadPrivacySettings();
@@ -141,11 +142,17 @@ export function PrivacySection() {
   };
 
   const handleDataExport = async () => {
-    try {
-      toast.loading("Exportando dados...", {
-        description: "Preparando arquivo com seus dados pessoais",
-      });
+    if (!cliente?.phone) {
+      toast.error("Não foi possível identificar sua conta para exportação.");
+      return;
+    }
 
+    setIsExporting(true);
+    const loadingToast = toast.loading("Exportando dados...", {
+      description: "Preparando arquivo com seus dados pessoais",
+    });
+
+    try {
       // Usar função do Supabase para exportação completa
       const { data, error } = await supabase.rpc('export_user_data');
 
@@ -165,13 +172,19 @@ export function PrivacySection() {
       link.click();
       document.body.removeChild(link);
 
+      toast.dismiss(loadingToast);
       toast.success("Dados exportados", {
         description: "Seus dados pessoais foram baixados com sucesso.",
       });
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao exportar dados:', error);
-      toast.error("Não foi possível exportar seus dados. Tente novamente.");
+      toast.dismiss(loadingToast);
+      toast.error("Não foi possível exportar seus dados", {
+        description: error?.message || "Tente novamente ou contate o suporte.",
+      });
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -427,9 +440,19 @@ export function PrivacySection() {
               onClick={handleDataExport}
               variant="outline"
               className="flex items-center gap-2"
+              disabled={isExporting}
             >
-              <Download className="h-4 w-4" />
-              Exportar Meus Dados
+              {isExporting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Exportando...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4" />
+                  Exportar Meus Dados
+                </>
+              )}
             </Button>
 
             <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
