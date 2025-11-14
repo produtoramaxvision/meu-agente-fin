@@ -9,7 +9,6 @@ import { EventCard } from './EventCard';
 import { cn } from '@/lib/utils';
 import {
   DndContext,
-  DragOverlay,
   useSensor,
   useSensors,
   PointerSensor,
@@ -174,6 +173,7 @@ function DraggableEvent({
         className="absolute left-2 right-4 cursor-grab active:cursor-grabbing"
         {...attributes}
         {...listeners}
+        data-event-id={event.id}
         onClick={handleClick}
         onDoubleClick={handleDoubleClick}
         initial={prefersReducedMotion() ? {} : { opacity: 0, scale: 0.8, y: -20 }}
@@ -289,64 +289,47 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
 
   // Handlers para drag and drop
   const handleDragStart = useCallback((dragEvent: DragStartEvent) => {
-    const eventId = dragEvent.active.id as string;
+    const activeId = dragEvent.active.id as string;
+    // IDs do Sortable são no formato "event-<id_real>", então precisamos remover o prefixo
+    const eventId = activeId.startsWith('event-') ? activeId.replace('event-', '') : activeId;
     const eventData = dayEvents.find(e => e.id === eventId);
     
     // Só iniciar drag se for um evento válido
-    if (eventData && eventId.startsWith('event-')) {
+    if (eventData) {
       setActiveEvent(eventData);
-      setDraggedEventId(eventId);
+      setDraggedEventId(activeId);
     }
   }, [dayEvents]);
 
-  const handleDragOver = useCallback((dragEvent: DragOverEvent) => {
-    const { active, over } = dragEvent;
-    
-    if (!over || !gridRef.current) return;
-
-    const gridRect = gridRef.current.getBoundingClientRect();
-    const y = dragEvent.over?.rect?.top ? dragEvent.over.rect.top - gridRect.top : 0;
-    const newTime = mapYToTime(y);
-    
-    if (activeEvent && onEventMove) {
-      const startTime = new Date(activeEvent.start_ts);
-      const endTime = new Date(activeEvent.end_ts);
-      const duration = differenceInMinutes(endTime, startTime);
-      const newEndTime = addMinutes(newTime, duration);
-      
-      // Atualizar visualmente o evento durante o drag
-      setActiveEvent({
-        ...activeEvent,
-        start_ts: newTime.toISOString(),
-        end_ts: newEndTime.toISOString(),
-      });
-    }
-  }, [activeEvent, mapYToTime, onEventMove]);
+  // Durante o drag, deixamos o dnd-kit controlar apenas o movimento visual.
+  const handleDragOver = useCallback((_dragEvent: DragOverEvent) => {
+    return;
+  }, []);
 
   const handleDragEnd = useCallback((dragEvent: DragEndEvent) => {
-    const { active, over } = dragEvent;
-    
-    if (!over || !gridRef.current || !activeEvent || !onEventMove) {
+    if (!activeEvent || !onEventMove) {
       setActiveEvent(null);
       setDraggedEventId(null);
       return;
     }
 
-    const gridRect = gridRef.current.getBoundingClientRect();
-    const y = dragEvent.over?.rect?.top ? dragEvent.over.rect.top - gridRect.top : 0;
-    const newTime = mapYToTime(y);
-    
-    const startTime = new Date(activeEvent.start_ts);
-    const endTime = new Date(activeEvent.end_ts);
-    const duration = differenceInMinutes(endTime, startTime);
-    const newEndTime = addMinutes(newTime, duration);
+    // Converte o delta vertical em minutos na grade
+    const originalStart = new Date(activeEvent.start_ts);
+    const originalEnd = new Date(activeEvent.end_ts);
+    const duration = differenceInMinutes(originalEnd, originalStart);
+
+    const rawMinutesDelta = dragEvent.delta.y / PX_PER_MINUTE;
+    const snappedMinutesDelta = Math.round(rawMinutesDelta / SNAP_MINUTES) * SNAP_MINUTES;
+
+    const newStartTime = addMinutes(originalStart, snappedMinutesDelta);
+    const newEndTime = addMinutes(newStartTime, duration);
 
     // Chamar callback para mover o evento
-    onEventMove(activeEvent.id, newTime, newEndTime);
+    onEventMove(activeEvent.id, newStartTime, newEndTime);
     
     setActiveEvent(null);
     setDraggedEventId(null);
-  }, [activeEvent, mapYToTime, onEventMove]);
+  }, [activeEvent, onEventMove]);
 
   useEffect(() => {
     const updateNowIndicator = () => {
@@ -510,8 +493,21 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
             ref={gridRef}
             className="relative border-l cursor-crosshair"
             onPointerMove={debouncedHandlePointerMove}
-            onPointerDown={handlePointerDown}
-            onPointerUp={handlePointerUp}
+            onPointerDown={(e) => {
+              // Evita que a seleção seja iniciada ao clicar em um evento existente
+              if ((e.target as HTMLElement).closest('[data-event-id]')) {
+                return;
+              }
+              handlePointerDown(e);
+            }}
+            onPointerUp={(e) => {
+              // Não finalizar seleção se o pointer up aconteceu em um evento
+              if ((e.target as HTMLElement).closest('[data-event-id]')) {
+                setSelection(null);
+                return;
+              }
+              handlePointerUp(e);
+            }}
             onPointerLeave={handlePointerLeave}
             onDoubleClick={handleDoubleClick}
             onClick={handleGridClick}
@@ -639,36 +635,8 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
           </div>
         </div>
 
-        <DragOverlay>
-          <AnimatePresence>
-            {activeEvent && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-                animate={{ 
-                  opacity: 0.9, 
-                  scale: 1.1, 
-                  rotate: 3,
-                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-                }}
-                exit={{ opacity: 0, scale: 0.8, rotate: 0 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 400,
-                  damping: 25,
-                  mass: 0.8
-                }}
-                className="cursor-grabbing"
-              >
-                <EventCard
-                  event={activeEvent}
-                  variant="compact"
-                  calendarColor={calendarColorMap.get(activeEvent.calendar_id) || '#3b82f6'}
-                  className="shadow-2xl border-2 border-white/20"
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </DragOverlay>
+        {/* Removemos o DragOverlay para que o próprio card siga o mouse,
+            evitando qualquer deslocamento visual entre o cursor e o evento. */}
         </DndContext>
       </Card>
       
