@@ -371,6 +371,44 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
     return () => clearInterval(interval);
   }, [date]);
 
+  // ✅ CORREÇÃO: Listener global para fechar popovers ao clicar em qualquer lugar fora deles
+  useEffect(() => {
+    const handleDocumentClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      
+      // Verificar se há um popover aberto (EventQuickCreatePopover ou EventPopover)
+      const hasOpenPopover = popoverState.open || openEventPopover !== null;
+      if (!hasOpenPopover) return;
+      
+      // Verificar se o clique foi dentro de qualquer popover
+      const isInsidePopover = target.closest('[data-slot="popover-content"], [data-radix-popover-content]');
+      if (isInsidePopover) return;
+      
+      // Verificar se o clique foi dentro de um Dialog (não fechar popover se Dialog está aberto)
+      const isInsideDialog = target.closest('[role="dialog"]');
+      if (isInsideDialog) return;
+      
+      // Se o clique foi fora de qualquer popover e Dialog, fechar todos os popovers
+      // Fechamos o EventQuickCreatePopover manualmente
+      if (popoverState.open) {
+        setPopoverState({ open: false, anchor: null, eventData: {} });
+      }
+      
+      // Fechar EventPopover se estiver aberto
+      // O Radix UI Popover já fecha automaticamente, mas garantimos que funcione
+      if (openEventPopover) {
+        setOpenEventPopover(null);
+      }
+    };
+    
+    // Adicionar listener no documento para capturar cliques em qualquer lugar
+    // Usamos 'mousedown' para capturar antes que outros handlers processem
+    document.addEventListener('mousedown', handleDocumentClick, true);
+    return () => {
+      document.removeEventListener('mousedown', handleDocumentClick, true);
+    };
+  }, [popoverState.open, openEventPopover]);
+
   const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!gridRef.current) return;
     const gridRect = gridRef.current.getBoundingClientRect();
@@ -390,16 +428,91 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
     [handlePointerMove]
   );
 
+  // Função helper para verificar se há um Dialog aberto
+  const isDialogOpen = useCallback(() => {
+    // Verificar se há um Dialog do Radix UI aberto no DOM
+    // O Radix UI adiciona role="dialog" e data-state="open" quando o Dialog está aberto
+    // Verificamos pelo elemento DialogContent que tem role="dialog"
+    const openDialog = document.querySelector('[role="dialog"][data-state="open"]');
+    return !!openDialog;
+  }, []);
+
+  // Função helper para verificar se há um Popover aberto
+  const isPopoverOpen = useCallback(() => {
+    // Verificar se há um Popover do Radix UI aberto no DOM
+    // O Radix UI adiciona data-state="open" no PopoverContent quando está aberto
+    // Verificamos por data-slot="popover-content" ou por role="dialog" (alguns popovers podem usar isso)
+    const openPopover = document.querySelector('[data-slot="popover-content"][data-state="open"], [data-radix-popover-content][data-state="open"]');
+    return !!openPopover;
+  }, []);
+
+  // Função helper para verificar se o clique está dentro de um Popover
+  const isClickInsidePopover = useCallback((e: React.PointerEvent | React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    // Verificar se o clique foi dentro do conteúdo do popover ou em um elemento filho
+    // Verificamos por data-slot="popover-content" ou data-radix-popover-content
+    const popoverContent = target.closest('[data-slot="popover-content"], [data-radix-popover-content]');
+    return !!popoverContent;
+  }, []);
+
+  // Função helper para verificar se o clique está dentro da grade da agenda
+  const isClickInsideGrid = useCallback((e: React.PointerEvent | React.MouseEvent) => {
+    if (!gridRef.current) return false;
+    const gridRect = gridRef.current.getBoundingClientRect();
+    return (
+      e.clientX >= gridRect.left &&
+      e.clientX <= gridRect.right &&
+      e.clientY >= gridRect.top &&
+      e.clientY <= gridRect.bottom
+    );
+  }, []);
+
   const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!gridRef.current || e.button !== 0) return;
+    
+    // ✅ CORREÇÃO: Se há um Dialog aberto, não processar cliques na grade
+    // Isso permite que cliques no overlay do Dialog funcionem normalmente (para fechar o Dialog)
+    // O overlay do Dialog está acima da grade (z-50), então cliques no overlay não chegam aqui
+    // Mas garantimos que se algum clique chegar aqui quando o Dialog está aberto, não processamos
+    if (isDialogOpen()) {
+      // Não processar - deixar o Dialog fechar automaticamente ao clicar no overlay
+      return;
+    }
+    
+    // ✅ CORREÇÃO: Se há um Popover aberto e o clique não está dentro dele, permitir que feche
+    // Não processar o clique na grade, mas NÃO bloquear a propagação para que o Radix UI possa fechar o popover
+    if (isPopoverOpen() && !isClickInsidePopover(e)) {
+      // Não fazer nada - deixar o evento propagar para que o Radix UI Popover possa fechar
+      return;
+    }
+    
     const gridRect = gridRef.current.getBoundingClientRect();
     const y = e.clientY - gridRect.top;
     const startTime = mapYToTime(y);
     setSelection({ start: y, end: y, startTime });
-  }, [mapYToTime]);
+  }, [mapYToTime, isDialogOpen, isPopoverOpen, isClickInsidePopover]);
 
   const handlePointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!gridRef.current) return;
+    
+    // ✅ CORREÇÃO: Se há um Dialog aberto, não processar cliques na grade
+    // Isso permite que cliques no overlay do Dialog funcionem normalmente (para fechar o Dialog)
+    // O overlay do Dialog está acima da grade (z-50), então cliques no overlay não chegam aqui
+    // Mas garantimos que se algum clique chegar aqui quando o Dialog está aberto, não processamos
+    if (isDialogOpen()) {
+      setSelection(null);
+      // Não processar - deixar o Dialog fechar automaticamente ao clicar no overlay
+      return;
+    }
+    
+    // ✅ CORREÇÃO: Se há um Popover aberto e o clique não está dentro dele, permitir que feche
+    // Não processar o clique na grade, mas NÃO bloquear a propagação para que o Radix UI possa fechar o popover
+    if (isPopoverOpen() && !isClickInsidePopover(e)) {
+      setSelection(null);
+      // Não fazer nada - deixar o evento propagar para que o Radix UI Popover possa fechar
+      return;
+    }
+    
     const gridRect = gridRef.current.getBoundingClientRect();
     const y = e.clientY - gridRect.top;
 
@@ -439,8 +552,8 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
     
     // Fechar qualquer EventPopover aberto quando abrir EventQuickCreatePopover
     // Mas preservar o último evento clicado para permitir reabertura
-    setOpenEventPopover(null);
-  }, [mapYToTime, selection, setOpenEventPopover]);
+      setOpenEventPopover(null);
+  }, [mapYToTime, selection, setOpenEventPopover, isDialogOpen, isPopoverOpen, isClickInsidePopover]);
 
   // handleGridClick agora é um fallback caso o handlePointerUp não capture o clique
   // Normalmente não será necessário, mas mantemos para garantir compatibilidade
@@ -448,6 +561,20 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
     // Prevenir se já foi tratado por handlePointerUp
     // Verificar se o popover já está sendo aberto
     if (popoverState.open) return;
+    
+    // ✅ CORREÇÃO: Se há um Dialog aberto, não processar cliques na grade
+    // Isso permite que cliques no overlay do Dialog funcionem normalmente (para fechar o Dialog)
+    if (isDialogOpen()) {
+      // Não processar - deixar o Dialog fechar automaticamente ao clicar no overlay
+      return;
+    }
+    
+    // ✅ CORREÇÃO: Se há um Popover aberto e o clique não está dentro dele, permitir que feche
+    // Não processar o clique na grade, mas NÃO bloquear a propagação para que o Radix UI possa fechar o popover
+    if (isPopoverOpen() && !isClickInsidePopover(e)) {
+      // Não fazer nada - deixar o evento propagar para que o Radix UI Popover possa fechar
+      return;
+    }
     
     const gridRect = gridRef.current?.getBoundingClientRect();
     if (!gridRect) return;
@@ -464,16 +591,31 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
     // Fechar qualquer EventPopover aberto quando abrir EventQuickCreatePopover
     // Mas preservar o último evento clicado para permitir reabertura
     setOpenEventPopover(null);
-  }, [mapYToTime, setOpenEventPopover, popoverState.open]);
+  }, [mapYToTime, setOpenEventPopover, popoverState.open, isDialogOpen, isPopoverOpen, isClickInsidePopover]);
 
   const handleDoubleClick = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!gridRef.current) return;
+    
+    // ✅ CORREÇÃO: Se há um Dialog aberto, não processar cliques na grade
+    // Isso permite que cliques no overlay do Dialog funcionem normalmente (para fechar o Dialog)
+    if (isDialogOpen()) {
+      // Não processar - deixar o Dialog fechar automaticamente ao clicar no overlay
+      return;
+    }
+    
+    // ✅ CORREÇÃO: Se há um Popover aberto e o clique não está dentro dele, permitir que feche
+    // Não processar o clique na grade, mas NÃO bloquear a propagação para que o Radix UI possa fechar o popover
+    if (isPopoverOpen() && !isClickInsidePopover(e)) {
+      // Não fazer nada - deixar o evento propagar para que o Radix UI Popover possa fechar
+      return;
+    }
+    
     const gridRect = gridRef.current.getBoundingClientRect();
     const y = e.clientY - gridRect.top;
     const startTime = mapYToTime(y);
     const endTime = addMinutes(startTime, 60);
     onEventDoubleClick({ start_ts: startTime, end_ts: endTime });
-  }, [mapYToTime, onEventDoubleClick]);
+  }, [mapYToTime, onEventDoubleClick, isDialogOpen, isPopoverOpen, isClickInsidePopover]);
 
   const handlePointerLeave = useCallback(() => {
     setHoverIndicator(null);
@@ -519,6 +661,12 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
             className="relative border-l cursor-crosshair"
             onPointerMove={debouncedHandlePointerMove}
             onPointerDown={(e) => {
+              // ✅ CORREÇÃO: Se há um Dialog aberto, não processar cliques
+              // Isso permite que o Dialog feche automaticamente ao clicar no overlay
+              if (isDialogOpen()) {
+                return;
+              }
+              
               // Evita que a seleção seja iniciada ao clicar em um evento existente
               if ((e.target as HTMLElement).closest('[data-event-id]')) {
                 return;
@@ -526,6 +674,13 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
               handlePointerDown(e);
             }}
             onPointerUp={(e) => {
+              // ✅ CORREÇÃO: Se há um Dialog aberto, não processar cliques
+              // Isso permite que o Dialog feche automaticamente ao clicar no overlay
+              if (isDialogOpen()) {
+                setSelection(null);
+                return;
+              }
+              
               // Não finalizar seleção se o pointer up aconteceu em um evento
               if ((e.target as HTMLElement).closest('[data-event-id]')) {
                 setSelection(null);
@@ -534,8 +689,22 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
               handlePointerUp(e);
             }}
             onPointerLeave={handlePointerLeave}
-            onDoubleClick={handleDoubleClick}
-            onClick={handleGridClick}
+            onDoubleClick={(e) => {
+              // ✅ CORREÇÃO: Se há um Dialog aberto, não processar cliques
+              // Isso permite que o Dialog feche automaticamente ao clicar no overlay
+              if (isDialogOpen()) {
+                return;
+              }
+              handleDoubleClick(e);
+            }}
+            onClick={(e) => {
+              // ✅ CORREÇÃO: Se há um Dialog aberto, não processar cliques
+              // Isso permite que o Dialog feche automaticamente ao clicar no overlay
+              if (isDialogOpen()) {
+                return;
+              }
+              handleGridClick(e);
+            }}
           >
             {HOURS.map(h => (
               <div key={h} className="h-16 border-b border-border/60" />
