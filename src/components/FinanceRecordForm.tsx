@@ -92,11 +92,21 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
   // CORREÇÃO CRÍTICA: Função para verificar se usuário pode criar registros financeiros
   const canCreateFinancialRecords = () => {
     if (!cliente) return false;
-    
-    // CORREÇÃO: Usuários com subscription_active = true podem criar registros
-    // Isso inclui usuários free, basic, business e premium
-    // Conforme solicitado: "usuários free, terão acesso ao app, poderão criar registros como parte do plano free"
-    return cliente.subscription_active === true;
+
+    const isUserActive = cliente.is_active === true;
+    if (!isUserActive) {
+      // Conta realmente inativa/bloqueada
+      return false;
+    }
+
+    const isFreePlan =
+      cliente.subscription_active === false &&
+      (!cliente.plan_id || cliente.plan_id === 'free');
+
+    const hasPaidPlan = cliente.subscription_active === true;
+
+    // Usuários FREE com conta ativa ou com plano pago podem criar registros
+    return isFreePlan || hasPaidPlan;
   };
 
   // ✅ CORREÇÃO: Função para verificar duplicatas financeiras usando hook customizado

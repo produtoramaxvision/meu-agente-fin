@@ -447,7 +447,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           cpf: cpf,
           auth_user_id: data.user.id,
           is_active: true,
+          // Usuário recém-criado entra como plano FREE:
+          // - subscription_active = false (sem assinatura paga)
+          // - plan_id = 'free' para identificar o plano gratuito
           subscription_active: false,
+          plan_id: 'free',
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }, {

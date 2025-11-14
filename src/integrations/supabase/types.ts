@@ -139,13 +139,11 @@ export type Database = {
           is_active: boolean
           last_seen_at: string | null
           name: string
-          password: string | null
           phone: string
           plan_id: string | null
           subscription_active: boolean
           trial_ends_at: string | null
           updated_at: string
-          whatsapp_instance_url: string | null
         }
         Insert: {
           auth_user_id?: string | null
@@ -158,13 +156,11 @@ export type Database = {
           is_active?: boolean
           last_seen_at?: string | null
           name: string
-          password?: string | null
           phone: string
           plan_id?: string | null
           subscription_active?: boolean
           trial_ends_at?: string | null
           updated_at?: string
-          whatsapp_instance_url?: string | null
         }
         Update: {
           auth_user_id?: string | null
@@ -177,77 +173,13 @@ export type Database = {
           is_active?: boolean
           last_seen_at?: string | null
           name?: string
-          password?: string | null
           phone?: string
           plan_id?: string | null
           subscription_active?: boolean
           trial_ends_at?: string | null
           updated_at?: string
-          whatsapp_instance_url?: string | null
         }
         Relationships: []
-      }
-      clientes_service_keys: {
-        Row: {
-          apify_actors_api_key_cipher: string | null
-          apify_actors_api_key_last4: string | null
-          apify_rag_web_browser_key_cipher: string | null
-          apify_rag_web_browser_key_last4: string | null
-          created_at: string
-          firecrawl_api_key_cipher: string | null
-          firecrawl_api_key_last4: string | null
-          openai_api_key_cipher: string | null
-          openai_api_key_last4: string | null
-          openrouter_api_key_cipher: string | null
-          openrouter_api_key_last4: string | null
-          phone: string
-          tavily_api_key_cipher: string | null
-          tavily_api_key_last4: string | null
-          updated_at: string
-        }
-        Insert: {
-          apify_actors_api_key_cipher?: string | null
-          apify_actors_api_key_last4?: string | null
-          apify_rag_web_browser_key_cipher?: string | null
-          apify_rag_web_browser_key_last4?: string | null
-          created_at?: string
-          firecrawl_api_key_cipher?: string | null
-          firecrawl_api_key_last4?: string | null
-          openai_api_key_cipher?: string | null
-          openai_api_key_last4?: string | null
-          openrouter_api_key_cipher?: string | null
-          openrouter_api_key_last4?: string | null
-          phone: string
-          tavily_api_key_cipher?: string | null
-          tavily_api_key_last4?: string | null
-          updated_at?: string
-        }
-        Update: {
-          apify_actors_api_key_cipher?: string | null
-          apify_actors_api_key_last4?: string | null
-          apify_rag_web_browser_key_cipher?: string | null
-          apify_rag_web_browser_key_last4?: string | null
-          created_at?: string
-          firecrawl_api_key_cipher?: string | null
-          firecrawl_api_key_last4?: string | null
-          openai_api_key_cipher?: string | null
-          openai_api_key_last4?: string | null
-          openrouter_api_key_cipher?: string | null
-          openrouter_api_key_last4?: string | null
-          phone?: string
-          tavily_api_key_cipher?: string | null
-          tavily_api_key_last4?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "cliente_service_keys_phone_fkey"
-            columns: ["phone"]
-            isOneToOne: true
-            referencedRelation: "clientes"
-            referencedColumns: ["phone"]
-          },
-        ]
       }
       event_participants: {
         Row: {
