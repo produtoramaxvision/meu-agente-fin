@@ -2,7 +2,7 @@ import { Page } from '@playwright/test';
 
 export const TEST_USER = {
   phone: '5511949746110',
-  password: '123456789'
+  password: '12345678'
 };
 
 export const BASE_URL = 'http://localhost:8080';

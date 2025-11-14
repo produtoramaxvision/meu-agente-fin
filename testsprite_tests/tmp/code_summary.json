@@ -3,81 +3,166 @@
     "TypeScript",
     "React",
     "Vite",
-    "Supabase",
-    "PostgreSQL",
-    "Tailwind CSS",
-    "ShadcnUI",
     "React Router",
-    "TanStack Query",
-    "Zod",
-    "Playwright"
+    "Tailwind CSS / shadcn-ui",
+    "Supabase (Auth, Postgres, Storage, Realtime)",
+    "Playwright",
+    "TanStack Query"
   ],
   "features": [
     {
-      "name": "Authentication",
-      "description": "Sistema de autenticação com login, signup e recuperação de senha usando Supabase Auth",
+      "name": "Autenticação multi-etapas com Supabase Auth",
+      "description": "Fluxo completo de login, signup, recuperação de senha e logout usando Supabase Auth, com mapeamento de erros amigáveis e contexto global de autenticação.",
       "files": [
         "src/contexts/AuthContext.tsx",
         "src/pages/auth/Login.tsx",
         "src/pages/auth/Signup.tsx",
+        "src/pages/auth/ForgotPassword.tsx",
+        "src/pages/auth/ResetPassword.tsx",
+        "src/integrations/supabase/client.ts"
+      ]
+    },
+    {
+      "name": "Gestão de clientes e planos (clientes)",
+      "description": "Camada de dados de clientes ligada ao Supabase (tabela clientes) com controle de plano (free, basic, business, premium), subscription_active e is_active.",
+      "files": [
+        "src/contexts/AuthContext.tsx",
+        "src/hooks/usePermissions.ts",
+        "supabase/migrations/*clientes*.sql"
+      ]
+    },
+    {
+      "name": "Dashboard financeiro e registros",
+      "description": "Visualização e CRUD de registros financeiros com filtros, categorias, gráficos e permissões baseadas em plano.",
+      "files": [
+        "src/pages/Contas.tsx",
+        "src/components/FinanceRecordForm.tsx",
+        "src/hooks/useFinancialData.ts"
+      ]
+    },
+    {
+      "name": "Tarefas e agenda semanal",
+      "description": "Gestão de tarefas com filtros, estatísticas e integração com agenda semana (drag-and-drop) usando dnd-kit e framer-motion.",
+      "files": [
+        "src/pages/Tasks.tsx",
+        "src/components/TaskForm.tsx",
+        "src/components/TaskItem.tsx",
+        "src/components/TaskStats.tsx",
+        "src/components/AgendaGridWeek.tsx",
+        "src/hooks/useTasksData.ts"
+      ]
+    },
+    {
+      "name": "Notificações em tempo real",
+      "description": "Dropdown de notificações com integração Supabase Realtime, refetch ao abrir e contagem de não lidas.",
+      "files": [
+        "src/components/NotificationsDropdown.tsx",
+        "src/hooks/useNotificationsData.ts"
+      ]
+    },
+    {
+      "name": "Suporte e tickets",
+      "description": "Sistema de tickets de suporte com abas, formulário validado com zod e limite de tickets baseado em plano.",
+      "files": [
+        "src/components/HelpAndSupport.tsx",
+        "src/components/SupportDialog.tsx",
+        "src/components/SupportTabs.tsx",
+        "src/hooks/useSupportTickets.ts",
+        "src/hooks/usePermissions.ts"
+      ]
+    },
+    {
+      "name": "Configurações de privacidade e LGPD",
+      "description": "Seção de privacidade com consentimento, exportação de dados via RPC, deleção completa do usuário (incluindo auth.users) e toasts padronizados.",
+      "files": [
+        "src/components/PrivacySection.tsx",
+        "supabase/migrations/20251114000800_delete_auth_user_on_data_deletion.sql",
+        "supabase/functions/export_user_data.sql"
+      ]
+    },
+    {
+      "name": "Upload de avatar com Supabase Storage",
+      "description": "Upload e gestão de avatar do usuário usando bucket avatars com RLS baseada em phone e feedback visual com toasts.",
+      "files": [
+        "src/components/AvatarUpload.tsx",
+        "supabase/migrations/202511140007_fix_avatars_rls_upload_by_phone.sql"
+      ]
+    },
+    {
+      "name": "Layout principal e navegação",
+      "description": "Sidebar responsiva, rotas protegidas, layout geral e links de ajuda/suporte e perfil.",
+      "files": [
+        "src/App.tsx",
+        "src/components/layout/AppSidebar.tsx",
+        "src/components/Logo.tsx",
+        "src/routes/ProtectedRoute.tsx"
+      ]
+    },
+    {
+      "name": "Testes E2E e plano de correções",
+      "description": "Suite Playwright para validação das correções do FIX_PLAN, além de plano detalhado de correções gerado pelo Testsprite.",
+      "files": [
+        "tests/validacao-fix-plan.spec.ts",
+        "tests/validacao-completa.spec.ts",
+        "tests/helpers/login.ts",
+        "testsprite_tests/DETAILED_FIX_PLAN.md",
+        "testsprite_tests/FIX_PLAN.md"
+      ]
+    }
+  ]
+}
+
+{
+  "tech_stack": [
+    "TypeScript",
+    "React 18.3.1",
+    "Vite 5.4.19",
+    "React Router DOM 6.30.1",
+    "Supabase (PostgreSQL)",
+    "TanStack Query 5.90.5",
+    "Tailwind CSS 3.4.17",
+    "Shadcn UI (Radix UI)",
+    "Framer Motion 12.23.22",
+    "Sonner (Toast)",
+    "React Hook Form 7.61.1",
+    "Zod 3.25.76",
+    "Playwright (Testing)",
+    "PWA (Progressive Web App)"
+  ],
+  "features": [
+    {
+      "name": "Authentication System",
+      "description": "Sistema completo de autenticação com login multi-etapas, signup, recuperação de senha e gerenciamento de sessão via Supabase Auth",
+      "files": [
+        "src/contexts/AuthContext.tsx",
+        "src/pages/auth/Login.tsx",
+        "src/pages/auth/Signup.tsx",
+        "src/pages/auth/ForgotPassword.tsx",
+        "src/pages/auth/ResetPassword.tsx",
         "src/components/ProtectedRoute.tsx"
       ]
     },
     {
-      "name": "Dashboard",
-      "description": "Dashboard financeiro com visão geral, gráficos, resumo de receitas/despesas e metas",
-      "files": [
-        "src/pages/Dashboard.tsx",
-        "src/components/DashboardGoalCard.tsx",
-        "src/components/DashboardUpcomingBills.tsx",
-        "src/components/InsightsCard.tsx"
-      ]
-    },
-    {
       "name": "Financial Management",
-      "description": "Gestão completa de receitas e despesas com categorização, validação de duplicatas e controle de valores",
+      "description": "Sistema completo de gestão financeira com registros, categorias, alertas, relatórios e gráficos",
       "files": [
         "src/pages/Contas.tsx",
+        "src/pages/Reports.tsx",
+        "src/pages/Relatorios.tsx",
         "src/components/FinanceRecordForm.tsx",
-        "src/components/ContaItem.tsx",
         "src/components/EditRecordDialog.tsx",
         "src/components/DeleteRecordDialog.tsx",
-        "src/components/DuplicateWarning.tsx"
+        "src/components/DespesasPorCategoriaChart.tsx",
+        "src/components/StatusTimelineChart.tsx",
+        "src/hooks/useFinancialData.ts",
+        "src/hooks/useFinancialRecords.ts",
+        "src/hooks/useAlertsData.ts",
+        "src/hooks/useRealtimeFinancialAlerts.ts"
       ]
     },
     {
-      "name": "Goals System",
-      "description": "Sistema de metas financeiras com criação, acompanhamento de progresso e alertas",
-      "files": [
-        "src/pages/Goals.tsx",
-        "src/components/GoalForm.tsx",
-        "src/components/GoalListItem.tsx",
-        "src/components/GoalIcons.tsx"
-      ]
-    },
-    {
-      "name": "Calendar and Events",
-      "description": "Agenda completa com calendário interativo, criação/edição de eventos, drag-and-drop e múltiplas visualizações",
-      "files": [
-        "src/pages/Agenda.tsx",
-        "src/components/AgendaFilters.tsx",
-        "src/components/AgendaGridDay.tsx",
-        "src/components/AgendaGridMonth.tsx",
-        "src/components/AgendaGridWeek.tsx",
-        "src/components/AgendaList.tsx",
-        "src/components/AgendaTimeline.tsx",
-        "src/components/AgendaYearHeatmap.tsx",
-        "src/components/EventCard.tsx",
-        "src/components/EventForm.tsx",
-        "src/components/EventPopover.tsx",
-        "src/components/EventQuickCreatePopover.tsx",
-        "src/components/CalendarForm.tsx",
-        "src/components/EmptyDayCard.tsx"
-      ]
-    },
-    {
-      "name": "Tasks Management",
-      "description": "Gestão de tarefas com criação, edição, priorização, status de conclusão e drag-and-drop",
+      "name": "Task Management",
+      "description": "Sistema de gerenciamento de tarefas com prioridades, status, filtros e estatísticas",
       "files": [
         "src/pages/Tasks.tsx",
         "src/components/TaskForm.tsx",
@@ -85,144 +170,175 @@
         "src/components/TaskFilters.tsx",
         "src/components/TaskStats.tsx",
         "src/components/DeleteTaskDialog.tsx",
-        "src/components/UpcomingTasksCard.tsx"
+        "src/hooks/useTasksData.ts"
       ]
     },
     {
-      "name": "Reports",
-      "description": "Sistema de relatórios com gráficos por categoria, comparação temporal e exportação (PDF, JSON, CSV)",
+      "name": "Calendar and Agenda",
+      "description": "Sistema completo de agenda e calendário com múltiplas visualizações (dia, semana, mês, ano), eventos arrastáveis e integração com calendários",
       "files": [
-        "src/pages/Reports.tsx",
-        "src/pages/Relatorios.tsx",
-        "src/components/DespesasPorCategoriaChart.tsx",
-        "src/components/StatusTimelineChart.tsx",
-        "src/components/PeriodFilter.tsx"
+        "src/pages/Agenda.tsx",
+        "src/components/AgendaGridDay.tsx",
+        "src/components/AgendaGridWeek.tsx",
+        "src/components/AgendaGridMonth.tsx",
+        "src/components/AgendaList.tsx",
+        "src/components/AgendaTimeline.tsx",
+        "src/components/AgendaYearHeatmap.tsx",
+        "src/components/EventForm.tsx",
+        "src/components/EventCard.tsx",
+        "src/components/EventPopover.tsx",
+        "src/components/EventQuickCreatePopover.tsx",
+        "src/components/CalendarForm.tsx",
+        "src/components/AgendaFilters.tsx",
+        "src/hooks/useAgendaData.ts",
+        "src/hooks/useOptimizedAgendaData.ts"
       ]
     },
     {
-      "name": "Notifications",
-      "description": "Sistema de notificações com alertas, marcação de lida/não lida, contador dinâmico e menu de contexto",
+      "name": "Goals Management",
+      "description": "Sistema de gerenciamento de metas com ícones, progresso, categorias e estatísticas",
+      "files": [
+        "src/pages/Goals.tsx",
+        "src/components/GoalForm.tsx",
+        "src/components/GoalListItem.tsx",
+        "src/components/GoalIcons.tsx",
+        "src/components/DashboardGoalCard.tsx",
+        "src/hooks/useGoals.ts",
+        "src/hooks/useGoalsData.ts"
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "description": "Dashboard principal com visão geral financeira, tarefas pendentes, metas, gráficos e insights",
+      "files": [
+        "src/pages/Dashboard.tsx",
+        "src/components/DashboardUpcomingBills.tsx",
+        "src/components/DashboardGoalCard.tsx",
+        "src/components/UpcomingTasksCard.tsx",
+        "src/components/UpcomingBillCard.tsx",
+        "src/components/InsightsCard.tsx",
+        "src/components/QuickActions.tsx"
+      ]
+    },
+    {
+      "name": "User Profile and Settings",
+      "description": "Sistema de perfil de usuário com upload de avatar, configurações de privacidade, planos e backup",
+      "files": [
+        "src/pages/Profile.tsx",
+        "src/components/AvatarUpload.tsx",
+        "src/components/PrivacySection.tsx",
+        "src/components/PlansSection.tsx",
+        "src/components/PlanInfoCard.tsx",
+        "src/components/BackupSection.tsx",
+        "src/hooks/usePlanInfo.ts",
+        "src/hooks/usePermissions.ts"
+      ]
+    },
+    {
+      "name": "Notifications System",
+      "description": "Sistema de notificações em tempo real com dropdown, bell icon e gerenciamento de notificações",
       "files": [
         "src/pages/Notifications.tsx",
         "src/components/NotificationBell.tsx",
-        "src/components/NotificationItem.tsx",
         "src/components/NotificationsDropdown.tsx",
+        "src/components/NotificationItem.tsx",
         "src/components/SkeletonNotification.tsx",
-        "src/contexts/NotificationContext.tsx"
+        "src/contexts/NotificationContext.tsx",
+        "src/hooks/useNotificationsData.ts"
       ]
     },
     {
-      "name": "Support System",
-      "description": "Sistema de suporte com criação de tickets, acompanhamento de status, políticas RLS e FAQ",
+      "name": "Support and Help",
+      "description": "Sistema de suporte com tickets, FAQ, formulários e tracking de SLA",
       "files": [
         "src/components/SupportDialog.tsx",
         "src/components/SupportTabs.tsx",
         "src/components/SupportTicketForm.tsx",
         "src/components/SupportTicketList.tsx",
         "src/components/SupportFAQ.tsx",
-        "src/components/HelpAndSupport.tsx"
+        "src/components/HelpAndSupport.tsx",
+        "src/hooks/useSupportTickets.ts"
       ]
     },
     {
-      "name": "User Profile",
-      "description": "Perfil do usuário com edição de dados, upload de avatar e configurações",
-      "files": [
-        "src/pages/Profile.tsx",
-        "src/components/AvatarUpload.tsx",
-        "src/components/PrivacySection.tsx",
-        "src/components/BackupSection.tsx"
-      ]
-    },
-    {
-      "name": "Plans and Subscriptions",
-      "description": "Sistema de planos e assinaturas com informações de planos e seção de planos",
-      "files": [
-        "src/components/PlanInfoCard.tsx",
-        "src/components/PlansSection.tsx",
-        "src/components/ProtectedFeature.tsx",
-        "src/hooks/usePlanInfo.ts",
-        "src/hooks/usePermissions.ts"
-      ]
-    },
-    {
-      "name": "Layout Components",
-      "description": "Componentes de layout incluindo header, sidebar, footer e layouts de autenticação",
+      "name": "Layout and Navigation",
+      "description": "Componentes de layout, sidebar, header, footer e navegação da aplicação",
       "files": [
         "src/components/layout/AppLayout.tsx",
-        "src/components/layout/AppHeader.tsx",
         "src/components/layout/AppSidebar.tsx",
+        "src/components/layout/AppHeader.tsx",
         "src/components/layout/AppFooter.tsx",
         "src/components/layout/AuthLayout.tsx",
-        "src/components/layout/Header.tsx",
-        "src/components/layout/PageHeader.tsx"
+        "src/components/layout/PageHeader.tsx",
+        "src/components/Logo.tsx"
       ]
     },
     {
-      "name": "UI Components",
-      "description": "Biblioteca completa de componentes UI baseada em ShadcnUI v4",
+      "name": "UI Components Library",
+      "description": "Biblioteca completa de componentes UI baseados em Shadcn UI e Radix UI",
       "files": [
         "src/components/ui/button.tsx",
         "src/components/ui/input.tsx",
+        "src/components/ui/card.tsx",
         "src/components/ui/dialog.tsx",
-        "src/components/ui/form.tsx",
+        "src/components/ui/toast.tsx",
+        "src/components/ui/sonner.tsx",
         "src/components/ui/select.tsx",
         "src/components/ui/calendar.tsx",
-        "src/components/ui/card.tsx",
+        "src/components/ui/popover.tsx",
+        "src/components/ui/tabs.tsx",
+        "src/components/ui/switch.tsx",
+        "src/components/ui/avatar.tsx",
+        "src/components/ui/badge.tsx",
+        "src/components/ui/alert.tsx",
         "src/components/ui/table.tsx",
-        "src/components/ui/toast.tsx",
-        "src/components/ui/tabs.tsx"
+        "src/components/ui/chart.tsx"
       ]
     },
     {
-      "name": "Hooks",
-      "description": "Hooks customizados para gerenciamento de estado, dados e lógica de negócio",
+      "name": "Data Hooks and Utilities",
+      "description": "Hooks customizados para gerenciamento de dados, queries otimizadas e utilitários",
       "files": [
-        "src/hooks/useAgendaData.ts",
-        "src/hooks/useFinancialRecords.ts",
-        "src/hooks/useGoals.ts",
-        "src/hooks/useTasks.ts",
-        "src/hooks/useNotifications.ts",
-        "src/hooks/usePlanInfo.ts",
-        "src/hooks/usePermissions.ts"
+        "src/hooks/useOptimizedQueries.ts",
+        "src/hooks/useOptimizedSupabaseQueries.ts",
+        "src/hooks/useDebounce.ts",
+        "src/hooks/useDuplicateDetection.ts",
+        "src/hooks/useScrollToTop.ts",
+        "src/hooks/use-mobile.tsx"
       ]
     },
     {
-      "name": "Contexts",
-      "description": "Contextos React para gerenciamento global de estado (auth, notifications, theme, search)",
+      "name": "Security and Protection",
+      "description": "Componentes e utilitários de segurança, proteção de rotas e features protegidas",
       "files": [
-        "src/contexts/AuthContext.tsx",
-        "src/contexts/NotificationContext.tsx",
-        "src/contexts/ThemeContext.tsx",
-        "src/contexts/SearchContext.tsx"
-      ]
-    },
-    {
-      "name": "Supabase Integration",
-      "description": "Integração com Supabase incluindo cliente, tipos TypeScript e funções auxiliares",
-      "files": [
-        "src/integrations/supabase/client.ts",
-        "src/integrations/supabase/types.ts"
-      ]
-    },
-    {
-      "name": "Utilities",
-      "description": "Funções utilitárias para sanitização, tratamento de erros, CSRF e performance",
-      "files": [
-        "src/lib/utils.ts",
-        "src/lib/sanitize.ts",
-        "src/lib/safe-json.ts",
+        "src/components/ProtectedRoute.tsx",
+        "src/components/ProtectedFeature.tsx",
         "src/lib/csrf.ts",
-        "src/lib/performance-monitor.ts",
-        "src/utils/errorHandling.ts"
+        "src/lib/sanitize.ts",
+        "src/lib/safe-json.ts"
       ]
     },
     {
-      "name": "PWA Support",
-      "description": "Suporte a Progressive Web App com registro de service worker e configuração PWA",
+      "name": "PWA Features",
+      "description": "Funcionalidades de Progressive Web App com service worker e registro",
       "files": [
         "src/components/PWARegister.tsx"
+      ]
+    },
+    {
+      "name": "Theme Management",
+      "description": "Sistema de gerenciamento de tema com suporte a dark/light mode",
+      "files": [
+        "src/contexts/ThemeContext.tsx",
+        "src/components/ds/ThemeSwitch.tsx"
+      ]
+    },
+    {
+      "name": "Search Functionality",
+      "description": "Sistema de busca global na aplicação",
+      "files": [
+        "src/contexts/SearchContext.tsx"
       ]
     }
   ]
 }
-
