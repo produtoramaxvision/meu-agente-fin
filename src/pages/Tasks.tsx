@@ -136,8 +136,8 @@ export default function Tasks() {
       />
 
       {/* Tasks List */}
-      <Card>
-        <CardHeader>
+      <Card className="relative rounded-xl border-2 border-border/40 bg-surface p-2 sm:p-4 transition-all duration-300 hover:shadow-lg">
+        <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2">
             <ListTodo className="h-5 w-5" />
             {statusFilter === 'all' && 'Todas as Tarefas'}
@@ -164,6 +164,9 @@ export default function Tasks() {
                     onDelete={handleDelete}
                     onDuplicate={handleDuplicate}
                     onMarkIncomplete={handleMarkIncomplete}
+                    onChangePriority={(t, priority) =>
+                      updateTask.mutate({ id: t.id, updates: { priority } })
+                    }
                   />
                 </div>
               ))}
