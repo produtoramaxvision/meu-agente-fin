@@ -125,8 +125,6 @@ export function FinanceRecordForm({ userPhone, onSuccess, recordToEdit, open: co
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onSubmit', // Validar apenas ao submeter, não durante a digitação
-    reValidateMode: 'onSubmit', // Re-validar apenas ao submeter novamente
     defaultValues: {
       tipo: 'saida',
       categoria: '',

@@ -130,7 +130,8 @@ export function PricingCard({ plan, isCurrentPlan, index }: PricingCardProps) {
     >
       <Card 
         className={cn(
-          "relative flex flex-col h-full w-full overflow-hidden transition-all duration-300",
+          // Removido overflow-hidden para não cortar o badge "Mais Popular"
+          "relative flex flex-col h-full w-full transition-all duration-300",
           "hover:shadow-xl hover:shadow-primary/5",
           getPlanBorderColor(plan.color),
           isCurrentPlan && "ring-2 ring-primary ring-offset-2",
@@ -150,7 +151,7 @@ export function PricingCard({ plan, isCurrentPlan, index }: PricingCardProps) {
           {plan.isPopular && !isCurrentPlan && (
             <motion.div
               initial={{ scale: 0, rotate: -12 }}
-              animate={{ scale: 1, rotate: -12 }}
+              animate={{ scale: 1, rotate: 0 }}
               transition={{ delay: 0.5, duration: 0.4, ease: "backOut" }}
             >
               <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xl border-2 border-white/20 px-4 py-1.5 text-xs font-semibold tracking-wide">
@@ -178,7 +179,7 @@ export function PricingCard({ plan, isCurrentPlan, index }: PricingCardProps) {
           {plan.isPopular && isCurrentPlan && (
             <motion.div
               initial={{ scale: 0, rotate: -8 }}
-              animate={{ scale: 1, rotate: -8 }}
+              animate={{ scale: 1, rotate: 0 }}
               transition={{ delay: 0.4, duration: 0.4, ease: "backOut" }}
             >
               <Badge className="bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-xl border-2 border-white/20 px-4 py-1.5 text-xs font-semibold tracking-wide">
