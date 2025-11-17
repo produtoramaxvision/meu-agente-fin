@@ -661,12 +661,21 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
       return;
     }
     
+    // Cancelar qualquer criação rápida pendente antes de abrir o popover completo
+    if (singleClickTimeoutRef.current) {
+      clearTimeout(singleClickTimeoutRef.current);
+      singleClickTimeoutRef.current = null;
+    }
+    if (popoverState.open) {
+      setPopoverState({ open: false, anchor: null, eventData: {} });
+    }
+    
     const gridRect = gridRef.current.getBoundingClientRect();
     const y = e.clientY - gridRect.top;
     const startTime = mapYToTime(y);
     const endTime = addMinutes(startTime, 60);
     onEventDoubleClick({ start_ts: startTime, end_ts: endTime });
-  }, [mapYToTime, onEventDoubleClick, isDialogOpen, isPopoverOpen, isClickInsidePopover]);
+  }, [mapYToTime, onEventDoubleClick, isDialogOpen, isPopoverOpen, isClickInsidePopover, popoverState.open, setPopoverState]);
 
   const handlePointerLeave = useCallback(() => {
     setHoverIndicator(null);

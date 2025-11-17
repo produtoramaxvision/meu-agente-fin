@@ -3,10 +3,11 @@ import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar as CalendarIcon, Clock, MoreHorizontal } from 'lucide-react';
+import { Calendar as CalendarIcon, MoreHorizontal } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Calendar, EventFormData } from '@/hooks/useOptimizedAgendaData';
+import { cn } from '@/lib/utils';
 
 // Hook para controlar o estado do popover (substitui variável global)
 // Usado pela página Agenda para verificar se o popover está aberto
@@ -201,10 +202,6 @@ export function EventQuickCreatePopover({
               <CalendarIcon className="h-4 w-4" />
               <span>{formattedDateLabel}</span>
             </div>
-            <div className="flex items-center gap-2 text-text-muted">
-              <Clock className="h-4 w-4" />
-              <span>{formattedTimeLabel}</span>
-            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-sm">
@@ -275,7 +272,16 @@ export function EventQuickCreatePopover({
               <MoreHorizontal className="h-4 w-4 mr-2" />
               Mais opções
             </Button>
-            <Button type="submit" size="sm" disabled={!isValid}>
+            <Button
+              type="submit"
+              size="sm"
+              disabled={!isValid}
+              className={cn(
+                'min-w-[130px] justify-center bg-gradient-to-r from-[hsl(var(--brand-900))] via-[hsl(var(--brand-700))] to-[hsl(var(--brand-600))] text-white font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 border border-white/10',
+                'focus-visible:ring-offset-2 focus-visible:ring-[hsl(var(--brand-400))]',
+                'disabled:opacity-70 disabled:saturate-75 disabled:hover:scale-100 disabled:hover:shadow-lg disabled:cursor-not-allowed'
+              )}
+            >
               Salvar
             </Button>
           </div>
