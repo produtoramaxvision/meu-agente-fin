@@ -384,6 +384,12 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
       // Verificar se o clique foi dentro de qualquer popover
       const isInsidePopover = target.closest('[data-slot="popover-content"], [data-radix-popover-content]');
       if (isInsidePopover) return;
+
+      // Permitir interações com componentes Radix que usam portais (Select, Dropdown, etc.)
+      const isInsideRadixOverlay = target.closest(
+        '[data-radix-select-content], [data-radix-select-viewport], [data-radix-select-item], [role="listbox"]'
+      );
+      if (isInsideRadixOverlay) return;
       
       // Verificar se o clique foi dentro de um Dialog (não fechar popover se Dialog está aberto)
       const isInsideDialog = target.closest('[role="dialog"]');

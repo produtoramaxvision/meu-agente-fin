@@ -46,6 +46,8 @@ export function EventQuickCreatePopover({
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
   const [isValid, setIsValid] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const calendarSelectContentRef = useRef<HTMLDivElement | null>(null);
+  const prioritySelectContentRef = useRef<HTMLDivElement | null>(null);
 
   const start_ts = 'start_ts' in eventData ? eventData.start_ts : undefined;
   const end_ts = 'end_ts' in eventData ? eventData.end_ts : undefined;
@@ -162,6 +164,16 @@ export function EventQuickCreatePopover({
     onOpenChange(false);
   };
 
+  const handleInteractOutside = (event: Event) => {
+    const target = event.target as Node;
+    if (
+      calendarSelectContentRef.current?.contains(target) ||
+      prioritySelectContentRef.current?.contains(target)
+    ) {
+      event.preventDefault();
+    }
+  };
+
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       {anchor && (
@@ -172,6 +184,7 @@ export function EventQuickCreatePopover({
       <PopoverContent 
         className="w-80" 
         onOpenAutoFocus={(e) => e.preventDefault()}
+        onInteractOutside={handleInteractOutside}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
@@ -224,7 +237,7 @@ export function EventQuickCreatePopover({
                 <SelectTrigger className="flex-1" aria-label="Selecionar agenda">
                   <SelectValue placeholder="Selecionar agenda" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent ref={calendarSelectContentRef}>
                   {calendars.map((cal) => (
                     <SelectItem key={cal.id} value={cal.id}>
                       <div className="flex items-center gap-2">
@@ -248,10 +261,10 @@ export function EventQuickCreatePopover({
                 <SelectTrigger aria-label="Selecionar prioridade">
                   <SelectValue placeholder="Prioridade" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Prioridade baixa</SelectItem>
-                  <SelectItem value="medium">Prioridade média</SelectItem>
-                  <SelectItem value="high">Prioridade alta</SelectItem>
+                <SelectContent ref={prioritySelectContentRef}>
+                  <SelectItem value="low">Baixa</SelectItem>
+                  <SelectItem value="medium">Média</SelectItem>
+                  <SelectItem value="high">Alta</SelectItem>
                 </SelectContent>
               </Select>
             </div>
