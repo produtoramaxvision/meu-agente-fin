@@ -676,16 +676,19 @@ export function EventForm({
               </Tabs>
 
               <div className="flex justify-end gap-2 pt-4 border-t">
-                <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                <Button type="button" variant="outline" className="min-w-[140px] justify-center" onClick={() => onOpenChange(false)}>
                   Cancelar
                 </Button>
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="group relative overflow-hidden bg-gradient-to-br from-[hsl(var(--brand-900))] to-[hsl(var(--brand-700))] text-white hover:shadow-lg hover:scale-105 transition-all duration-200"
+                  className={cn(
+                    'min-w-[140px] justify-center bg-gradient-to-r from-[hsl(var(--brand-900))] via-[hsl(var(--brand-700))] to-[hsl(var(--brand-600))] text-white font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200 border border-white/10',
+                    'focus-visible:ring-offset-2 focus-visible:ring-[hsl(var(--brand-400))]',
+                    'disabled:opacity-70 disabled:saturate-75 disabled:hover:scale-100 disabled:hover:shadow-lg disabled:cursor-not-allowed'
+                  )}
                 >
-                  <span className="relative z-10">{isSubmitting ? 'Salvando...' : 'Salvar'}</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                  {isSubmitting ? 'Salvando...' : 'Salvar'}
                 </Button>
               </div>
             </form>

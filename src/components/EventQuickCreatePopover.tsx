@@ -268,7 +268,13 @@ export function EventQuickCreatePopover({
           </div>
 
           <div className="flex justify-between items-center pt-2">
-            <Button type="button" variant="ghost" size="sm" onClick={onMoreOptions}>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={onMoreOptions}
+              className="min-w-[130px] justify-center"
+            >
               <MoreHorizontal className="h-4 w-4 mr-2" />
               Mais opções
             </Button>
