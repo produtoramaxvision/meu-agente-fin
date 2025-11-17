@@ -56,8 +56,9 @@ export function SegmentedControl({
         const isSelected = value === option.value;
         
         return (
-          <button
+        <button
             key={option.value}
+          type="button"
             onClick={() => handleOptionClick(option.value)}
             className={cn(
               // Base styles

@@ -265,6 +265,7 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
     anchor: { top: number; left: number } | null;
     eventData: Partial<any>;
   }>({ open: false, anchor: null, eventData: {} });
+  const singleClickTimeoutRef = useRef<number | null>(null);
 
   const [openEventPopover, setOpenEventPopover] = useState<string | null>(null);
   const [lastClickedEvent, setLastClickedEvent] = useState<string | null>(null);
@@ -513,32 +514,54 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
       return;
     }
     
+    // Evitar que cliques duplos disparem a criação rápida
+    if (e.detail > 1) {
+      setSelection(null);
+      return;
+    }
+    
     const gridRect = gridRef.current.getBoundingClientRect();
     const y = e.clientY - gridRect.top;
 
-    // Se houver seleção (arrasto), usar os valores da seleção
+    // Se houver seleção, só tratar como seleção se houve movimento suficiente
+    const MIN_SELECTION_DRAG = 6;
     if (selection) {
-      const startY = Math.min(selection.start, y);
-      const endY = Math.max(selection.start, y);
+      const dragDelta = Math.abs(y - selection.start);
+      if (dragDelta >= MIN_SELECTION_DRAG) {
+        const startY = Math.min(selection.start, y);
+        const endY = Math.max(selection.start, y);
 
-      const startTime = mapYToTime(startY);
-      let endTime = mapYToTime(endY);
+        const startTime = mapYToTime(startY);
+        let endTime = mapYToTime(endY);
 
-      if (Math.abs(y - selection.start) < 5) {
-        endTime = addMinutes(startTime, 30);
+        if (endTime <= startTime) {
+          endTime = addMinutes(startTime, SNAP_MINUTES);
+        }
+
+        setPopoverState({
+          open: true,
+          anchor: { top: startY, left: e.clientX - gridRect.left },
+          eventData: { start_ts: startTime, end_ts: endTime },
+        });
+        setSelection(null);
+        return;
+      } else {
+        setSelection(null);
       }
+    }
 
-      if (endTime <= startTime) {
-        endTime = addMinutes(startTime, SNAP_MINUTES);
-      }
+    // Cancelar timeout pendente
+    if (singleClickTimeoutRef.current) {
+      clearTimeout(singleClickTimeoutRef.current);
+      singleClickTimeoutRef.current = null;
+    }
 
-      setPopoverState({
-        open: true,
-        anchor: { top: startY, left: e.clientX - gridRect.left },
-        eventData: { start_ts: startTime, end_ts: endTime },
-      });
-      setSelection(null);
-    } else {
+    // Se for clique múltiplo (duplo), não abrir popover rápido
+    if (e.detail > 1) {
+      return;
+    }
+
+    singleClickTimeoutRef.current = window.setTimeout(() => {
       // Clique simples - criar evento com duração padrão de 30 minutos
       const startTime = mapYToTime(y);
       const endTime = addMinutes(startTime, 30);
@@ -548,11 +571,14 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
         anchor: { top: y, left: e.clientX - gridRect.left },
         eventData: { start_ts: startTime, end_ts: endTime },
       });
-    }
-    
+
+      setOpenEventPopover(null);
+      singleClickTimeoutRef.current = null;
+    }, 220);
+
     // Fechar qualquer EventPopover aberto quando abrir EventQuickCreatePopover
     // Mas preservar o último evento clicado para permitir reabertura
-      setOpenEventPopover(null);
+    setOpenEventPopover(null);
   }, [mapYToTime, selection, setOpenEventPopover, isDialogOpen, isPopoverOpen, isClickInsidePopover]);
 
   // handleGridClick agora é um fallback caso o handlePointerUp não capture o clique
@@ -561,6 +587,9 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
     // Prevenir se já foi tratado por handlePointerUp
     // Verificar se o popover já está sendo aberto
     if (popoverState.open) return;
+    
+    // Evitar que cliques duplos disparem a criação rápida
+    if (e.detail > 1) return;
     
     // ✅ CORREÇÃO: Se há um Dialog aberto, não processar cliques na grade
     // Isso permite que cliques no overlay do Dialog funcionem normalmente (para fechar o Dialog)
@@ -579,19 +608,35 @@ export default function AgendaGridDay({ date, events, calendars, isLoading, onEv
     const gridRect = gridRef.current?.getBoundingClientRect();
     if (!gridRect) return;
     
-    const y = e.clientY - gridRect.top;
-    const startTime = mapYToTime(y);
-    const endTime = addMinutes(startTime, 30);
+    // Cancelar timeout existente antes de agendar novo
+    if (singleClickTimeoutRef.current) {
+      clearTimeout(singleClickTimeoutRef.current);
+      singleClickTimeoutRef.current = null;
+    }
+    
+    singleClickTimeoutRef.current = window.setTimeout(() => {
+      const y = e.clientY - gridRect.top;
+      const startTime = mapYToTime(y);
+      const endTime = addMinutes(startTime, 30);
 
-    setPopoverState({
-      open: true,
-      anchor: { top: y, left: e.clientX - gridRect.left },
-      eventData: { start_ts: startTime, end_ts: endTime },
-    });
-    // Fechar qualquer EventPopover aberto quando abrir EventQuickCreatePopover
-    // Mas preservar o último evento clicado para permitir reabertura
-    setOpenEventPopover(null);
+      setPopoverState({
+        open: true,
+        anchor: { top: y, left: e.clientX - gridRect.left },
+        eventData: { start_ts: startTime, end_ts: endTime },
+      });
+      setOpenEventPopover(null);
+      singleClickTimeoutRef.current = null;
+    }, 220);
   }, [mapYToTime, setOpenEventPopover, popoverState.open, isDialogOpen, isPopoverOpen, isClickInsidePopover]);
+
+  // Limpar timeout quando componente desmontar
+  useEffect(() => {
+    return () => {
+      if (singleClickTimeoutRef.current) {
+        clearTimeout(singleClickTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleDoubleClick = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!gridRef.current) return;
