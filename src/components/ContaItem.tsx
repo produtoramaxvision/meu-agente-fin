@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Clock, Calendar, Tag, Repeat, Check, Edit, Trash2, Copy, AlertCircle, MoreVertical } from 'lucide-react';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { ActionMenu } from '@/components/ui/ActionMenu';
 import {
   ContextMenu,
@@ -22,6 +23,31 @@ interface ContaItemProps {
   conta: FinancialRecord;
   onStatusChange: () => void;
 }
+
+type ContaVisualKey = 'pago_entrada' | 'pago_saida' | 'pendente_entrada' | 'pendente_saida';
+
+const contaVisualConfig: Record<ContaVisualKey, { color: string; glow: string }> = {
+  // Contas recebidas (entrada paga) - verde suave
+  pago_entrada: {
+    color: 'bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300',
+    glow: 'shadow-green-500/20',
+  },
+  // Contas pagas (saída paga) - vermelho mais suave, indicando gasto concluído
+  pago_saida: {
+    color: 'bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-300',
+    glow: 'shadow-red-500/20',
+  },
+  // Contas a receber pendentes - azul, alinhado com pendente de tarefas
+  pendente_entrada: {
+    color: 'bg-blue-500/10 border-blue-500/30 text-blue-700 dark:text-blue-300',
+    glow: 'shadow-blue-500/20',
+  },
+  // Contas a pagar pendentes - âmbar, destacando atenção necessária
+  pendente_saida: {
+    color: 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-300',
+    glow: 'shadow-amber-500/20',
+  },
+};
 
 export function ContaItem({ conta, onStatusChange }: ContaItemProps) {
   const [isPaying, setIsPaying] = useState(false);
@@ -58,24 +84,14 @@ export function ContaItem({ conta, onStatusChange }: ContaItemProps) {
     return {
       text: `Vence em ${daysRemaining}d`,
       icon: Clock,
-      className: 'bg-gray-500/10 text-gray-700 dark:text-gray-400 border-gray-500/20',
+      // Pendente padrão com maior contraste, alinhado com badge de "Pendente" em tarefas
+      className: 'bg-blue-500/15 text-blue-500 dark:text-blue-300 border-blue-500/40',
     };
   };
 
-  const getBorderColorClass = () => {
-    if (conta.status === 'pago') {
-      return conta.tipo === 'entrada'
-        ? 'border-green-500' // Verde Claro (Recebidas)
-        : 'border-red-800';   // Vermelho Escuro (Pagas)
-    }
-    // status === 'pendente'
-    return conta.tipo === 'entrada'
-      ? 'border-green-800'  // Verde Escuro (A Receber)
-      : 'border-red-500';    // Vermelho Claro (A Vencer)
-  };
-
   const statusProps = getStatusProps();
-  const borderColorClass = getBorderColorClass();
+  const visualKey: ContaVisualKey = `${conta.status}_${conta.tipo}` as ContaVisualKey;
+  const visual = contaVisualConfig[visualKey];
 
   const handleMarkAsPaid = async () => {
     setIsPaying(true);
@@ -182,17 +198,28 @@ export function ContaItem({ conta, onStatusChange }: ContaItemProps) {
     <>
       <ContextMenu>
         <ContextMenuTrigger asChild>
-          <div className={cn(
-            'group relative overflow-hidden rounded-lg bg-surface border border-l-4 transition-all duration-200 hover:shadow-md hover:border-primary/20 p-4',
-            borderColorClass,
-            conta.status === 'pago' && 'opacity-70'
-          )}>
+          <motion.div
+            className={cn(
+              'group relative rounded-lg border p-3 sm:p-4 transition-all duration-300 hover:shadow-md backdrop-blur-sm',
+              visual.color,
+              visual.glow,
+              'before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-r before:from-transparent before:via-white/5 before:to-transparent before:opacity-0 group-hover:before:opacity-100 before:transition-opacity before:duration-300',
+              conta.status === 'pago' && 'opacity-70'
+            )}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            whileHover={{ y: -2, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
 
-              {/* Action Menu Button - Positioned absolutely in top right corner */}
-              <div className="absolute top-4 right-4 z-30">
+              <div className="absolute top-3 right-3 z-20">
                 <ActionMenu items={actionMenuItems}>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-surface-hover">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 hover:bg-surface-hover flex items-center justify-center"
+                  >
                     <MoreVertical className="h-4 w-4" />
                   </Button>
                 </ActionMenu>
@@ -200,9 +227,14 @@ export function ContaItem({ conta, onStatusChange }: ContaItemProps) {
 
               <div className="relative z-10 flex flex-col md:flex-row md:items-center md:gap-4">
                 {/* Main Content */}
-                <div className="flex-1 space-y-2 mb-4 md:mb-0 pr-12">
-                  <div className="flex items-start justify-between">
-                    <h3 className={cn("font-bold text-base leading-tight flex-1", conta.status === 'pago' && 'line-through text-text-muted')}>
+                <div className="flex-1 space-y-2 mb-4 md:mb-0 pr-12 md:pr-16">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3
+                      className={cn(
+                        'font-bold text-base leading-tight flex-1',
+                        conta.status === 'pago' && 'line-through text-text-muted'
+                      )}
+                    >
                       {conta.descricao || conta.categoria}
                     </h3>
                   </div>
@@ -228,8 +260,8 @@ export function ContaItem({ conta, onStatusChange }: ContaItemProps) {
                   </div>
                 </div>
 
-                {/* Value and Actions */}
-                <div className="flex items-center justify-between md:justify-end gap-4">
+                {/* Value, Actions e Menu alinhados à direita */}
+                <div className="flex items-center justify-between md:justify-end gap-4 pr-10 md:pr-3">
                   <div className={`text-lg font-bold tabular-nums ${conta.tipo === 'saida' ? 'text-destructive' : 'text-green-600 dark:text-green-500'}`}>
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(conta.valor)}
                   </div>
@@ -269,7 +301,7 @@ export function ContaItem({ conta, onStatusChange }: ContaItemProps) {
                   </Button>
                 </div>
               )}
-            </div>
+            </motion.div>
         </ContextMenuTrigger>
         <ContextMenuContent className="w-48">
           {actionMenuItems.map((item, index) => {

@@ -37,7 +37,11 @@ const priorityConfig = {
 };
 
 const statusConfig = {
-  pending: { label: 'Pendente', color: 'bg-gray-500/10 text-gray-700 dark:text-gray-400 border-gray-500/20' },
+  pending: {
+    label: 'Pendente',
+    // Maior contraste para melhor legibilidade em ambos temas
+    color: 'bg-blue-500/15 text-blue-500 dark:text-blue-300 border-blue-500/40',
+  },
   done: { label: 'Concluída', color: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20' },
   overdue: { label: 'Vencida', color: 'bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20' },
 };
@@ -48,31 +52,19 @@ const timelinePriorityConfig = {
     color: 'bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-300',
     glow: 'shadow-red-500/20',
     Icon: Flame,
+    iconColor: 'text-red-500 dark:text-red-300',
   },
   medium: {
     color: 'bg-yellow-500/10 border-yellow-500/30 text-yellow-700 dark:text-yellow-300',
     glow: 'shadow-yellow-500/20',
     Icon: Star,
+    iconColor: 'text-yellow-500 dark:text-yellow-300',
   },
   low: {
     color: 'bg-blue-500/10 border-blue-500/30 text-blue-700 dark:text-blue-300',
     glow: 'shadow-blue-500/20',
     Icon: Circle,
-  },
-} as const;
-
-const timelineStatusConfig = {
-  pending: {
-    color: 'bg-yellow-500/10 border-yellow-500/30 text-yellow-700 dark:text-yellow-300',
-    Icon: AlertCircle,
-  },
-  done: {
-    color: 'bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300',
-    Icon: CheckCircle,
-  },
-  overdue: {
-    color: 'bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-300',
-    Icon: AlertCircle,
+    iconColor: 'text-blue-500 dark:text-blue-300',
   },
 } as const;
 
@@ -105,7 +97,6 @@ const timelineStatusConfig = {
   const dueDateInfo = getDueDateInfo();
   const isDone = task.status === 'done';
   const priorityVisual = timelinePriorityConfig[task.priority];
-  const statusVisual = timelineStatusConfig[task.status];
 
   // Handlers para diferentes tipos de clique
   const handleSingleClick = (e: React.MouseEvent) => {
@@ -153,16 +144,6 @@ const timelineStatusConfig = {
             whileHover={{ y: -2, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            {/* Ícones de status e prioridade nos cantos, como na Timeline */}
-            {statusVisual && (
-              <div className="absolute top-1 left-1 sm:top-2 sm:left-2">
-                <statusVisual.Icon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-              </div>
-            )}
-            <div className="absolute top-1 right-1 sm:top-2 sm:right-2">
-              <priorityVisual.Icon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-            </div>
-
             <div className="flex items-start gap-2 sm:gap-3 relative z-10">
               <Checkbox
                 checked={isDone}
@@ -184,11 +165,22 @@ const timelineStatusConfig = {
                    >
                      {task.title}
                    </motion.h3>
-                  <Badge variant="outline" className={cn('flex-shrink-0 text-xs', priorityConfig[task.priority].color)}>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    <priorityVisual.Icon
+                      className={cn(
+                        'h-3 w-3 sm:h-3.5 sm:w-3.5',
+                        priorityVisual.iconColor
+                      )}
+                    />
+                    <Badge
+                      variant="outline"
+                      className={cn('flex-shrink-0 text-xs', priorityConfig[task.priority].color)}
+                    >
                     <Flag className="h-3 w-3 mr-1" />
                     <span className="hidden sm:inline">{priorityConfig[task.priority].label}</span>
                     <span className="sm:hidden">{priorityConfig[task.priority].label.charAt(0)}</span>
                   </Badge>
+                  </div>
                 </div>
 
                 {task.description && (

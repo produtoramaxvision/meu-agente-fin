@@ -306,7 +306,7 @@ export default function Contas() {
           </TabsList>
           
           <TabsContent value="a-pagar">
-            <Card>
+            <Card className="relative rounded-xl border-2 border-border/40 bg-surface p-2 sm:p-4 transition-all duration-300 hover:shadow-lg">
               <CardHeader>
                 <CardTitle>{getTabTitle()}</CardTitle>
                 <p className="text-sm text-text-muted">
@@ -320,7 +320,7 @@ export default function Contas() {
           </TabsContent>
           
           <TabsContent value="a-receber">
-            <Card>
+            <Card className="relative rounded-xl border-2 border-border/40 bg-surface p-2 sm:p-4 transition-all duration-300 hover:shadow-lg">
               <CardHeader>
                 <CardTitle>{getTabTitle()}</CardTitle>
                 <p className="text-sm text-text-muted">
@@ -334,7 +334,7 @@ export default function Contas() {
           </TabsContent>
 
           <TabsContent value="pagas">
-            <Card>
+            <Card className="relative rounded-xl border-2 border-border/40 bg-surface p-2 sm:p-4 transition-all duration-300 hover:shadow-lg">
               <CardHeader>
                 <CardTitle>{getTabTitle()}</CardTitle>
                 <p className="text-sm text-text-muted">
@@ -348,7 +348,7 @@ export default function Contas() {
           </TabsContent>
 
           <TabsContent value="recebidas">
-            <Card>
+            <Card className="relative rounded-xl border-2 border-border/40 bg-surface p-2 sm:p-4 transition-all duration-300 hover:shadow-lg">
               <CardHeader>
                 <CardTitle>{getTabTitle()}</CardTitle>
                 <p className="text-sm text-text-muted">
