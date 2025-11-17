@@ -200,7 +200,7 @@ export function ContaItem({ conta, onStatusChange }: ContaItemProps) {
         <ContextMenuTrigger asChild>
           <motion.div
             className={cn(
-              'group relative rounded-lg border p-3 sm:p-4 transition-all duration-300 hover:shadow-md backdrop-blur-sm',
+              'group relative overflow-hidden rounded-lg border p-3 sm:p-4 transition-all duration-300 hover:shadow-md backdrop-blur-sm',
               visual.color,
               visual.glow,
               'before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-r before:from-transparent before:via-white/5 before:to-transparent before:opacity-0 group-hover:before:opacity-100 before:transition-opacity before:duration-300',
